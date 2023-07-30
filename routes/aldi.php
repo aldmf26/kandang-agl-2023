@@ -353,14 +353,18 @@ Route::middleware('auth')->group(function () {
 
             // penjualan martadah
             Route::get('/penjualan_telur', 'penjualan_telur')->name('penjualan_telur');
+            Route::get('/tambah_baris_jual_mtd', 'tambah_baris_jual_mtd')->name('tambah_baris_jual_mtd');
             Route::get('/add_penjualan_telur', 'add_penjualan_telur')->name('add_penjualan_telur');
             Route::get('/edit_telur', 'edit_telur')->name('edit_telur');
+            Route::get('/detail_penjualan_mtd', 'detail_penjualan_mtd')->name('detail_penjualan_mtd');
+            Route::get('/delete_penjualan_mtd', 'delete_penjualan_mtd')->name('delete_penjualan_mtd');
             Route::post('/save_penjualan_telur', 'save_penjualan_telur')->name('save_penjualan_telur');
             Route::post('/save_edit_telur', 'save_edit_telur')->name('save_edit_telur');
 
             // transfer stok
             Route::get('/transfer_stok', 'transfer_stok')->name('transfer_stok');
             Route::get('/add_transfer_stok', 'add_transfer_stok')->name('add_transfer_stok');
+            Route::get('/tbh_baris_transfer_mtd', 'tbh_baris_transfer_mtd')->name('tbh_baris_transfer_mtd');
             Route::post('/save_transfer', 'save_transfer')->name('save_transfer');
 
             // penjualan umum
@@ -387,6 +391,7 @@ Route::middleware('auth')->group(function () {
             Route::get('/opname_pakan', 'opname_pakan')->name('opname_pakan');
             Route::get('/opnme_vitamin', 'opnme_vitamin')->name('opnme_vitamin');
             Route::get('/history_stok', 'history_stok')->name('history_stok');
+            Route::get('/get_satuan_vitmin_mtd', 'get_satuan')->name('get_satuan_vitmin_mtd');
             Route::post('/save_opname_pakan', 'save_opname_pakan')->name('save_opname_pakan');
             Route::post('/save_tambah_pakan_stok', 'save_tambah_pakan')->name('save_tambah_pakan_stok');
             Route::post('/save_vaksin', 'save_vaksin')->name('save_vaksin');

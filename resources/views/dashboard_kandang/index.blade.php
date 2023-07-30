@@ -41,9 +41,9 @@
         @include('dashboard_kandang.tabel.stokTelur')
         <section class="row">
             @if (session()->has('error'))
-                <div class="col-lg-12">
-                    <x-theme.alert pesan="kontak dr anto kalo ada yg merah" />
-                </div>
+            <div class="col-lg-12">
+                <x-theme.alert pesan="kontak dr anto kalo ada yg merah" />
+            </div>
             @endif
 
             @include('dashboard_kandang.tabel.penjualanUmum')
@@ -58,8 +58,8 @@
         </section>
     </x-slot>
     @section('js')
-        <script>
-            function modalSelect2() {
+    <script>
+        function modalSelect2() {
                 $('.select2-kandang').select2({
                     dropdownParent: $('#tambah_kandang .modal-content')
                 });
@@ -588,10 +588,10 @@
 
 
             // pakan
-        </script>
+    </script>
 
-        <script>
-            function load_stok_pakan() {
+    <script>
+        function load_stok_pakan() {
                 $.ajax({
                     type: "GET",
                     url: "{{ route('dashboard_kandang.load_stok_pakan') }}",
@@ -743,6 +743,18 @@
                 var delete_row = $(this).attr("count");
                 $(".baris" + delete_row).remove();
             });
-        </script>
+            $(document).on("change", ".id_vitamin", function() {
+                var count = $(this).attr('count');
+                var id_vitamin = $('.id_vitamin' + count).val();
+                $.ajax({
+                    type: "get",
+                    url: "dashboard_kandang/get_satuan_vitmin_mtd?id_produk=" + id_vitamin,
+                    success: function (data) {
+                        $('.satuan_vitamin' + count).text(data);
+                    }
+                });
+
+            });
+    </script>
     @endsection
 </x-theme.app>

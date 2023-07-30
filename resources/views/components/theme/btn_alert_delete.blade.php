@@ -1,9 +1,9 @@
 @props([
-    'route' => '',
-    'name' => '',
-    'tgl1' => '',
-    'tgl2' => '',
-    'id_proyek' => '',
+'route' => '',
+'name' => '',
+'tgl1' => '',
+'tgl2' => '',
+'id_proyek' => '',
 ])
 <form action="{{ route($route) }}" method="get">
     <div class="modal fade" id="delete" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -28,10 +28,10 @@
     </div>
 </form>
 @section('scripts')
-    <script>
-        $(document).on('click', '.delete_nota', function() {
+<script>
+    $(document).on('click', '.delete_nota', function() {
             var no_nota = $(this).attr('no_nota');
             $('.no_nota').val(no_nota);
         })
-    </script>
+</script>
 @endsection

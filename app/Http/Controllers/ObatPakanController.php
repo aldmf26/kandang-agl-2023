@@ -71,7 +71,7 @@ class ObatPakanController extends Controller
             FROM stok_produk_perencanaan as a 
             left join tb_produk_perencanaan as b on b.id_produk = a.id_pakan
             left join tb_satuan as c on c.id_satuan = b.dosis_satuan
-            where b.kategori in('obat_pakan','obat_air') and a.opname = 'T' and a.tgl between '2023-01-01' and '$tgl'
+            where b.kategori in('obat_pakan','obat_air') and a.opname = 'T' and a.tgl between '2020-01-01' and '$tgl'
             group by a.id_pakan;"),
             'tgl' => $tgl
         ];
@@ -98,28 +98,28 @@ class ObatPakanController extends Controller
             $selisih = $r->stk_program[$x] - $r->stk_aktual[$x];
             if ($selisih < 0) {
                 $qty_selisih = $selisih * -1;
-                $data = [
-                    'id_akun' => '522',
-                    'id_buku' => '4',
-                    'ket' => 'Penyesuian stok pakan',
-                    'debit' => $qty_selisih * $hrga->rata_rata,
-                    'kredit' => '0',
-                    'tgl' => $r->tgl,
-                    'no_nota' => 'JPP-' . $no_nota,
-                    'admin' => auth()->user()->name,
-                ];
-                DB::table('jurnal')->insert($data);
-                $data = [
-                    'id_akun' => '521',
-                    'id_buku' => '4',
-                    'ket' => 'Penyesuian stok pakan',
-                    'debit' => 0,
-                    'kredit' => $qty_selisih * $hrga->rata_rata,
-                    'tgl' => $r->tgl,
-                    'no_nota' => 'JPP-' . $no_nota,
-                    'admin' => auth()->user()->name,
-                ];
-                DB::table('jurnal')->insert($data);
+                // $data = [
+                //     'id_akun' => '522',
+                //     'id_buku' => '4',
+                //     'ket' => 'Penyesuian stok pakan',
+                //     'debit' => empty($hrga->rata_rata) ? '0' : $qty_selisih * $hrga->rata_rata,
+                //     'kredit' => '0',
+                //     'tgl' => $r->tgl,
+                //     'no_nota' => 'JPP-' . $no_nota,
+                //     'admin' => auth()->user()->name,
+                // ];
+                // DB::table('jurnal')->insert($data);
+                // $data = [
+                //     'id_akun' => '521',
+                //     'id_buku' => '4',
+                //     'ket' => 'Penyesuian stok pakan',
+                //     'debit' => 0,
+                //     'kredit' => empty($hrga->rata_rata) ? '0' : $qty_selisih * $hrga->rata_rata,
+                //     'tgl' => $r->tgl,
+                //     'no_nota' => 'JPP-' . $no_nota,
+                //     'admin' => auth()->user()->name,
+                // ];
+                // DB::table('jurnal')->insert($data);
                 $datas = [
                     'pcs' => $r->stk_aktual[$x],
                     'id_pakan' => $r->id_pakan[$x],
@@ -130,33 +130,33 @@ class ObatPakanController extends Controller
                     'h_opname' => 'Y',
                     'pcs' => $qty_selisih,
                     'pcs_kredit' => 0,
-                    'total_rp' => $qty_selisih * $hrga->rata_rata
+                    'total_rp' => empty($hrga->rata_rata) ? '0' : $qty_selisih * $hrga->rata_rata
                 ];
                 DB::table('stok_produk_perencanaan')->insert($datas);
             } else {
                 $qty_selisih = $selisih;
-                $data = [
-                    'id_akun' => '521',
-                    'id_buku' => '4',
-                    'ket' => 'Penyesuian stok pakan',
-                    'debit' => $qty_selisih * $hrga->rata_rata,
-                    'kredit' => '0',
-                    'tgl' => $r->tgl,
-                    'no_nota' => 'JPP-' . $no_nota,
-                    'admin' => auth()->user()->name,
-                ];
-                DB::table('jurnal')->insert($data);
-                $data = [
-                    'id_akun' => '522',
-                    'id_buku' => '4',
-                    'ket' => 'Penyesuian stok pakan',
-                    'debit' => 0,
-                    'kredit' => $qty_selisih * $hrga->rata_rata,
-                    'tgl' => $r->tgl,
-                    'no_nota' => 'JPP-' . $no_nota,
-                    'admin' => auth()->user()->name,
-                ];
-                DB::table('jurnal')->insert($data);
+                // $data = [
+                //     'id_akun' => '521',
+                //     'id_buku' => '4',
+                //     'ket' => 'Penyesuian stok pakan',
+                //     'debit' => $qty_selisih * $hrga->rata_rata,
+                //     'kredit' => '0',
+                //     'tgl' => $r->tgl,
+                //     'no_nota' => 'JPP-' . $no_nota,
+                //     'admin' => auth()->user()->name,
+                // ];
+                // DB::table('jurnal')->insert($data);
+                // $data = [
+                //     'id_akun' => '522',
+                //     'id_buku' => '4',
+                //     'ket' => 'Penyesuian stok pakan',
+                //     'debit' => 0,
+                //     'kredit' => $qty_selisih * $hrga->rata_rata,
+                //     'tgl' => $r->tgl,
+                //     'no_nota' => 'JPP-' . $no_nota,
+                //     'admin' => auth()->user()->name,
+                // ];
+                // DB::table('jurnal')->insert($data);
 
                 $datas = [
                     'pcs' => $r->stk_aktual[$x],
@@ -168,7 +168,7 @@ class ObatPakanController extends Controller
                     'h_opname' => 'Y',
                     'pcs' => 0,
                     'pcs_kredit' => $qty_selisih,
-                    'total_rp' => $qty_selisih * $hrga->rata_rata
+                    'total_rp' => empty($hrga->rata_rata) ? '0' : $qty_selisih * $hrga->rata_rata
                 ];
                 DB::table('stok_produk_perencanaan')->insert($datas);
             }
@@ -192,7 +192,16 @@ class ObatPakanController extends Controller
             'produk' => DB::select("SELECT * FROM tb_produk_perencanaan as a where a.kategori in('obat_pakan','obat_air')"),
             'kategori' => 'vitamin'
         ];
-        return view('stok_pakan.tbh_stok', $data);
+        return view('stok_pakan.tbh_stok_vitamin', $data);
+    }
+
+    function get_satuan(Request $r)
+    {
+        $produk = DB::selectOne("SELECT * FROM tb_produk_perencanaan as a 
+        left join tb_satuan as c on c.id_satuan = a.dosis_satuan
+        where a.id_produk = '$r->id_produk'");
+
+        echo $produk->nm_satuan;
     }
 
     public function save_tambah_pakan(Request $r)

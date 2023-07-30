@@ -3,7 +3,7 @@
     @csrf
     <x-theme.modal title="Tambah Obat Ayam" size="modal-lg" idModal="tambah_obat_ayam">
         @php
-            $satuanObat = DB::table('tb_satuan')->get();
+        $satuanObat = DB::table('tb_satuan')->get();
         @endphp
         <div class="row">
             <div class="col-lg-3">
@@ -17,7 +17,7 @@
                 <select name="dosis_satuan" class="form-control select2-ayam" id="">
                     <option value="">- Pilih Satuan -</option>
                     @foreach ($satuanObat as $s)
-                        <option value="{{ $s->id_satuan }}">{{ ucwords($s->nm_satuan) }}</option>
+                    <option value="{{ $s->id_satuan }}">{{ ucwords($s->nm_satuan) }}</option>
                     @endforeach
                 </select>
             </div>

@@ -25,16 +25,16 @@
             </thead>
             <tbody>
                 @foreach ($pakan as $p)
-                    <tr>
-                        <td><a href="#" onclick="event.preventDefault();" class="history_stok"
-                                id_pakan="{{ $p->id_pakan }}">{{ ucwords(strtolower($p->nm_produk)) }}
-                            </a>
-                        </td>
-                        <td style=" text-align: right">
-                            {{ number_format($p->pcs_debit - $p->pcs_kredit, 0) }}
-                        </td>
-                        <td style="text-align: center">{{ $p->nm_satuan }}</td>
-                    </tr>
+                <tr>
+                    <td><a href="#" onclick="event.preventDefault();" class="history_stok"
+                            id_pakan="{{ $p->id_pakan }}">{{ ucwords(strtolower($p->nm_produk)) }}
+                        </a>
+                    </td>
+                    <td style=" text-align: right">
+                        {{ number_format($p->pcs_debit - $p->pcs_kredit, 0) }}
+                    </td>
+                    <td style="text-align: center">{{ $p->nm_satuan }}</td>
+                </tr>
                 @endforeach
             </tbody>
         </table>
@@ -69,17 +69,17 @@
             </thead>
             <tbody>
                 @foreach ($vitamin as $p)
-                    <tr>
-                        <td><a href="#" onclick="event.preventDefault();" class="history_stok"
-                                id_pakan="{{ $p->id_pakan }}">{{ $p->nm_produk }}</a></td>
-                        <td style="text-align: right">{{ number_format($p->pcs_debit - $p->pcs_kredit, 0) }}</td>
-                        <td style="text-align: center">{{ $p->nm_satuan }}</td>
-                    </tr>
+                <tr>
+                    <td><a href="#" onclick="event.preventDefault();" class="history_stok"
+                            id_pakan="{{ $p->id_pakan }}">{{ $p->nm_produk }}</a></td>
+                    <td style="text-align: right">{{ number_format($p->pcs_debit - $p->pcs_kredit, 0) }}</td>
+                    <td style="text-align: center">{{ $p->nm_satuan }}</td>
+                </tr>
                 @endforeach
             </tbody>
         </table>
     </div>
-    <div class="col-lg-4">
+    {{-- <div class="col-lg-4">
         <div class="row mb-2">
 
             <div class="col-lg-3">
@@ -106,15 +106,15 @@
             </thead>
             <tbody>
                 @foreach ($vaksin as $d)
-                    <tr>
-                        <td>{{ tanggal($d->tgl) }}</td>
-                        <td>{{ $d->nm_kandang }}</td>
-                        <td>{{ $d->nm_vaksin }}</td>
-                        <td>{{ $d->qty }}</td>
-                        <td>{{ number_format($d->ttl_rp, 0) }}</td>
-                    </tr>
+                <tr>
+                    <td>{{ tanggal($d->tgl) }}</td>
+                    <td>{{ $d->nm_kandang }}</td>
+                    <td>{{ $d->nm_vaksin }}</td>
+                    <td>{{ $d->qty }}</td>
+                    <td>{{ number_format($d->ttl_rp, 0) }}</td>
+                </tr>
                 @endforeach
             </tbody>
         </table>
-    </div>
+    </div> --}}
 </div>

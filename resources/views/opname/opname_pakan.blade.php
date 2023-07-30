@@ -21,14 +21,14 @@
                 <input type="hidden" name="id_pakan[]" value="{{$p->id_pakan}}">
             </td>
             <td style="text-align: right">
-                {{$p->pcs_debit - $p->pcs_kredit}}
+                {{round($p->pcs_debit - $p->pcs_kredit,0)}}
                 <input type="hidden" name="stk_program[]" class="stk_program{{$no+1}}"
                     value="{{$p->pcs_debit - $p->pcs_kredit}}">
             </td>
             <td>
                 <input type="text" name="stk_aktual[]" style="text-align: right"
                     class="form-control aktual aktual{{$no+1}}" count="{{$no+1}}"
-                    value="{{$p->pcs_debit - $p->pcs_kredit}}">
+                    value="{{round($p->pcs_debit - $p->pcs_kredit,0)}}">
             </td>
             <td style="text-align: right" class="selisih_pakan{{$no+1}}">0</td>
         </tr>

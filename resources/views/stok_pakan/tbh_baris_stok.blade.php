@@ -1,15 +1,16 @@
 <tr class="baris{{ $count }}">
 
     <td>
-        <select name="id_pakan[]" id="" class="select2tbhPakan">
+        <select name="id_pakan[]" id="" class="select2tbhPakan id_vitamin id_vitamin{{ $count }}" count='{{ $count }}'>
             <option value="">- Pilih Produk -</option>
             @foreach ($produk as $p)
-                <option value="{{ $p->id_produk }}">{{ $p->nm_produk }}</option>
+            <option value="{{ $p->id_produk }}">{{ $p->nm_produk }}</option>
             @endforeach
             <option value="tambah">+ Produk Baru</option>
         </select>
     </td>
     <td><input type="text" name="pcs[]" class="form-control"></td>
+    <td class="satuan_vitamin{{ $count }}"></td>
     <td><input type="text" name="ttl_rp[]" class="form-control"></td>
     <td><input type="text" name="biaya_dll[]" class="form-control"></td>
     <td>

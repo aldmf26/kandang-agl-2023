@@ -1,175 +1,439 @@
-<x-theme.app title="{{$title}}" table="Y" sizeCard="11">
+<x-theme.app title="{{ $title }}" table="T" sizeCard="12" cont="container-fluid">
 
-    <x-slot name="cardHeader">
-        <div class="row justify-content-end">
-
-            <div class="col-lg-6">
-                <h6 class="float-start mt-1">{{ $title }}</h6>
-            </div>
-            <div class="col-lg-6">
-                <x-theme.button modal="T" href="{{ route('dashboard_kandang.index') }}" icon="fa-arrow-left"
-                addClass="float-end" teks="kembali Ke Dashboard" />
-            </div>
-        </div>
-    </x-slot>
-    <style>
-        .select2-container--default .select2-selection--single .select2-selection__rendered {
-            color: #000000;
-            line-height: 36px;
-            /* font-size: 12px; */
-            width: 150px;
-
-        }
-    </style>
-
-    <x-slot name="cardBody">
-        <form action="{{route('dashboard_kandang.save_transfer')}}" method="post" class="save_jurnal">
-            @csrf
-            <section class="row">
-                <div class="col-lg-12">
-                    <table class="table">
-                        <tr>
-                            <th class="dhead">Tanggal</th>
-                            <th class="dhead">Dari Gudang</th>
-                            <th class="dhead">Ke Gudang</th>
-                        </tr>
-                        <tr>
-                            <td>
-                        <input type="date" class="form-control" name="tgl" value="{{date('Y-m-d')}}">
-                            </td>
-                            <td>
-                                <input type="text" class="form-control" value="Gudang {{$gudang->nm_gudang}}" readonly>
-                        <input type="hidden" class="id_gudang_dari" name="id_gudang_dari"
-                            value="{{$gudang->id_gudang_telur}}" readonly>
-                            </td>
-                            <td>
-                                <select required name="id_gudang" id="" class="select">
-                                    <option value="">--Pilih Gudang--</option>
-                                    @foreach ($gudang_telur as $g)
-                                    <option {{$g->id_gudang_telur == 2 ? 'selected' : ''}} value="{{$g->id_gudang_telur}}">Gudang {{$g->nm_gudang}}</option>
-                                    @endforeach
-                                </select>
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-                
-                <div class="col-lg-12">
-                    <hr style="border: 1px solid black">
-                </div>
-                <div class="col-lg-12">
-                    <div id="load_menu"></div>
-                </div>
-                <div class="col-lg-6">
-                    <div class="row">
-                        {{-- <x-theme.toggle name="Pilihan Lainnya">
-
-                        </x-theme.toggle>
-                        <div class="col-lg-12"></div>
-                        <div class="col-lg-6 pilihan_l">
-                            <label for="">No Dokumen</label>
-                            <input type="text" class="form-control inp-lain" name="no_dokumen">
-                        </div>
-                        <div class="col-lg-6 pilihan_l">
-                            <label for="">Tanggal Dokumen</label>
-                            <input type="date" class="form-control inp-lain" name="tgl_dokumen">
-                        </div> --}}
-
+    <section class="row">
+        <form action="{{route('dashboard_kandang.save_transfer')}}" method="post">
+            <div class="col-lg-12">
+                <div class="row">
+                    <div class="col-lg-4">
+                        <table class="table">
+                            <tr>
+                                <th class="dhead">Tanggal</th>
+                                <th class="dhead">No Nota</th>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <input type="date" class="form-control tgl_nota" name="tgl"
+                                        value="{{ date('Y-m-d') }}">
+                                </td>
+                                <td>
+                                    <input type="text" class="form-control nota_bk" name="no_nota" value="TM{{ $nota }}"
+                                        readonly>
+                                </td>
+                            </tr>
+                        </table>
                     </div>
                 </div>
-                {{-- <div class="col-lg-6">
-                    <hr style="border: 1px solid blue">
-                    <table class="" width="100%">
-                        <tr>
-                            <td width="20%">Total</td>
-                            <td width="40%" class="total" style="text-align: right;">Rp.0</td>
-                            <td width="40%" class="total_kredit" style="text-align: right;">Rp.0</td>
-                        </tr>
-                        <tr>
-                            <td class="cselisih" colspan="2">Selisih</td>
-                            <td style="text-align: right;" class="selisih cselisih">Rp.0</td>
-                        </tr>
+
+            </div>
+
+            <div class="col-lg-12">
+                <hr style="border: 1px solid black">
+            </div>
+            <div class="col-lg-12">
+                <div class="table-responsive">
+
+                    @csrf
+                    <table class="table table-striped table-bordered" style="white-space: nowrap;">
+                        <thead>
+                            <tr>
+
+                                <th class="dhead" width="10%">Produk </th>
+                                <th class="dhead" width="7%" style="text-align: center">Pcs</th>
+                                <th class="dhead" width="7%" style="text-align: center">Kg</th>
+                                {{-- <th class="dhead" width="10%" style="text-align: center;">Rp Pcs</th> --}}
+
+                                <th class="dhead" width="7%" style="text-align: center;">Ikat</th>
+                                <th class="dhead" width="7%" style="text-align: center;">Kg</th>
+                                {{-- <th class="dhead" width="10%" style="text-align: center;">Rp Ikat</th> --}}
+
+                                <th class="dhead" width="7%" style="text-align: center;">Pcs</th>
+                                <th class="dhead" width="7%" style="text-align: center;">Kg</th>
+                                <th class="dhead" width="7%" style="text-align: center;">Rak</th>
+                                {{-- <th class="dhead" width="10%" style="text-align: center;">Rp Rak</th> --}}
+                                <th class="dhead" width="5%">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="baris1">
+
+                                <td>
+                                    <select name="id_produk[]" class="select2_add" required>
+                                        <option value="">-Pilih Produk-</option>
+                                        @foreach ($produk as $p)
+                                        <option value="{{$p->id_produk_telur}}">{{$p->nm_telur}}</option>
+                                        @endforeach
+                                    </select>
+                                </td>
+                                <td align="right">
+                                    <input type="text" class="form-control pcs pcs1" count="1"
+                                        style="text-align: right; font-size: 12px;">
+                                    <input type="hidden" class="form-control  pcs_biasa1" name="pcs_pcs[]" value="0">
+                                </td>
+                                <td align="right">
+                                    <input type="text" class="form-control kg_pcs kg_pcs1" count="1"
+                                        style="text-align: right; font-size: 12px;">
+                                    <input type="hidden" class="form-control  kg_pcs_biasa1" name="kg_pcs[]" value="0">
+                                </td>
+                                {{-- <td align="right">
+                                    <input type="text" class="form-control rp_pcs pcs1" count="1"
+                                        style="text-align: right;font-size: 12px;">
+                                    <input type="hidden" class="form-control rp_pcs_biasa rp_pcs_biasa1" name="rp_pcs[]"
+                                        value="0">
+                                    <input type="hidden" class="ttl_rp_pcs1" value="0">
+                                </td> --}}
+                                <!-- Jual Ikat -->
+                                <td align="right">
+                                    <input type="text" class="form-control ikat ikat1" count="1"
+                                        style="text-align: right;font-size: 12px;" value="0" name="ikat[]">
+                                </td>
+                                <td align="right">
+                                    <input type="text" class="form-control kg_ikat kg_ikat1" count="1"
+                                        style="text-align: right;font-size: 12px;" value="0" name="kg_ikat[]">
+                                </td>
+                                {{-- <td align="right">
+                                    <input type="text" class="form-control rp_ikat rp_ikat1 " count="1"
+                                        style="text-align: right;font-size: 12px;">
+                                    <input type="hidden" class="form-control  rp_ikat_biasa1" name="rp_ikat[]"
+                                        value="0">
+                                    <input type="hidden" class="ttl_rp_ikat1" value="0">
+                                </td> --}}
+                                <!-- Jual Ikat -->
+                                <!-- Jual Kg -->
+                                <td align="right">
+                                    <input type="text" class="form-control" name="pcs_kg[]" count="1"
+                                        style="text-align: right;font-size: 12px;" value="0">
+                                </td>
+                                <td align="right">
+                                    <input type="text" class="form-control kg_kg kg_kg1" count="1"
+                                        style="text-align: right;font-size: 12px;" value="0" name="kg_kg[]">
+                                </td>
+                                <td align="right">
+                                    <input type="text" class="form-control rak_kg rak_kg1" count="1"
+                                        style="text-align: right;font-size: 12px;" value="0" name="rak_kg[]">
+                                </td>
+                                {{-- <td align="right">
+                                    <input type="text" class="form-control rp_kg rp_kg1" count="1"
+                                        style="text-align: right;font-size: 12px;">
+                                    <input type="hidden" class="form-control  rp_kg_biasa rp_kg_biasa1" name="rp_kg[]"
+                                        value="0">
+                                    <input type="hidden" class="ttl_rp_kg1" value="0">
+                                </td> --}}
+                                <!-- Jual Kg -->
+                                <td style="vertical-align: top;">
+                                    <button type="button" class="btn rounded-pill remove_baris_tf" count="1"><i
+                                            class="fas fa-trash text-danger"></i>
+                                    </button>
+                                </td>
+                            </tr>
+
+
+                        </tbody>
+                        <tbody id="tb_baris_mtd">
+
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th colspan="9">
+                                    <button type="button" class="btn btn-block btn-lg tbh_baris_mtd"
+                                        style="background-color: #435EBE; color: white; font-size: 14px; padding: 13px;">
+                                        <i class="fas fa-plus"></i> Tambah Baris Baru
+
+                                    </button>
+                                </th>
+                            </tr>
+                            <tr>
+                                <th colspan="8"></th>
+                                <th><button type="submit" class="btn btn-primary ">Simpan</button></th>
+                            </tr>
+                        </tfoot>
+
+
                     </table>
 
-                </div> --}}
-            </section>
-
-    </x-slot>
-    <x-slot name="cardFooter">
-        <button type="submit" class="float-end btn btn-primary button-save">Simpan</button>
-        <button class="float-end btn btn-primary btn_save_loading" type="button" disabled hidden>
-            <span class="spinner-border spinner-border-sm " role="status" aria-hidden="true"></span>
-            Loading...
-        </button>
-        <a href="{{route('stok_telur')}}" class="float-end btn btn-outline-primary me-2">Batal</a>
+                </div>
+                <!-- <div id="loadpcs"></div> -->
+            </div>
         </form>
-    </x-slot>
-
-
-
+    </section>
     @section('scripts')
     <script>
-        load_menu();
-        function load_menu() {
-            $.ajax({
-                method: "GET",
-                url: "/load_transfer_telur",
-                dataType: "html",
-                success: function (hasil) {
-                    $("#load_menu").html(hasil);
-                    $('.select').select2({
-                        language: {
-                        searching: function() {
-                            $('.select2-search__field').focus();
-                        }
-                        }
-                    });
-                    
-                },
+        $(document).ready(function() {
+            $(document).on("keyup", ".pcs", function() {
+                var count = $(this).attr("count");
+                var input = $(this).val();
+                input = input.replace(/[^\d\,]/g, "");
+                input = input.replace(".", ",");
+                input = input.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
+
+                if (input === "") {
+                    $(this).val("");
+                    $('.pcs_biasa' + count).val(0)
+                } else {
+                    $(this).val(input);
+                    input = input.replaceAll(".", "");
+                    input2 = input.replace(",", ".");
+                    $('.pcs_biasa' + count).val(input2)
+                }
+                var pcs = $('.pcs_biasa' + count).val()
+                var rp_satuan = $('.rp_pcs_biasa' + count).val();
+                total = parseFloat(rp_satuan) * parseFloat(pcs);
+                $('.ttl_rp_pcs' + count).val(total);
+
+                var total_pcs = $('.ttl_rp_pcs' + count).val();
+                var total_ikat = $('.ttl_rp_ikat' + count).val();
+                var total_kg = $('.ttl_rp_kg' + count).val();
+
+                var total_all = parseFloat(total_pcs) + parseFloat(total_ikat) + parseFloat(total_kg);
+
+                var total_rupiah = total_all.toLocaleString("id-ID", {
+                    style: "currency",
+                    currency: "IDR",
+                });
+                $('.ttl_rp' + count).text(total_rupiah);
             });
-        }
-        var count = 2;
-        $(document).on("click", ".tbh_baris", function () {
-            count = count + 1;
-            $.ajax({
-                url: "/tbh_baris_transfer?count=" + count,
-                type: "Get",
-                success: function (data) {
-                    $("#tb_baris").append(data);
-                    $(".select").select2();
-                },
+
+            $(document).on("keyup", ".rp_pcs", function() {
+                var count = $(this).attr("count");
+                var input = $(this).val();
+                input = input.replace(/[^\d\,]/g, "");
+                input = input.replace(".", ",");
+                input = input.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
+
+                if (input === "") {
+                    $(this).val("");
+                    $('.rp_pcs_biasa' + count).val(0)
+                } else {
+                    $(this).val(input);
+                    input = input.replaceAll(".", "");
+                    input2 = input.replace(",", ".");
+                    $('.rp_pcs_biasa' + count).val(input2)
+                }
+                var pcs = $('.pcs_biasa' + count).val()
+                var rp_satuan = $('.rp_pcs_biasa' + count).val();
+
+                total = parseFloat(rp_satuan) * parseFloat(pcs);
+                $('.ttl_rp_pcs' + count).val(total);
+
+                var total_pcs = $('.ttl_rp_pcs' + count).val();
+                var total_ikat = $('.ttl_rp_ikat' + count).val();
+                var total_kg = $('.ttl_rp_kg' + count).val();
+
+                var total_all = parseFloat(total_pcs) + parseFloat(total_ikat) + parseFloat(total_kg);
+
+                var total_rupiah = total_all.toLocaleString("id-ID", {
+                    style: "currency",
+                    currency: "IDR",
+                });
+                $('.ttl_rp' + count).text(total_rupiah);
             });
-        });
-        var id_gudang = $('.id_gudang_dari').val();
-        
-        $(document).on("change", ".pilih_telur", function () {
-            var count = $(this).attr('count');
-            var id_telur = $('.pilih_telur' + count).val();
-            
-           
-            $.ajax({
-                url: "/get_stok_telur?id_telur="+ id_telur+'&id_gudang_telur=' + id_gudang,
-                type: "Get",
-                dataType: "json",
-                success: function (data) {
-                    $(".pcs_telur" + count).text(data['pcs']);
-                    $(".kg_telur" + count).text(data['kg']);
-                    $(".select").select2();
-                },
-            });
-        });
-        $(document).on("click", ".remove_baris", function () {
-        var delete_row = $(this).attr("count");
-        $(".baris" + delete_row).remove();
-        });
-        aksiBtn("form");
-        $(document).on("keyup", ".pcs", function () {
-            var count = $(this).attr('count');
-            var pcs = $('.pcs'+ count).val()
-            var ikat = parseFloat(pcs) / 180;
-            $('.ikat'+ count).text(ikat.toFixed(1));
         });
     </script>
+    <script>
+        $(document).ready(function() {
+            $(document).on("keyup", ".ikat", function() {
+                var count = $(this).attr("count");
+                var ikat = $('.ikat' + count).val();
+                var kg = $('.kg_ikat' + count).val();
+                var rp_ikat = $('.rp_ikat_biasa' + count).val();
 
+
+                var total = (parseFloat(kg) - parseFloat(ikat)) * parseFloat(rp_ikat);
+                $('.ttl_rp_ikat' + count).val(total);
+
+                var total_pcs = $('.ttl_rp_pcs' + count).val();
+                var total_ikat = $('.ttl_rp_ikat' + count).val();
+                var total_kg = $('.ttl_rp_kg' + count).val();
+
+                var total_all = parseFloat(total_pcs) + parseFloat(total_ikat) + parseFloat(total_kg);
+
+                var total_rupiah = total_all.toLocaleString("id-ID", {
+                    style: "currency",
+                    currency: "IDR",
+                });
+                $('.ttl_rp' + count).text(total_rupiah);
+            });
+            $(document).on("keyup", ".kg_ikat", function() {
+                var count = $(this).attr("count");
+                var ikat = $('.ikat' + count).val();
+                var kg = $('.kg_ikat' + count).val();
+                var rp_ikat = $('.rp_ikat_biasa' + count).val();
+
+                var total = (parseFloat(kg) - parseFloat(ikat)) * parseFloat(rp_ikat);
+                $('.ttl_rp_ikat' + count).val(total);
+
+                var total_pcs = $('.ttl_rp_pcs' + count).val();
+                var total_ikat = $('.ttl_rp_ikat' + count).val();
+                var total_kg = $('.ttl_rp_kg' + count).val();
+
+                var total_all = parseFloat(total_pcs) + parseFloat(total_ikat) + parseFloat(total_kg);
+
+                var total_rupiah = total_all.toLocaleString("id-ID", {
+                    style: "currency",
+                    currency: "IDR",
+                });
+                $('.ttl_rp' + count).text(total_rupiah);
+            });
+            $(document).on("keyup", ".rp_ikat", function() {
+                var count = $(this).attr("count");
+                var input = $(this).val();
+                input = input.replace(/[^\d\,]/g, "");
+                input = input.replace(".", ",");
+                input = input.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
+
+                if (input === "") {
+                    $(this).val("");
+                    $('.rp_ikat_biasa' + count).val(0);
+                } else {
+                    $(this).val(input);
+                    input = input.replaceAll(".", "");
+                    input2 = input.replace(",", ".");
+                    $('.rp_ikat_biasa' + count).val(input2);
+                }
+
+                var ikat = $('.ikat' + count).val();
+                var kg = $('.kg_ikat' + count).val();
+                var rp_ikat = $('.rp_ikat_biasa' + count).val();
+
+
+
+
+                var total = (parseFloat(kg) - parseFloat(ikat)) * parseFloat(rp_ikat);
+                $('.ttl_rp_ikat' + count).val(total);
+                var total_pcs = $('.ttl_rp_pcs' + count).val();
+                var total_ikat = $('.ttl_rp_ikat' + count).val();
+                var total_kg = $('.ttl_rp_kg' + count).val();
+
+                var total_all = parseFloat(total_pcs) + parseFloat(total_ikat) + parseFloat(total_kg);
+
+                var total_rupiah = total_all.toLocaleString("id-ID", {
+                    style: "currency",
+                    currency: "IDR",
+                });
+                $('.ttl_rp' + count).text(total_rupiah);
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function() {
+            $(document).on("keyup", ".kg_kg", function() {
+                var count = $(this).attr("count");
+                var kg = $('.kg_kg' + count).val();
+                var rak = $('.rak_kg' + count).val();
+                var rp_kg_biasa = $('.rp_kg_biasa' + count).val();
+                var rak_rumus = parseFloat(rak) * 0.12;
+                var rak_kali = Math.round(rak_rumus * 10) / 10;
+
+                var total = (parseFloat(kg) - parseFloat(rak_kali)) * parseFloat(rp_kg_biasa);
+                $('.ttl_rp_kg' + count).val(total);
+
+                var total_pcs = $('.ttl_rp_pcs' + count).val();
+                var total_ikat = $('.ttl_rp_ikat' + count).val();
+                var total_kg = $('.ttl_rp_kg' + count).val();
+
+                var total_all = parseFloat(total_pcs) + parseFloat(total_ikat) + parseFloat(total_kg);
+
+                var total_rupiah = total_all.toLocaleString("id-ID", {
+                    style: "currency",
+                    currency: "IDR",
+                });
+                $('.ttl_rp' + count).text(total_rupiah);
+            });
+            $(document).on("keyup", ".rak_kg", function() {
+                var count = $(this).attr("count");
+                var kg = $('.kg_kg' + count).val();
+                var rak = $('.rak_kg' + count).val();
+                var rp_kg_biasa = $('.rp_kg_biasa' + count).val();
+
+                var rak_rumus = parseFloat(rak) * 0.12;
+                var rak_kali = Math.round(rak_rumus * 10) / 10;
+
+
+                var total = (parseFloat(kg) - parseFloat(rak_kali)) * parseFloat(rp_kg_biasa);
+                $('.ttl_rp_kg' + count).val(total);
+
+
+                var total_pcs = $('.ttl_rp_pcs' + count).val();
+                var total_ikat = $('.ttl_rp_ikat' + count).val();
+                var total_kg = $('.ttl_rp_kg' + count).val();
+
+                var total_all = parseFloat(total_pcs) + parseFloat(total_ikat) + parseFloat(total_kg);
+
+                var total_rupiah = total_all.toLocaleString("id-ID", {
+                    style: "currency",
+                    currency: "IDR",
+                });
+                $('.ttl_rp' + count).text(total_rupiah);
+            });
+            $(document).on("keyup", ".rp_kg", function() {
+                var count = $(this).attr("count");
+                var input = $(this).val();
+                input = input.replace(/[^\d\,]/g, "");
+                input = input.replace(".", ",");
+                input = input.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
+
+                if (input === "") {
+                    $(this).val("");
+                    $('.rp_kg_biasa' + count).val(0);
+                } else {
+                    $(this).val(input);
+                    input = input.replaceAll(".", "");
+                    input2 = input.replace(",", ".");
+                    $('.rp_kg_biasa' + count).val(input2);
+                }
+
+                var kg = $('.kg_kg' + count).val();
+                var rak = $('.rak_kg' + count).val();
+                var rp_kg_biasa = $('.rp_kg_biasa' + count).val();
+                var rak_rumus = parseFloat(rak) * 0.12;
+                var rak_kali = Math.round(rak_rumus * 10) / 10;
+
+                var total = (parseFloat(kg) - parseFloat(rak_kali)) * parseFloat(rp_kg_biasa);
+                $('.ttl_rp_kg' + count).val(total);
+
+
+                var total_pcs = $('.ttl_rp_pcs' + count).val();
+                var total_ikat = $('.ttl_rp_ikat' + count).val();
+                var total_kg = $('.ttl_rp_kg' + count).val();
+
+                var total_all = parseFloat(total_pcs) + parseFloat(total_ikat) + parseFloat(total_kg);
+
+                var total_rupiah = total_all.toLocaleString("id-ID", {
+                    style: "currency",
+                    currency: "IDR",
+                });
+                $('.ttl_rp' + count).text(total_rupiah);
+            });
+
+        });
+    </script>
+    <script>
+        $(document).ready(function() {
+            var count = 2;
+            $(document).on("click", ".tbh_baris_mtd", function() {
+                count = count + 1;
+                $.ajax({
+                    url: "/dashboard_kandang/tbh_baris_transfer_mtd?count=" + count,
+                    type: "Get",
+                    success: function(data) {
+                        $("#tb_baris_mtd").append(data);
+                        $(".select").select2();
+                    },
+                });
+            });
+
+            $(document).on("click", ".remove_baris_tf", function() {
+                var delete_row = $(this).attr("count");
+                $(".baris" + delete_row).remove();
+            });
+
+            aksiBtn("form");
+            $("form").on("keypress", function(e) {
+                if (e.which === 13) {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+        });
+    </script>
     @endsection
 </x-theme.app>

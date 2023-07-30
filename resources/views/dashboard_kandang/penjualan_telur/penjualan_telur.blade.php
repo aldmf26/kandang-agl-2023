@@ -42,8 +42,14 @@
                                     <i class="fas fa-ellipsis-v text-primary"></i>
                                 </span>
                                 <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                                    <li><a class="dropdown-item text-primary detail" no_nota="{{$s->no_nota}}"
+                                            href="#"><i class="me-2 fas fa-eye"></i>Detail</a>
+                                    </li>
+                                    @if ($s->cek == 'Y')
+
+                                    @else
                                     <li><a class="dropdown-item text-primary "
-                                            href="{{ route('dashboard_kandang.edit_telur', ['no_nota ' => $s->no_nota ]) }}"><i
+                                            href="{{ route('dashboard_kandang.edit_telur', ['no_nota' => $s->no_nota ]) }}"><i
                                                 class="me-2 fas fa-pen"></i>Edit</a>
                                     </li>
                                     <li>
@@ -52,6 +58,8 @@
                                                 class="me-2 fas fa-trash"></i>Delete
                                         </a>
                                     </li>
+                                    @endif
+
                                 </ul>
                             </div>
                         </td>
@@ -60,6 +68,15 @@
 
                 </tbody>
             </table>
+            <x-theme.modal btnSave="" title="Detail Penjualan Telur" size="modal-lg-max" idModal="detail">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div id="detail_penjualan"></div>
+                    </div>
+                </div>
+            </x-theme.modal>
+            <x-theme.btn_alert_delete route="dashboard_kandang.delete_penjualan_mtd" name="no_nota" :tgl1="$tgl1"
+                :tgl2="$tgl2" />
         </section>
     </x-slot>
     @section('js')
@@ -68,6 +85,18 @@
                 $(document).on('click', '.delete_nota', function() {
                     var no_nota = $(this).attr('no_nota');
                     $('.no_nota').val(no_nota);
+                });
+                $(document).on('click', '.detail', function() {
+                    var no_nota = $(this).attr('no_nota');
+                   
+                    $.ajax({
+                        type: "get",
+                        url: "/dashboard_kandang/detail_penjualan_mtd?no_nota=" + no_nota,
+                        success: function (data) {
+                            $("#detail").modal('show');
+                            $("#detail_penjualan").html(data);
+                        }
+                    });
                 })
             });
     </script>

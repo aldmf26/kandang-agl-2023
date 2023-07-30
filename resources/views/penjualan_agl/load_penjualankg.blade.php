@@ -4,7 +4,7 @@
             <th class="dhead" width="2%">#</th>
             <th class="dhead" width="15%">Produk </th>
             <th class="dhead" width="10%" style="text-align: right">Pcs</th>
-            <th class="dhead" width="10%" style="text-align: right">Kg</th>
+            <th class="dhead" width="10%" style="text-align: right">Pcs </th>
             <th class="dhead" width="10%" style="text-align: right">Ikat</th>
             <th class="dhead" width="10%" style="text-align: right">Potongan Rak</th>
             <th class="dhead" width="10%" style="text-align: right">Rp Satuan</th>
@@ -38,16 +38,14 @@
                 <input type="text" class="kgminrakbiasa1 form-control" name="kg_jual[]" value="0">
             </td>
             <td align="right">
-                <input type="text" class="form-control rp_satuan rp_satuan1" count="1" style="text-align: right"
-                    required>
+                <input type="text" class="form-control rp_satuan rp_satuan1" count="1" style="text-align: right" required>
 
                 <input type="hidden" class="form-control rp_satuanbiasa1" name="rp_satuan[]" value="0">
                 <input type="hidden" class="form-control ttl_rpbiasa ttl_rpbiasa1" name="total_rp[]" value="0">
             </td>
             <td align="right" class="ttl_rp1"></td>
             <td style="vertical-align: top;">
-                <button type="button" class="btn rounded-pill remove_baris_kg" count="1"><i
-                        class="fas fa-trash text-danger"></i>
+                <button type="button" class="btn rounded-pill remove_baris_kg" count="1"><i class="fas fa-trash text-danger"></i>
                 </button>
             </td>
         </tr>
@@ -60,8 +58,7 @@
     <tfoot>
         <tr>
             <th colspan="9">
-                <button type="button" class="btn btn-block btn-lg tbh_baris_kg"
-                    style="background-color: #F4F7F9; color: #8FA8BD; font-size: 14px; padding: 13px;">
+                <button type="button" class="btn btn-block btn-lg tbh_baris_kg" style="background-color: #F4F7F9; color: #8FA8BD; font-size: 14px; padding: 13px;">
                     <i class="fas fa-plus"></i> Tambah Baris Baru
 
                 </button>

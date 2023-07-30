@@ -1,6 +1,6 @@
 <div class="row">
     @if (session()->has('errorMin'))
-        <x-theme.alert pesan="ada input yang salah !" />
+    <x-theme.alert pesan="ada input yang salah !" />
     @endif
     <div class="col-lg-12">
         <h6>
@@ -8,26 +8,26 @@
         </h6>
         <table class="table table-bordered text-center">
             @php
-                $ttlPcs = 0;
-                $ttlKg = 0;
-                $ttlIkat = 0;
+            $ttlPcs = 0;
+            $ttlKg = 0;
+            $ttlIkat = 0;
             @endphp
             <tr>
                 <th class="dhead" rowspan="2" style="vertical-align: middle">Gudang</th>
                 @foreach ($telur as $d)
-                    <th class="dhead" colspan="3">
-                        {{ ucwords(str_replace('telur', '', strtolower($d->nm_telur))) }}</th>
+                <th class="dhead" colspan="3">
+                    {{ ucwords(str_replace('telur', '', strtolower($d->nm_telur))) }}</th>
                 @endforeach
             </tr>
 
             <tr>
                 @php
-                    $telur = DB::table('telur_produk')->get();
+                $telur = DB::table('telur_produk')->get();
                 @endphp
                 @foreach ($telur as $d)
-                    <th class="dhead">Pcs</th>
-                    <th class="dhead">Kg</th>
-                    <th class="dhead">Ikat</th>
+                <th class="dhead">Pcs</th>
+                <th class="dhead">Kg</th>
+                <th class="dhead">Ikat</th>
                 @endforeach
             </tr>
             <tr>
@@ -37,23 +37,21 @@
                     <a href="#" class="badge float-end me-2 bg-primary text-sm history_opname">History Opname</a>
                 </td>
                 @foreach ($telur as $d)
-                    @php
-                        $stok = DB::selectOne("SELECT SUM(pcs - pcs_kredit) as pcs, SUM(kg - kg_kredit) as kg FROM
+                @php
+                $stok = DB::selectOne("SELECT SUM(pcs - pcs_kredit) as pcs, SUM(kg - kg_kredit) as kg FROM
                 `stok_telur`
                 WHERE id_telur = '$d->id_produk_telur' AND id_gudang = 1 AND opname = 'T';");
-                        request()
-                            ->session()
-                            ->forget('errorMin', '1');
-                        if ($stok->pcs < 0) {
-                            request()
-                                ->session()
-                                ->put('errorMin', '1');
-                        }
+                request()
+                ->session()
+                ->forget('errorMin', '1');
+                if ($stok->pcs < 0) { request() ->session()
+                    ->put('errorMin', '1');
+                    }
                     @endphp
                     <td>{{ number_format($stok->pcs, 0) }}</td>
-                    <td>{{ number_format($stok->kg, 2) }}</td>
-                    <td>{{ number_format($stok->pcs / 180, 1) }}</td>
-                @endforeach
+                    <td>{{ number_format($stok->kg, 0) }}</td>
+                    <td>{{ number_format($stok->pcs / 180, 0) }}</td>
+                    @endforeach
             </tr>
             <tr>
                 <td align="left">
@@ -67,14 +65,14 @@
                     </a>
                 </td>
                 @foreach ($telur as $d)
-                    @php
-                        $stok = DB::selectOne("SELECT SUM(pcs_kredit) as pcs, SUM(kg_kredit) as kg FROM `stok_telur`
+                @php
+                $stok = DB::selectOne("SELECT SUM(pcs_kredit) as pcs, SUM(kg_kredit) as kg FROM `stok_telur`
                 WHERE id_telur = '$d->id_produk_telur' AND jenis = 'penjualan' AND opname = 'T';");
-                        
-                    @endphp
-                    <td>{{ number_format($stok->pcs, 0) ?? 0 }}</td>
-                    <td>{{ number_format($stok->kg, 2) ?? 0 }}</td>
-                    <td>{{ number_format($stok->pcs / 180, 1) }}</td>
+
+                @endphp
+                <td>{{ number_format($stok->pcs, 0) ?? 0 }}</td>
+                <td>{{ number_format($stok->kg, 0) ?? 0 }}</td>
+                <td>{{ number_format($stok->pcs / 180, 0) }}</td>
                 @endforeach
             </tr>
             <tr>
@@ -89,15 +87,15 @@
                     </a>
                 </td>
                 @foreach ($telur as $d)
-                    @php
-                        $stok = DB::selectOne("SELECT SUM(pcs - pcs_kredit) as pcs, SUM(kg - kg_kredit) as kg FROM
+                @php
+                $stok = DB::selectOne("SELECT SUM(pcs - pcs_kredit) as pcs, SUM(kg - kg_kredit) as kg FROM
                 `stok_telur`
                 WHERE id_telur = '$d->id_produk_telur' AND id_gudang = 2 AND opname = 'T'");
-                        
-                    @endphp
-                    <td>{{ number_format($stok->pcs) ?? 0 }}</td>
-                    <td>{{ number_format($stok->kg, 2) ?? 0 }}</td>
-                    <td>{{ number_format($stok->pcs / 180, 1) }}</td>
+
+                @endphp
+                <td>{{ number_format($stok->pcs) ?? 0 }}</td>
+                <td>{{ number_format($stok->kg, 0) ?? 0 }}</td>
+                <td>{{ number_format($stok->pcs / 180, 0) }}</td>
                 @endforeach
             </tr>
         </table>

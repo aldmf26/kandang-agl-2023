@@ -1,855 +1,500 @@
-<x-theme.app title="{{ $title }}" table="Y" sizeCard="12">
+<x-theme.app title="{{ $title }}" table="T" sizeCard="12" cont="container-fluid">
 
-    <x-slot name="cardHeader">
-        <h6 class="float-start">Tambah Penjualan Telur Martadah</h6>
-        <x-theme.btn_dashboard route="dashboard_kandang.index" />
+    <section class="row">
+        <form action="{{route('dashboard_kandang.save_penjualan_telur')}}" method="post">
+            <div class="col-lg-12">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <table class="table">
+                            <tr>
+                                <th class="dhead">Tanggal</th>
+                                <th class="dhead">No Nota</th>
+                                <th class="dhead">Customer</th>
+                                <th class="dhead">HP</th>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <input type="date" class="form-control tgl_nota" name="tgl"
+                                        value="{{ date('Y-m-d') }}">
+                                </td>
+                                <td>
+                                    <input type="text" class="form-control nota_bk" name="no_nota" value="TM{{ $nota }}"
+                                        readonly>
+                                </td>
+                                <td>
+                                    <input type="text" class="form-control" name="customer" required>
+                                </td>
+                                <td>
+                                    <input type="hidden" name="tipe" value="kg">
+                                    <input type="text" class="form-control no_hp" name="no_hp" required>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
 
-    </x-slot>
+            </div>
+
+            <div class="col-lg-12">
+                <hr style="border: 1px solid black">
+            </div>
+            <div class="col-lg-12">
+                <div class="table-responsive">
+
+                    @csrf
+                    <table class="table table-striped table-bordered" style="white-space: nowrap;">
+                        <thead>
+                            <tr>
+
+                                <th class="dhead" width="10%">Produk </th>
+                                <th class="dhead" width="7%" style="text-align: center">Pcs</th>
+                                <th class="dhead" width="7%" style="text-align: center">Kg</th>
+                                <th class="dhead" width="10%" style="text-align: center;">Rp Pcs</th>
+
+                                <th class="dhead" width="7%" style="text-align: center;">Ikat</th>
+                                <th class="dhead" width="7%" style="text-align: center;">Kg</th>
+                                <th class="dhead" width="10%" style="text-align: center;">Rp Ikat</th>
+
+                                <th class="dhead" width="7%" style="text-align: center;">Pcs</th>
+                                <th class="dhead" width="7%" style="text-align: center;">Kg</th>
+                                <th class="dhead" width="7%" style="text-align: center;">Rak</th>
+                                <th class="dhead" width="10%" style="text-align: center;">Rp Rak</th>
+
+                                <th class="dhead" width="10%" style="text-align: center; white-space: nowrap;">Total Rp
+                                </th>
+                                <th class="dhead" width="5%">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="baris1">
+
+                                <td>
+                                    <select name="id_produk[]" class="select2_add" required>
+                                        <option value="">-Pilih Produk-</option>
+                                        @foreach ($produk as $p)
+                                        <option value="{{$p->id_produk_telur}}">{{$p->nm_telur}}</option>
+                                        @endforeach
+                                    </select>
+                                </td>
+                                <td align="right">
+                                    <input type="text" class="form-control pcs pcs1" count="1"
+                                        style="text-align: right; font-size: 12px;">
+                                    <input type="hidden" class="form-control  pcs_biasa1" name="pcs_pcs[]" value="0">
+                                </td>
+                                <td align="right">
+                                    <input type="text" class="form-control kg_pcs kg_pcs1" count="1"
+                                        style="text-align: right; font-size: 12px;">
+                                    <input type="hidden" class="form-control  kg_pcs_biasa1" name="kg_pcs[]" value="0">
+                                </td>
+                                <td align="right">
+                                    <input type="text" class="form-control rp_pcs pcs1" count="1"
+                                        style="text-align: right;font-size: 12px;">
+                                    <input type="hidden" class="form-control rp_pcs_biasa rp_pcs_biasa1" name="rp_pcs[]"
+                                        value="0">
+                                    <input type="hidden" class="ttl_rp_pcs1" value="0">
+                                </td>
+                                <!-- Jual Ikat -->
+                                <td align="right">
+                                    <input type="text" class="form-control ikat ikat1" count="1"
+                                        style="text-align: right;font-size: 12px;" value="0" name="ikat[]">
+                                </td>
+                                <td align="right">
+                                    <input type="text" class="form-control kg_ikat kg_ikat1" count="1"
+                                        style="text-align: right;font-size: 12px;" value="0" name="kg_ikat[]">
+                                </td>
+                                <td align="right">
+                                    <input type="text" class="form-control rp_ikat rp_ikat1 " count="1"
+                                        style="text-align: right;font-size: 12px;">
+                                    <input type="hidden" class="form-control  rp_ikat_biasa1" name="rp_ikat[]"
+                                        value="0">
+                                    <input type="hidden" class="ttl_rp_ikat1" value="0">
+                                </td>
+                                <!-- Jual Ikat -->
+                                <!-- Jual Kg -->
+                                <td align="right">
+                                    <input type="text" class="form-control" name="pcs_kg[]" count="1"
+                                        style="text-align: right;font-size: 12px;" value="0">
+                                </td>
+                                <td align="right">
+                                    <input type="text" class="form-control kg_kg kg_kg1" count="1"
+                                        style="text-align: right;font-size: 12px;" value="0" name="kg_kg[]">
+                                </td>
+                                <td align="right">
+                                    <input type="text" class="form-control rak_kg rak_kg1" count="1"
+                                        style="text-align: right;font-size: 12px;" value="0" name="rak_kg[]">
+                                </td>
+                                <td align="right">
+                                    <input type="text" class="form-control rp_kg rp_kg1" count="1"
+                                        style="text-align: right;font-size: 12px;">
+                                    <input type="hidden" class="form-control  rp_kg_biasa rp_kg_biasa1" name="rp_kg[]"
+                                        value="0">
+                                    <input type="hidden" class="ttl_rp_kg1" value="0">
+                                </td>
+                                <!-- Jual Kg -->
+                                <td align="right" class="ttl_rp1"></td>
+                                <td style="vertical-align: top;">
+                                    <button type="button" class="btn rounded-pill remove_baris_kg" count="1"><i
+                                            class="fas fa-trash text-danger"></i>
+                                    </button>
+                                </td>
+                            </tr>
 
 
-    <x-slot name="cardBody">
-        <form action="{{ route('dashboard_kandang.save_penjualan_telur') }}" method="post" class="save_jurnal">
-            @csrf
-            <section class="row">
-                <div class="col-lg-12">
-                    <table class="table">
-                        <tr>
-                            <th width="20%" class="dhead">Tanggal</th>
-                            <th width="10%" class="dhead">No Nota</th>
-                            <th class="dhead">Customer</th>
-                            <th class="dhead">Tipe Penjualan</th>
-                        </tr>
-                        <tr>
-                            <td>
-                                <input type="date" class="form-control tgl_nota" name="tgl" value="{{ date('Y-m-d') }}">
+                        </tbody>
+                        <tbody id="tb_baris_mtd">
 
-                            </td>
-                            <td>
-                                <input type="text" class="form-control nota_bk" name="no_nota" value="T{{ $nota }}"
-                                    readonly>
-                            </td>
-                            <td>
-                                <input type="text" class="form-control" name="customer">
-                            </td>
-                            <td>
-                                <input type="hidden" name="tipe" value="kg">
-                                <input type="text" readonly value="Kg" class="form-control">
-                            </td>
-                        </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th colspan="13">
+                                    <button type="button" class="btn btn-block btn-lg tbh_baris_mtd"
+                                        style="background-color: #435EBE; color: white; font-size: 14px; padding: 13px;">
+                                        <i class="fas fa-plus"></i> Tambah Baris Baru
+
+                                    </button>
+                                </th>
+                            </tr>
+                            <tr>
+                                <th colspan="12"></th>
+                                <th><button type="submit" class="btn btn-primary ">Simpan</button></th>
+                            </tr>
+                        </tfoot>
+
+
                     </table>
-                </div>
 
-                <div class="col-lg-12">
-                    <hr style="border: 1px solid black">
                 </div>
-                <div class="col-lg-12">
-                    <div id="loadkg"></div>
-                    <div id="loadpcs"></div>
-                </div>
-
-            </section>
-    </x-slot>
-    <x-slot name="cardFooter">
-        <button type="submit" class="float-end btn btn-primary ">Simpan</button>
-        <button class="float-end btn btn-primary btn_save_loading" type="button" disabled hidden>
-            <span class="spinner-border spinner-border-sm " role="status" aria-hidden="true"></span>
-            Loading...
-        </button>
-        <a href="{{ route('dashboard_kandang.penjualan_telur') }}"
-            class="float-end btn btn-outline-primary me-2">Batal</a>
+                <!-- <div id="loadpcs"></div> -->
+            </div>
         </form>
-    </x-slot>
+    </section>
     @section('scripts')
     <script>
         $(document).ready(function() {
+            $(document).on("keyup", ".pcs", function() {
+                var count = $(this).attr("count");
+                var input = $(this).val();
+                input = input.replace(/[^\d\,]/g, "");
+                input = input.replace(".", ",");
+                input = input.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
 
-                function loadkg() {
-                    $.ajax({
-                        type: "get",
-                        url: "/loadkginvoice",
-                        success: function(data) {
-                            $("#loadkg").html(data);
-                            $(".select").select2();
-                        }
-                    });
-                }
-
-                function loadpcs() {
-                    $.ajax({
-                        type: "get",
-                        url: "/loadpcsinvoice",
-                        success: function(data) {
-                            $("#loadpcs").html(data);
-                            $(".select").select2();
-                        }
-                    });
-                }
-                var tipe = 'kg';
-                if (tipe === 'kg') {
-                    loadkg()
-                    $("#loadpcs").html("");
+                if (input === "") {
+                    $(this).val("");
+                    $('.pcs_biasa' + count).val(0)
                 } else {
-                    loadpcs()
-                    $("#loadkg").html("");
+                    $(this).val(input);
+                    input = input.replaceAll(".", "");
+                    input2 = input.replace(",", ".");
+                    $('.pcs_biasa' + count).val(input2)
                 }
-                $(document).on('change', ".pilih_tipe", function() {
+                var pcs = $('.pcs_biasa' + count).val()
+                var rp_satuan = $('.rp_pcs_biasa' + count).val();
+                total = parseFloat(rp_satuan) * parseFloat(pcs);
+                $('.ttl_rp_pcs' + count).val(total);
+
+                var total_pcs = $('.ttl_rp_pcs' + count).val();
+                var total_ikat = $('.ttl_rp_ikat' + count).val();
+                var total_kg = $('.ttl_rp_kg' + count).val();
+
+                var total_all = parseFloat(total_pcs) + parseFloat(total_ikat) + parseFloat(total_kg);
+
+                var total_rupiah = total_all.toLocaleString("id-ID", {
+                    style: "currency",
+                    currency: "IDR",
                 });
-
-                $(document).on("keyup", ".pcs", function() {
-                    var count = $(this).attr("count");
-                    var input = $(this).val();
-                    input = input.replace(/[^\d\,]/g, "");
-                    input = input.replace(".", ",");
-                    input = input.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
-
-                    if (input === "") {
-                        $(this).val("");
-                        $('.pcs_biasa' + count).val(0)
-                    } else {
-                        $(this).val(input);
-                        input = input.replaceAll(".", "");
-                        input2 = input.replace(",", ".");
-                        $('.pcs_biasa' + count).val(input2)
-                    }
-                    var kg = $('.kgbiasa' + count).val();
-                    var ikat = parseFloat(input2) / 180;
-                    var kg_jual = parseFloat(kg) - ikat;
-                    $('.ikat' + count).val(ikat.toFixed(1));
-                    $('.kgminrak' + count).val(kg_jual.toFixed(1));
-                    $('.kgminrakbiasa' + count).val(kg_jual.toFixed(1));
-
-                    var rp_satuan = $('.rp_satuanbiasa' + count).val();
-
-                    total = parseFloat(rp_satuan) * parseFloat(kg_jual);
-
-                    var totalRupiah = total.toLocaleString("id-ID", {
-                        style: "currency",
-                        currency: "IDR",
-                    });
-                    $('.ttl_rp' + count).text(totalRupiah);
-
-                    $('.ttl_rpbiasa' + count).val(total);
-
-                    var total_all = 0;
-                    $(".ttl_rpbiasa").each(function() {
-                        total_all += parseFloat($(this).val());
-                    });
-                    var total_kredit = 0;
-                    $(".kredit_biasa").each(function() {
-                        total_kredit += parseFloat($(this).val());
-                    });
-                    var total_all_kredit = total_all + total_kredit;
-
-
-                    var totalkreditall = total_all_kredit.toLocaleString("id-ID", {
-                        style: "currency",
-                        currency: "IDR",
-                    });
-
-                    var totalRupiahall = total_all.toLocaleString("id-ID", {
-                        style: "currency",
-                        currency: "IDR",
-                    });
-                    $(".total").text(totalRupiahall);
-                    $(".total_kredit").text(totalkreditall)
-                    $(".total_semua_biasa").val(Math.round(total_all))
-
-                    // selisih
-                    var total_debit = 0;
-                    $(".debit_biasa").each(function() {
-                        total_debit += parseFloat($(this).val());
-                    });
-                    var totaldebitall = total_debit.toLocaleString("id-ID", {
-                        style: "currency",
-                        currency: "IDR",
-                    });
-                    $(".total_debit").text(totaldebitall);
-
-                    var selisih = Math.round(total_all + total_kredit) - total_debit;
-                    var selisih_total = selisih.toLocaleString("id-ID", {
-                        style: "currency",
-                        currency: "IDR",
-                    });
-                    if (Math.round(total_kredit + total_all) === total_debit) {
-                        $(".cselisih").css("color", "green");
-                        $(".button-save").removeAttr("hidden");
-                    } else {
-                        $(".cselisih").css("color", "red");
-                        $(".button-save").attr("hidden", true);
-                    }
-                    $(".selisih").text(selisih_total);
-
-                });
-                $(document).on("keyup", ".kg", function() {
-                    var count = $(this).attr("count");
-                    var input = $(this).val();
-                    input = input.replace(/[^\d\,]/g, "");
-                    input = input.replace(".", ",");
-                    input = input.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
-
-                    if (input === "") {
-                        $(this).val("");
-                        $('.kgbiasa' + count).val(0)
-                    } else {
-                        $(this).val(input);
-                        input = input.replaceAll(".", "");
-                        input2 = input.replace(",", ".");
-                        $('.kgbiasa' + count).val(input2)
-                    }
-                    var pcs = $('.pcs_biasa' + count).val();
-                    var kg_jual = parseFloat(input2) - (parseFloat(pcs) / 180);
-                    $('.kgminrak' + count).text(kg_jual.toFixed(1));
-                    $('.kgminrakbiasa' + count).val(kg_jual.toFixed(1));
-
-                    var rp_satuan = $('.rp_satuanbiasa' + count).val();
-
-                    total = parseFloat(rp_satuan) * parseFloat(kg_jual);
-
-                    var totalRupiah = total.toLocaleString("id-ID", {
-                        style: "currency",
-                        currency: "IDR",
-                    });
-                    $('.ttl_rp' + count).text(totalRupiah);
-
-                    $('.ttl_rpbiasa' + count).val(total);
-
-                    var total_all = 0;
-                    $(".ttl_rpbiasa").each(function() {
-                        total_all += parseFloat($(this).val());
-                    });
-                    var totalRupiahall = total_all.toLocaleString("id-ID", {
-                        style: "currency",
-                        currency: "IDR",
-                    });
-
-                    var total_kredit = 0;
-                    $(".kredit_biasa").each(function() {
-                        total_kredit += parseFloat($(this).val());
-                    });
-                    var total_all_kredit = total_all + total_kredit;
-
-
-                    var totalkreditall = total_all_kredit.toLocaleString("id-ID", {
-                        style: "currency",
-                        currency: "IDR",
-                    });
-
-                    $(".total").text(totalRupiahall)
-                    $(".total_kredit").text(totalkreditall)
-                    $(".total_semua_biasa").val(Math.round(total_all))
-
-
-                    // selisih
-                    var total_debit = 0;
-                    $(".debit_biasa").each(function() {
-                        total_debit += parseFloat($(this).val());
-                    });
-                    var totaldebitall = total_debit.toLocaleString("id-ID", {
-                        style: "currency",
-                        currency: "IDR",
-                    });
-                    $(".total_debit").text(totaldebitall);
-
-                    var selisih = Math.round(total_all + total_kredit) - total_debit;
-                    var selisih_total = selisih.toLocaleString("id-ID", {
-                        style: "currency",
-                        currency: "IDR",
-                    });
-                    if (Math.round(total_kredit + total_all) === total_debit) {
-                        $(".cselisih").css("color", "green");
-                        $(".button-save").removeAttr("hidden");
-                    } else {
-                        $(".cselisih").css("color", "red");
-                        $(".button-save").attr("hidden", true);
-                    }
-                    $(".selisih").text(selisih_total);
-
-
-
-                });
-
-                $(document).on("keyup", ".rp_satuan", function() {
-                    var count = $(this).attr("count");
-                    var input = $(this).val();
-                    input = input.replace(/[^\d\,]/g, "");
-                    input = input.replace(".", ",");
-                    input = input.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
-
-                    if (input === "") {
-                        $(this).val("");
-                        $('.rp_satuanbiasa' + count).val(0)
-                    } else {
-                        $(this).val("Rp " + input);
-                        input = input.replaceAll(".", "");
-                        input2 = input.replace(",", ".");
-                        $('.rp_satuanbiasa' + count).val(input2)
-                    }
-                    var kg_jual = $('.kgminrakbiasa' + count).val();
-                    total = parseFloat(input2) * parseFloat(kg_jual);
-                    var totalRupiah = total.toLocaleString("id-ID", {
-                        style: "currency",
-                        currency: "IDR",
-                    });
-                    $('.ttl_rp' + count).text(totalRupiah);
-
-                    $('.ttl_rpbiasa' + count).val(total);
-
-                    var total_all = 0;
-                    $(".ttl_rpbiasa").each(function() {
-                        total_all += parseFloat($(this).val());
-                    });
-                    var totalRupiahall = total_all.toLocaleString("id-ID", {
-                        style: "currency",
-                        currency: "IDR",
-                    });
-
-                    var total_kredit = 0;
-                    $(".kredit_biasa").each(function() {
-                        total_kredit += parseFloat($(this).val());
-                    });
-                    var total_all_kredit = total_all + total_kredit;
-
-
-                    var totalkreditall = total_all_kredit.toLocaleString("id-ID", {
-                        style: "currency",
-                        currency: "IDR",
-                    });
-                    $(".total").text(totalRupiahall)
-                    $(".total_kredit").text(totalkreditall)
-                    $(".total_semua_biasa").val(Math.round(total_all))
-
-
-                    // selisih
-                    var total_debit = 0;
-                    $(".debit_biasa").each(function() {
-                        total_debit += parseFloat($(this).val());
-                    });
-                    var totaldebitall = total_debit.toLocaleString("id-ID", {
-                        style: "currency",
-                        currency: "IDR",
-                    });
-                    $(".total_debit").text(totaldebitall);
-
-                    var selisih = Math.round(total_all + total_kredit) - total_debit;
-                    var selisih_total = selisih.toLocaleString("id-ID", {
-                        style: "currency",
-                        currency: "IDR",
-                    });
-                    if (Math.round(total_kredit + total_all) === total_debit) {
-                        $(".cselisih").css("color", "green");
-                        $(".button-save").removeAttr("hidden");
-                    } else {
-                        $(".cselisih").css("color", "red");
-                        $(".button-save").attr("hidden", true);
-                    }
-                    $(".selisih").text(selisih_total);
-
-
-                });
-
-                var count = 2;
-                $(document).on("click", ".tbh_baris_kg", function() {
-                    count = count + 1;
-                    $.ajax({
-                        url: "/tambah_baris_kg?count=" + count,
-                        type: "Get",
-                        success: function(data) {
-                            $("#tb_baris_kg").append(data);
-                            $(".select").select2();
-                        },
-                    });
-                });
-
-                $(document).on("click", ".remove_baris_kg", function() {
-                    var delete_row = $(this).attr("count");
-                    $(".baris" + delete_row).remove();
-                    $('.ttl_rpbiasa' + count).val(total);
-                    var total_all = 0;
-                    $(".ttl_rpbiasa").each(function() {
-                        total_all += parseFloat($(this).val());
-                    });
-                    var totalRupiahall = total_all.toLocaleString("id-ID", {
-                        style: "currency",
-                        currency: "IDR",
-                    });
-                    var total_kredit = 0;
-                    $(".kredit_biasa").each(function() {
-                        total_kredit += parseFloat($(this).val());
-                    });
-                    var total_all_kredit = total_all + total_kredit;
-
-
-                    var totalkreditall = total_all_kredit.toLocaleString("id-ID", {
-                        style: "currency",
-                        currency: "IDR",
-                    });
-                    $(".total").text(totalRupiahall)
-                    $(".total_kredit").text(totalkreditall)
-
-                    // selisih
-                    var total_debit = 0;
-                    $(".debit_biasa").each(function() {
-                        total_debit += parseFloat($(this).val());
-                    });
-                    var totaldebitall = total_debit.toLocaleString("id-ID", {
-                        style: "currency",
-                        currency: "IDR",
-                    });
-                    $(".total_debit").text(totaldebitall);
-
-                    var selisih = Math.round(total_all + total_kredit) - total_debit;
-                    var selisih_total = selisih.toLocaleString("id-ID", {
-                        style: "currency",
-                        currency: "IDR",
-                    });
-                    if (Math.round(total_kredit + total_all) === total_debit) {
-                        $(".cselisih").css("color", "green");
-                        $(".button-save").removeAttr("hidden");
-                    } else {
-                        $(".cselisih").css("color", "red");
-                        $(".button-save").attr("hidden", true);
-                    }
-                    $(".selisih").text(selisih_total);
-
-                });
-
-                aksiBtn("form");
-                $("form").on("keypress", function(e) {
-                    if (e.which === 13) {
-                        e.preventDefault();
-                        return false;
-                    }
-                });
-
-
-
-
+                $('.ttl_rp' + count).text(total_rupiah);
             });
-    </script>
 
+            $(document).on("keyup", ".rp_pcs", function() {
+                var count = $(this).attr("count");
+                var input = $(this).val();
+                input = input.replace(/[^\d\,]/g, "");
+                input = input.replace(".", ",");
+                input = input.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
+
+                if (input === "") {
+                    $(this).val("");
+                    $('.rp_pcs_biasa' + count).val(0)
+                } else {
+                    $(this).val(input);
+                    input = input.replaceAll(".", "");
+                    input2 = input.replace(",", ".");
+                    $('.rp_pcs_biasa' + count).val(input2)
+                }
+                var pcs = $('.pcs_biasa' + count).val()
+                var rp_satuan = $('.rp_pcs_biasa' + count).val();
+
+                total = parseFloat(rp_satuan) * parseFloat(pcs);
+                $('.ttl_rp_pcs' + count).val(total);
+
+                var total_pcs = $('.ttl_rp_pcs' + count).val();
+                var total_ikat = $('.ttl_rp_ikat' + count).val();
+                var total_kg = $('.ttl_rp_kg' + count).val();
+
+                var total_all = parseFloat(total_pcs) + parseFloat(total_ikat) + parseFloat(total_kg);
+
+                var total_rupiah = total_all.toLocaleString("id-ID", {
+                    style: "currency",
+                    currency: "IDR",
+                });
+                $('.ttl_rp' + count).text(total_rupiah);
+            });
+        });
+    </script>
     <script>
         $(document).ready(function() {
-                $(document).on("keyup", ".tipe_pcs", function() {
-                    var count = $(this).attr("count");
-                    var input = $(this).val();
-                    input = input.replace(/[^\d\,]/g, "");
-                    input = input.replace(".", ",");
-                    input = input.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
-
-                    if (input === "") {
-                        $(this).val("");
-                        $('.tipe_pcs_biasa' + count).val(0)
-                    } else {
-                        $(this).val(input);
-                        input = input.replaceAll(".", "");
-                        input2 = input.replace(",", ".");
-                        $('.tipe_pcs_biasa' + count).val(input2)
-                    }
-
-                    var rp_satuan = $('.tipe_rp_satuanbiasa' + count).val();
-
-                    total = parseFloat(rp_satuan) * parseFloat(input2);
-
-                    var totalRupiah = total.toLocaleString("id-ID", {
-                        style: "currency",
-                        currency: "IDR",
-                    });
-                    $('.tipe_ttl_rp' + count).text(totalRupiah);
-
-                    $('.tipe_ttl_rpbiasa' + count).val(total);
-
-                    var total_all = 0;
-                    $(".ttl_rpbiasa").each(function() {
-                        total_all += parseFloat($(this).val());
-                    });
-                    var total_kredit = 0;
-                    $(".kredit_biasa").each(function() {
-                        total_kredit += parseFloat($(this).val());
-                    });
-                    var total_all_kredit = total_all + total_kredit;
+            $(document).on("keyup", ".ikat", function() {
+                var count = $(this).attr("count");
+                var ikat = $('.ikat' + count).val();
+                var kg = $('.kg_ikat' + count).val();
+                var rp_ikat = $('.rp_ikat_biasa' + count).val();
 
 
-                    var totalkreditall = total_all_kredit.toLocaleString("id-ID", {
-                        style: "currency",
-                        currency: "IDR",
-                    });
+                var total = (parseFloat(kg) - parseFloat(ikat)) * parseFloat(rp_ikat);
+                $('.ttl_rp_ikat' + count).val(total);
 
-                    var totalRupiahall = total_all.toLocaleString("id-ID", {
-                        style: "currency",
-                        currency: "IDR",
-                    });
-                    $(".total").text(totalRupiahall);
-                    $(".total_kredit").text(totalkreditall)
-                    $(".total_semua_biasa").val(total_all)
+                var total_pcs = $('.ttl_rp_pcs' + count).val();
+                var total_ikat = $('.ttl_rp_ikat' + count).val();
+                var total_kg = $('.ttl_rp_kg' + count).val();
 
-                    // selisih
-                    var total_debit = 0;
-                    $(".debit_biasa").each(function() {
-                        total_debit += parseFloat($(this).val());
-                    });
-                    var totaldebitall = total_debit.toLocaleString("id-ID", {
-                        style: "currency",
-                        currency: "IDR",
-                    });
-                    $(".total_debit").text(totaldebitall);
+                var total_all = parseFloat(total_pcs) + parseFloat(total_ikat) + parseFloat(total_kg);
 
-                    var selisih = total_all + total_kredit - total_debit;
-                    var selisih_total = selisih.toLocaleString("id-ID", {
-                        style: "currency",
-                        currency: "IDR",
-                    });
-                    if (total_kredit + total_all === total_debit) {
-                        $(".cselisih").css("color", "green");
-                        $(".button-save").removeAttr("hidden");
-                    } else {
-                        $(".cselisih").css("color", "red");
-                        $(".button-save").attr("hidden", true);
-                    }
-                    $(".selisih").text(selisih_total);
-
+                var total_rupiah = total_all.toLocaleString("id-ID", {
+                    style: "currency",
+                    currency: "IDR",
                 });
-                $(document).on("keyup", ".tipe_kg", function() {
-                    var count = $(this).attr("count");
-                    var input = $(this).val();
-                    input = input.replace(/[^\d\,]/g, "");
-                    input = input.replace(".", ",");
-                    input = input.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
-
-                    if (input === "") {
-                        $(this).val("");
-                        $('.tipe_kgbiasa' + count).val(0)
-                    } else {
-                        $(this).val(input);
-                        input = input.replaceAll(".", "");
-                        input2 = input.replace(",", ".");
-                        $('.tipe_kgbiasa' + count).val(input2)
-                    }
-                });
-
-                $(document).on("keyup", ".tipe_rp_satuan", function() {
-                    var count = $(this).attr("count");
-                    var input = $(this).val();
-                    input = input.replace(/[^\d\,]/g, "");
-                    input = input.replace(".", ",");
-                    input = input.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
-
-                    if (input === "") {
-                        $(this).val("");
-                        $('.tipe_rp_satuanbiasa' + count).val(0)
-                    } else {
-                        $(this).val(input);
-                        input = input.replaceAll(".", "");
-                        input2 = input.replace(",", ".");
-                        $('.tipe_rp_satuanbiasa' + count).val(input2)
-                    }
-
-                    var pcs = $('.tipe_pcs_biasa' + count).val();
-
-                    total = parseFloat(pcs) * parseFloat(input2);
-
-                    var totalRupiah = total.toLocaleString("id-ID", {
-                        style: "currency",
-                        currency: "IDR",
-                    });
-                    $('.tipe_ttl_rp' + count).text(totalRupiah);
-
-                    $('.tipe_ttl_rpbiasa' + count).val(total);
-
-                    var total_all = 0;
-                    $(".ttl_rpbiasa").each(function() {
-                        total_all += parseFloat($(this).val());
-                    });
-                    var total_kredit = 0;
-                    $(".kredit_biasa").each(function() {
-                        total_kredit += parseFloat($(this).val());
-                    });
-                    var total_all_kredit = total_all + total_kredit;
-
-
-                    var totalkreditall = total_all_kredit.toLocaleString("id-ID", {
-                        style: "currency",
-                        currency: "IDR",
-                    });
-
-                    var totalRupiahall = total_all.toLocaleString("id-ID", {
-                        style: "currency",
-                        currency: "IDR",
-                    });
-                    $(".total").text(totalRupiahall);
-                    $(".total_kredit").text(totalkreditall)
-                    $(".total_semua_biasa").val(total_all)
-
-                    // selisih
-                    var total_debit = 0;
-                    $(".debit_biasa").each(function() {
-                        total_debit += parseFloat($(this).val());
-                    });
-                    var totaldebitall = total_debit.toLocaleString("id-ID", {
-                        style: "currency",
-                        currency: "IDR",
-                    });
-                    $(".total_debit").text(totaldebitall);
-
-                    var selisih = total_all + total_kredit - total_debit;
-                    var selisih_total = selisih.toLocaleString("id-ID", {
-                        style: "currency",
-                        currency: "IDR",
-                    });
-                    if (total_kredit + total_all === total_debit) {
-                        $(".cselisih").css("color", "green");
-                        $(".button-save").removeAttr("hidden");
-                    } else {
-                        $(".cselisih").css("color", "red");
-                        $(".button-save").attr("hidden", true);
-                    }
-                    $(".selisih").text(selisih_total);
-
-                });
-
-                var count = 2;
-                $(document).on("click", ".tbh_baris_pcs", function() {
-                    count = count + 1;
-                    $.ajax({
-                        url: "/tambah_baris_pcs?count=" + count,
-                        type: "Get",
-                        success: function(data) {
-                            $("#tb_baris_pcs").append(data);
-                            $(".select").select2();
-                        },
-                    });
-                });
-
-                $(document).on("click", ".remove_baris_pcs", function() {
-                    var delete_row = $(this).attr("count");
-                    $(".baris" + delete_row).remove();
-                    $('.ttl_rpbiasa' + count).val(total);
-                    var total_all = 0;
-                    $(".ttl_rpbiasa").each(function() {
-                        total_all += parseFloat($(this).val());
-                    });
-                    var totalRupiahall = total_all.toLocaleString("id-ID", {
-                        style: "currency",
-                        currency: "IDR",
-                    });
-                    var total_kredit = 0;
-                    $(".kredit_biasa").each(function() {
-                        total_kredit += parseFloat($(this).val());
-                    });
-                    var total_all_kredit = total_all + total_kredit;
-
-
-                    var totalkreditall = total_all_kredit.toLocaleString("id-ID", {
-                        style: "currency",
-                        currency: "IDR",
-                    });
-                    $(".total").text(totalRupiahall)
-                    $(".total_kredit").text(totalkreditall)
-
-                    // selisih
-                    var total_debit = 0;
-                    $(".debit_biasa").each(function() {
-                        total_debit += parseFloat($(this).val());
-                    });
-                    var totaldebitall = total_debit.toLocaleString("id-ID", {
-                        style: "currency",
-                        currency: "IDR",
-                    });
-                    $(".total_debit").text(totaldebitall);
-
-                    var selisih = Math.round(total_all + total_kredit) - total_debit;
-                    var selisih_total = selisih.toLocaleString("id-ID", {
-                        style: "currency",
-                        currency: "IDR",
-                    });
-                    if (Math.round(total_kredit + total_all) === total_debit) {
-                        $(".cselisih").css("color", "green");
-                        $(".button-save").removeAttr("hidden");
-                    } else {
-                        $(".cselisih").css("color", "red");
-                        $(".button-save").attr("hidden", true);
-                    }
-                    $(".selisih").text(selisih_total);
-
-                });
-
+                $('.ttl_rp' + count).text(total_rupiah);
             });
-    </script>
+            $(document).on("keyup", ".kg_ikat", function() {
+                var count = $(this).attr("count");
+                var ikat = $('.ikat' + count).val();
+                var kg = $('.kg_ikat' + count).val();
+                var rp_ikat = $('.rp_ikat_biasa' + count).val();
 
+                var total = (parseFloat(kg) - parseFloat(ikat)) * parseFloat(rp_ikat);
+                $('.ttl_rp_ikat' + count).val(total);
+
+                var total_pcs = $('.ttl_rp_pcs' + count).val();
+                var total_ikat = $('.ttl_rp_ikat' + count).val();
+                var total_kg = $('.ttl_rp_kg' + count).val();
+
+                var total_all = parseFloat(total_pcs) + parseFloat(total_ikat) + parseFloat(total_kg);
+
+                var total_rupiah = total_all.toLocaleString("id-ID", {
+                    style: "currency",
+                    currency: "IDR",
+                });
+                $('.ttl_rp' + count).text(total_rupiah);
+            });
+            $(document).on("keyup", ".rp_ikat", function() {
+                var count = $(this).attr("count");
+                var input = $(this).val();
+                input = input.replace(/[^\d\,]/g, "");
+                input = input.replace(".", ",");
+                input = input.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
+
+                if (input === "") {
+                    $(this).val("");
+                    $('.rp_ikat_biasa' + count).val(0);
+                } else {
+                    $(this).val(input);
+                    input = input.replaceAll(".", "");
+                    input2 = input.replace(",", ".");
+                    $('.rp_ikat_biasa' + count).val(input2);
+                }
+
+                var ikat = $('.ikat' + count).val();
+                var kg = $('.kg_ikat' + count).val();
+                var rp_ikat = $('.rp_ikat_biasa' + count).val();
+
+
+
+
+                var total = (parseFloat(kg) - parseFloat(ikat)) * parseFloat(rp_ikat);
+                $('.ttl_rp_ikat' + count).val(total);
+                var total_pcs = $('.ttl_rp_pcs' + count).val();
+                var total_ikat = $('.ttl_rp_ikat' + count).val();
+                var total_kg = $('.ttl_rp_kg' + count).val();
+
+                var total_all = parseFloat(total_pcs) + parseFloat(total_ikat) + parseFloat(total_kg);
+
+                var total_rupiah = total_all.toLocaleString("id-ID", {
+                    style: "currency",
+                    currency: "IDR",
+                });
+                $('.ttl_rp' + count).text(total_rupiah);
+            });
+        });
+    </script>
     <script>
         $(document).ready(function() {
-                $(document).on("keyup", ".debit", function() {
-                    var count = $(this).attr("count");
-                    var input = $(this).val();
-                    input = input.replace(/[^\d\,]/g, "");
-                    input = input.replace(".", ",");
-                    input = input.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
+            $(document).on("keyup", ".kg_kg", function() {
+                var count = $(this).attr("count");
+                var kg = $('.kg_kg' + count).val();
+                var rak = $('.rak_kg' + count).val();
+                var rp_kg_biasa = $('.rp_kg_biasa' + count).val();
+                var rak_rumus = parseFloat(rak) * 0.12;
+                var rak_kali = Math.round(rak_rumus * 10) / 10;
 
-                    if (input === "") {
-                        $(this).val("");
-                        $('.debit_biasa' + count).val(0)
-                    } else {
-                        $(this).val("Rp " + input);
-                        input = input.replaceAll(".", "");
-                        input2 = input.replace(",", ".");
-                        $('.debit_biasa' + count).val(input2)
-                    }
+                var total = (parseFloat(kg) - parseFloat(rak_kali)) * parseFloat(rp_kg_biasa);
+                $('.ttl_rp_kg' + count).val(total);
 
-                    var total_all = 0;
-                    $(".ttl_rpbiasa").each(function() {
-                        total_all += parseFloat($(this).val());
-                    });
+                var total_pcs = $('.ttl_rp_pcs' + count).val();
+                var total_ikat = $('.ttl_rp_ikat' + count).val();
+                var total_kg = $('.ttl_rp_kg' + count).val();
 
-                    var total_debit = 0;
-                    $(".debit_biasa").each(function() {
-                        total_debit += parseFloat($(this).val());
-                    });
+                var total_all = parseFloat(total_pcs) + parseFloat(total_ikat) + parseFloat(total_kg);
 
-                    var totalDebitall = total_debit.toLocaleString("id-ID", {
-                        style: "currency",
-                        currency: "IDR",
-                    });
-                    $(".total_debit").text(totalDebitall);
-
-                    // selisih
-                    var total_kredit = 0;
-                    $(".kredit_biasa").each(function() {
-                        total_kredit += parseFloat($(this).val());
-                    });
-                    var total_all_kredit = total_all + total_kredit;
-                    var totalKreditall = total_all_kredit.toLocaleString("id-ID", {
-                        style: "currency",
-                        currency: "IDR",
-                    });
-                    $(".total_kredit").text(totalKreditall);
-
-                    var selisih = Math.round(total_all + total_kredit) - total_debit;
-                    var selisih_total = selisih.toLocaleString("id-ID", {
-                        style: "currency",
-                        currency: "IDR",
-                    });
-                    // console.log(Math.round(total_all + total_kredit));
-                    // console.log(total_debit);
-
-                    if (Math.round(total_kredit + total_all) === total_debit) {
-                        $(".cselisih").css("color", "green");
-                        $(".button-save").removeAttr("hidden");
-                    } else {
-                        $(".cselisih").css("color", "red");
-                        $(".button-save").attr("hidden", true);
-                    }
-                    $(".selisih").text(selisih_total);
-
+                var total_rupiah = total_all.toLocaleString("id-ID", {
+                    style: "currency",
+                    currency: "IDR",
                 });
-                $(document).on("keyup", ".kredit", function() {
-                    var count = $(this).attr("count");
-                    var input = $(this).val();
-                    input = input.replace(/[^\d\,]/g, "");
-                    input = input.replace(".", ",");
-                    input = input.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
+                $('.ttl_rp' + count).text(total_rupiah);
+            });
+            $(document).on("keyup", ".rak_kg", function() {
+                var count = $(this).attr("count");
+                var kg = $('.kg_kg' + count).val();
+                var rak = $('.rak_kg' + count).val();
+                var rp_kg_biasa = $('.rp_kg_biasa' + count).val();
 
-                    if (input === "") {
-                        $(this).val("");
-                        $('.kredit_biasa' + count).val(0)
-                    } else {
-                        $(this).val("Rp " + input);
-                        input = input.replaceAll(".", "");
-                        input2 = input.replace(",", ".");
-                        $('.kredit_biasa' + count).val(input2)
-                    }
-
-                    var total_all = 0;
-                    $(".ttl_rpbiasa").each(function() {
-                        total_all += parseFloat($(this).val());
-                    });
-
-                    var total_debit = 0;
-                    $(".debit_biasa").each(function() {
-                        total_debit += parseFloat($(this).val());
-                    });
-
-                    var total_kredit = 0;
-                    $(".kredit_biasa").each(function() {
-                        total_kredit += parseFloat($(this).val());
-                    });
-                    var total_all_kredit = total_all + total_kredit;
-                    var totalKreditall = total_all_kredit.toLocaleString("id-ID", {
-                        style: "currency",
-                        currency: "IDR",
-                    });
-                    $(".total_kredit").text(totalKreditall);
-
-                    var selisih = perseFloat(total_all + total_kredit) - parseFloat(total_debit);
-                    var selisih_total = selisih.toLocaleString("id-ID", {
-                        style: "currency",
-                        currency: "IDR",
-                    });
-
-                    if (perseFloat(total_kredit + total_all) === perseFloat(total_debit)) {
-                        $(".cselisih").css("color", "green");
-                        $(".button-save").removeAttr("hidden");
-                    } else {
-                        $(".cselisih").css("color", "red");
-                        $(".button-save").attr("hidden", true);
-                    }
-                    $(".selisih").text(selisih_total);
+                var rak_rumus = parseFloat(rak) * 0.12;
+                var rak_kali = Math.round(rak_rumus * 10) / 10;
 
 
+                var total = (parseFloat(kg) - parseFloat(rak_kali)) * parseFloat(rp_kg_biasa);
+                $('.ttl_rp_kg' + count).val(total);
+
+
+                var total_pcs = $('.ttl_rp_pcs' + count).val();
+                var total_ikat = $('.ttl_rp_ikat' + count).val();
+                var total_kg = $('.ttl_rp_kg' + count).val();
+
+                var total_all = parseFloat(total_pcs) + parseFloat(total_ikat) + parseFloat(total_kg);
+
+                var total_rupiah = total_all.toLocaleString("id-ID", {
+                    style: "currency",
+                    currency: "IDR",
                 });
-                var count = 2;
-                $(document).on("click", ".tbh_pembayaran", function() {
-                    count = count + 1;
-                    $.ajax({
-                        url: "/tbh_pembayaran?count=" + count,
-                        type: "Get",
-                        success: function(data) {
-                            $("#load_pembayaran").append(data);
-                            $(".select").select2();
-                        },
-                    });
+                $('.ttl_rp' + count).text(total_rupiah);
+            });
+            $(document).on("keyup", ".rp_kg", function() {
+                var count = $(this).attr("count");
+                var input = $(this).val();
+                input = input.replace(/[^\d\,]/g, "");
+                input = input.replace(".", ",");
+                input = input.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
+
+                if (input === "") {
+                    $(this).val("");
+                    $('.rp_kg_biasa' + count).val(0);
+                } else {
+                    $(this).val(input);
+                    input = input.replaceAll(".", "");
+                    input2 = input.replace(",", ".");
+                    $('.rp_kg_biasa' + count).val(input2);
+                }
+
+                var kg = $('.kg_kg' + count).val();
+                var rak = $('.rak_kg' + count).val();
+                var rp_kg_biasa = $('.rp_kg_biasa' + count).val();
+                var rak_rumus = parseFloat(rak) * 0.12;
+                var rak_kali = Math.round(rak_rumus * 10) / 10;
+
+                var total = (parseFloat(kg) - parseFloat(rak_kali)) * parseFloat(rp_kg_biasa);
+                $('.ttl_rp_kg' + count).val(total);
+
+
+                var total_pcs = $('.ttl_rp_pcs' + count).val();
+                var total_ikat = $('.ttl_rp_ikat' + count).val();
+                var total_kg = $('.ttl_rp_kg' + count).val();
+
+                var total_all = parseFloat(total_pcs) + parseFloat(total_ikat) + parseFloat(total_kg);
+
+                var total_rupiah = total_all.toLocaleString("id-ID", {
+                    style: "currency",
+                    currency: "IDR",
                 });
+                $('.ttl_rp' + count).text(total_rupiah);
+            });
 
-                $(document).on("click", ".delete_pembayaran", function() {
-                    var delete_row = $(this).attr("count");
-                    $(".baris_bayar" + delete_row).remove();
-
-
-                    var total_all = 0;
-                    $(".ttl_rpbiasa").each(function() {
-                        total_all += parseFloat($(this).val());
-                    });
-
-                    var total_debit = 0;
-                    $(".debit_biasa").each(function() {
-                        total_debit += parseFloat($(this).val());
-                    });
-
-                    var total_kredit = 0;
-                    $(".kredit_biasa").each(function() {
-                        total_kredit += parseFloat($(this).val());
-                    });
-                    var total_all_kredit = total_all + total_kredit;
-                    var totalKreditall = total_all_kredit.toLocaleString("id-ID", {
-                        style: "currency",
-                        currency: "IDR",
-                    });
-                    $(".total_kredit").text(totalKreditall);
-
-                    var selisih = total_all + total_kredit - total_debit;
-                    var selisih_total = selisih.toLocaleString("id-ID", {
-                        style: "currency",
-                        currency: "IDR",
-                    });
-                    if (total_kredit + total_all === total_debit) {
-                        $(".cselisih").css("color", "green");
-                        $(".button-save").removeAttr("hidden");
-                    } else {
-                        $(".cselisih").css("color", "red");
-                        $(".button-save").attr("hidden", true);
-                    }
-                    $(".selisih").text(selisih_total);
-
+        });
+    </script>
+    <script>
+        $(document).ready(function() {
+            var count = 2;
+            $(document).on("click", ".tbh_baris_mtd", function() {
+                count = count + 1;
+                $.ajax({
+                    url: "/dashboard_kandang/tambah_baris_jual_mtd?count=" + count,
+                    type: "Get",
+                    success: function(data) {
+                        $("#tb_baris_mtd").append(data);
+                        $(".select").select2();
+                    },
                 });
             });
+
+            $(document).on("click", ".remove_baris_kg", function() {
+                var delete_row = $(this).attr("count");
+                $(".baris" + delete_row).remove();
+                $('.ttl_rpbiasa' + count).val(total);
+                var total_all = 0;
+                $(".ttl_rpbiasa").each(function() {
+                    total_all += parseFloat($(this).val());
+                });
+                var totalRupiahall = total_all.toLocaleString("id-ID", {
+                    style: "currency",
+                    currency: "IDR",
+                });
+                var total_kredit = 0;
+                $(".kredit_biasa").each(function() {
+                    total_kredit += parseFloat($(this).val());
+                });
+                var total_all_kredit = total_all + total_kredit;
+
+
+                var totalkreditall = total_all_kredit.toLocaleString("id-ID", {
+                    style: "currency",
+                    currency: "IDR",
+                });
+                $(".total").text(totalRupiahall)
+                $(".total_kredit").text(totalkreditall)
+
+                // selisih
+                var total_debit = 0;
+                $(".debit_biasa").each(function() {
+                    total_debit += parseFloat($(this).val());
+                });
+                var totaldebitall = total_debit.toLocaleString("id-ID", {
+                    style: "currency",
+                    currency: "IDR",
+                });
+                $(".total_debit").text(totaldebitall);
+
+                var selisih = Math.round(total_all + total_kredit) - total_debit;
+                var selisih_total = selisih.toLocaleString("id-ID", {
+                    style: "currency",
+                    currency: "IDR",
+                });
+                if (Math.round(total_kredit + total_all) === total_debit) {
+                    $(".cselisih").css("color", "green");
+                    $(".button-save").removeAttr("hidden");
+                } else {
+                    $(".cselisih").css("color", "red");
+                    $(".button-save").attr("hidden", true);
+                }
+                $(".selisih").text(selisih_total);
+
+            });
+
+            aksiBtn("form");
+            $("form").on("keypress", function(e) {
+                if (e.which === 13) {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+        });
     </script>
     @endsection
 </x-theme.app>
