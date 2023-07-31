@@ -11,6 +11,7 @@ use App\Http\Controllers\JualController;
 use App\Http\Controllers\JurnalPenyesuaianController;
 use App\Http\Controllers\ObatPakanController;
 use App\Http\Controllers\OpnameController;
+use App\Http\Controllers\Penjualan_telurmartadahController;
 use App\Http\Controllers\PenjualanUmumController;
 use App\Http\Controllers\PenutupController;
 use App\Http\Controllers\PenyetoranController;
@@ -352,14 +353,7 @@ Route::middleware('auth')->group(function () {
             Route::get('/hasilLayer', 'hasilLayer')->name('hasilLayer');
 
             // penjualan martadah
-            Route::get('/penjualan_telur', 'penjualan_telur')->name('penjualan_telur');
-            Route::get('/tambah_baris_jual_mtd', 'tambah_baris_jual_mtd')->name('tambah_baris_jual_mtd');
-            Route::get('/add_penjualan_telur', 'add_penjualan_telur')->name('add_penjualan_telur');
-            Route::get('/edit_telur', 'edit_telur')->name('edit_telur');
-            Route::get('/detail_penjualan_mtd', 'detail_penjualan_mtd')->name('detail_penjualan_mtd');
-            Route::get('/delete_penjualan_mtd', 'delete_penjualan_mtd')->name('delete_penjualan_mtd');
-            Route::post('/save_penjualan_telur', 'save_penjualan_telur')->name('save_penjualan_telur');
-            Route::post('/save_edit_telur', 'save_edit_telur')->name('save_edit_telur');
+
 
             // transfer stok
             Route::get('/transfer_stok', 'transfer_stok')->name('transfer_stok');
@@ -379,6 +373,22 @@ Route::middleware('auth')->group(function () {
             Route::get('/load_detail_nota/{urutan}', 'load_detail_nota')->name('load_detail_nota');
             Route::post('/update_penjualan', 'update_penjualan')->name('update_penjualan');
             Route::post('/save_penjualan_umum', 'save_penjualan_umum')->name('save_penjualan_umum');
+        });
+
+
+    Route::controller(Penjualan_telurmartadahController::class)
+        ->prefix('dashboard_kandang')
+        ->name('dashboard_kandang.')
+        ->group(function () {
+            Route::get('/penjualan_telur', 'penjualan_telur')->name('penjualan_telur');
+            Route::get('/tambah_baris_jual_mtd', 'tambah_baris_jual_mtd')->name('tambah_baris_jual_mtd');
+            Route::get('/add_penjualan_telur', 'add_penjualan_telur')->name('add_penjualan_telur');
+            Route::get('/edit_telur', 'edit_telur')->name('edit_telur');
+            Route::get('/detail_penjualan_mtd', 'detail_penjualan_mtd')->name('detail_penjualan_mtd');
+            Route::get('/delete_penjualan_mtd', 'delete_penjualan_mtd')->name('delete_penjualan_mtd');
+            Route::post('/save_penjualan_telur', 'save_penjualan_telur')->name('save_penjualan_telur');
+            Route::post('/save_edit_telur', 'save_edit_telur')->name('save_edit_telur');
+            Route::get('/cek_penjualan_telur', 'cek_penjualan_telur')->name('cek_penjualan_telur');
         });
 
     Route::controller(ObatPakanController::class)
