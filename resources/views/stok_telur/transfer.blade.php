@@ -31,8 +31,8 @@
                                         value="{{ date('Y-m-d') }}">
                                 </td>
                                 <td>
-                                    <input type="text" class="form-control nota_bk" name="no_nota"
-                                        value="TM{{ $nota }}" readonly>
+                                    <input type="text" class="form-control nota_bk" name="no_nota" value="TM{{ $nota }}"
+                                        readonly>
                                 </td>
                             </tr>
                         </table>
@@ -75,21 +75,19 @@
                                     <select name="id_produk[]" class="select2_add" required>
                                         <option value="">-Pilih Produk-</option>
                                         @foreach ($produk as $p)
-                                            <option value="{{ $p->id_produk_telur }}">{{ $p->nm_telur }}</option>
+                                        <option value="{{ $p->id_produk_telur }}">{{ $p->nm_telur }}</option>
                                         @endforeach
                                     </select>
                                 </td>
                                 <td align="right">
                                     <input type="text" class="form-control pcs pcs1" count="1"
                                         style="text-align: right; font-size: 12px;">
-                                    <input type="hidden" class="form-control  pcs_biasa1" name="pcs_pcs[]"
-                                        value="0">
+                                    <input type="hidden" class="form-control  pcs_biasa1" name="pcs_pcs[]" value="0">
                                 </td>
                                 <td align="right">
                                     <input type="text" class="form-control kg_pcs kg_pcs1" count="1"
                                         style="text-align: right; font-size: 12px;">
-                                    <input type="hidden" class="form-control  kg_pcs_biasa1" name="kg_pcs[]"
-                                        value="0">
+                                    <input type="hidden" class="form-control  kg_pcs_biasa1" name="kg_pcs[]" value="0">
                                 </td>
                                 {{-- <td align="right">
                                     <input type="text" class="form-control rp_pcs pcs1" count="1"
@@ -173,8 +171,8 @@
         </form>
     </section>
     @section('scripts')
-        <script>
-            $(document).ready(function() {
+    <script>
+        $(document).ready(function() {
                 $(document).on("keyup", ".pcs", function() {
                     var count = $(this).attr("count");
                     var input = $(this).val();
@@ -244,9 +242,9 @@
                     $('.ttl_rp' + count).text(total_rupiah);
                 });
             });
-        </script>
-        <script>
-            $(document).ready(function() {
+    </script>
+    <script>
+        $(document).ready(function() {
                 $(document).on("keyup", ".ikat", function() {
                     var count = $(this).attr("count");
                     var ikat = $('.ikat' + count).val();
@@ -329,9 +327,9 @@
                     $('.ttl_rp' + count).text(total_rupiah);
                 });
             });
-        </script>
-        <script>
-            $(document).ready(function() {
+    </script>
+    <script>
+        $(document).ready(function() {
                 $(document).on("keyup", ".kg_kg", function() {
                     var count = $(this).attr("count");
                     var kg = $('.kg_kg' + count).val();
@@ -422,9 +420,9 @@
                 });
 
             });
-        </script>
-        <script>
-            $(document).ready(function() {
+    </script>
+    <script>
+        $(document).ready(function() {
                 var count = 2;
                 $(document).on("click", ".tbh_baris_mtd", function() {
                     count = count + 1;
@@ -451,6 +449,6 @@
                     }
                 });
             });
-        </script>
+    </script>
     @endsection
 </x-theme.app>

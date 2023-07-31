@@ -45,8 +45,18 @@
                     <table class="table table-striped table-bordered" style="white-space: nowrap;">
                         <thead>
                             <tr>
+                                <th class="dhead" width="10%" rowspan="2">Produk </th>
+                                <th style="text-align: center" class="dhead abu" colspan="3">Penjualan per pcs</th>
+                                <th style="text-align: center" class="dhead putih" colspan="3">Penjualan per ikat</th>
+                                <th style="text-align: center" class="dhead abuGelap" colspan="3">Penjualan per rak</th>
+                                <th rowspan="2" class="dhead" width="10%"
+                                    style="text-align: center; white-space: nowrap;">Total
+                                    Rp
+                                </th>
+                                <th rowspan="2" class="dhead" width="5%">Aksi</th>
+                            </tr>
+                            <tr>
 
-                                <th class="dhead" width="10%">Produk </th>
                                 <th class="dhead abu" width="7%" style="text-align: center">Pcs</th>
                                 <th class="dhead abu" width="7%" style="text-align: center">Kg</th>
                                 <th class="dhead abu" width="10%" style="text-align: center;">Rp Pcs</th>
@@ -56,14 +66,13 @@
                                 <th class="dhead putih" width="10%" style="text-align: center;">Rp Ikat</th>
 
                                 <th class="dhead abuGelap" width="7%" style="text-align: center;">Pcs</th>
-                                <th class="dhead abuGelap" width="7%" style="text-align: center;">Kg</th>
+                                <th class="dhead abuGelap" width="7%" style="text-align: center;">Kg Bersih <br> potong
+                                    rak
+                                </th>
                                 {{-- <th class="dhead abuGelap" width="7%" style="text-align: center;">Rak</th> --}}
                                 <th class="dhead abuGelap" width="10%" style="text-align: center;">Rp Rak</th>
 
-                                <th class="dhead" width="10%" style="text-align: center; white-space: nowrap;">Total
-                                    Rp
-                                </th>
-                                <th class="dhead" width="5%">Aksi</th>
+
                             </tr>
                         </thead>
                         <tbody>
@@ -147,7 +156,7 @@
                         </tbody>
                         <tfoot>
                             <tr>
-                                <th colspan="13">
+                                <th colspan="12">
                                     <button type="button" class="btn btn-block btn-lg tbh_baris_mtd"
                                         style="background-color: #435EBE; color: white; font-size: 14px; padding: 13px;">
                                         <i class="fas fa-plus"></i> Tambah Baris Baru
@@ -156,7 +165,7 @@
                                 </th>
                             </tr>
                             <tr>
-                                <th colspan="12"></th>
+                                <th colspan="11"></th>
                                 <th><button type="submit" class="btn btn-primary ">Simpan</button></th>
                             </tr>
                         </tfoot>
@@ -337,7 +346,7 @@
                     var rak_rumus = parseFloat(rak) * 0.12;
                     var rak_kali = Math.round(rak_rumus * 10) / 10;
 
-                    var total = (parseFloat(kg) - parseFloat(rak_kali)) * parseFloat(rp_kg_biasa);
+                    var total = parseFloat(kg) * parseFloat(rp_kg_biasa);
                     $('.ttl_rp_kg' + count).val(total);
 
                     var total_pcs = $('.ttl_rp_pcs' + count).val();
@@ -352,32 +361,32 @@
                     });
                     $('.ttl_rp' + count).text(total_rupiah);
                 });
-                $(document).on("keyup", ".rak_kg", function() {
-                    var count = $(this).attr("count");
-                    var kg = $('.kg_kg' + count).val();
-                    var rak = $('.rak_kg' + count).val();
-                    var rp_kg_biasa = $('.rp_kg_biasa' + count).val();
+                // $(document).on("keyup", ".rak_kg", function() {
+                //     var count = $(this).attr("count");
+                //     var kg = $('.kg_kg' + count).val();
+                //     var rak = $('.rak_kg' + count).val();
+                //     var rp_kg_biasa = $('.rp_kg_biasa' + count).val();
 
-                    var rak_rumus = parseFloat(rak) * 0.12;
-                    var rak_kali = Math.round(rak_rumus * 10) / 10;
-
-
-                    var total = (parseFloat(kg) - parseFloat(rak_kali)) * parseFloat(rp_kg_biasa);
-                    $('.ttl_rp_kg' + count).val(total);
+                //     var rak_rumus = parseFloat(rak) * 0.12;
+                //     var rak_kali = Math.round(rak_rumus * 10) / 10;
 
 
-                    var total_pcs = $('.ttl_rp_pcs' + count).val();
-                    var total_ikat = $('.ttl_rp_ikat' + count).val();
-                    var total_kg = $('.ttl_rp_kg' + count).val();
+                //     var total = (parseFloat(kg) - parseFloat(rak_kali)) * parseFloat(rp_kg_biasa);
+                //     $('.ttl_rp_kg' + count).val(total);
 
-                    var total_all = parseFloat(total_pcs) + parseFloat(total_ikat) + parseFloat(total_kg);
 
-                    var total_rupiah = total_all.toLocaleString("id-ID", {
-                        style: "currency",
-                        currency: "IDR",
-                    });
-                    $('.ttl_rp' + count).text(total_rupiah);
-                });
+                //     var total_pcs = $('.ttl_rp_pcs' + count).val();
+                //     var total_ikat = $('.ttl_rp_ikat' + count).val();
+                //     var total_kg = $('.ttl_rp_kg' + count).val();
+
+                //     var total_all = parseFloat(total_pcs) + parseFloat(total_ikat) + parseFloat(total_kg);
+
+                //     var total_rupiah = total_all.toLocaleString("id-ID", {
+                //         style: "currency",
+                //         currency: "IDR",
+                //     });
+                //     $('.ttl_rp' + count).text(total_rupiah);
+                // });
                 $(document).on("keyup", ".rp_kg", function() {
                     var count = $(this).attr("count");
                     var input = $(this).val();
@@ -401,7 +410,7 @@
                     var rak_rumus = parseFloat(rak) * 0.12;
                     var rak_kali = Math.round(rak_rumus * 10) / 10;
 
-                    var total = (parseFloat(kg) - parseFloat(rak_kali)) * parseFloat(rp_kg_biasa);
+                    var total = parseFloat(kg) * parseFloat(rp_kg_biasa);
                     $('.ttl_rp_kg' + count).val(total);
 
 

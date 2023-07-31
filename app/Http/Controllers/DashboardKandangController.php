@@ -258,7 +258,7 @@ class DashboardKandangController extends Controller
         ");
 
         $data = [
-            'title' => 'Penjualan Telur',
+            'title' => 'Penjualan Telur Martadah',
             'tgl1' => $tgl1,
             'tgl2' => $tgl2,
             'penjualan' => $transfer
@@ -357,8 +357,9 @@ class DashboardKandangController extends Controller
             $total_kg_kotor = $kg_pcs[$x] + $kg_ikat[$x] + $kg_kg[$x];
 
             $kg_bersih_ikat = $kg_ikat[$x] - $ikat[$x];
-            $rak_kali = round($rak_kg[$x] * 0.12, 1);
-            $kg_bersih_kg = $kg_kg[$x] - $rak_kali;
+            $rk = $pcs_kg[$x] / 15;
+            $rak_kali = round($rk  * 0.12, 1);
+            $kg_bersih_kg = $kg_kg[$x] + $rak_kali;
 
             $total_kg_bersih = $kg_bersih_ikat + $kg_bersih_kg;
             $total_rp_satuan = $rp_pcs[$x] + $rp_ikat[$x] + $rp_kg[$x];
@@ -405,7 +406,7 @@ class DashboardKandangController extends Controller
 
                 'pcs_kg' => $pcs_kg[$x],
                 'kg_kg' => $kg_kg[$x],
-                'rak_kg' => $rak_kg[$x],
+                'rak_kg' =>  $rk,
                 'rp_kg' => $rp_kg[$x],
             ];
             DB::table('invoice_mtd')->insert($data);
@@ -429,6 +430,10 @@ class DashboardKandangController extends Controller
         }
 
         return redirect()->route('dashboard_kandang.penjualan_telur')->with('sukses', 'Data berhasil ditambahkan');
+    }
+
+    public function cek_penjualan_telur()
+    {
     }
 
     public function detail_penjualan_mtd(Request $r)
@@ -1025,58 +1030,57 @@ class DashboardKandangController extends Controller
         $no_nota = strtoupper(str()->random(5));
         if (!empty($r->id_pakan)) {
             for ($i = 0; $i < count($r->id_pakan); $i++) {
-                
 
-                    $dataPakan = [
-                        'id_kandang' => $id_kandang,
-                        'id_produk_pakan' => $r->id_pakan[$i],
-                        'tgl' => $tgl,
-                        'no_nota' => $no_nota,
-                        'gr' => $r->gr_pakan[$i],
-                        'persen' => $r->persen_pakan[$i],
-                        'admin' => auth()->user()->name
-                    ];
-                    DB::table('tb_pakan_perencanaan')->insert($dataPakan);
 
-                    $dataStok = [
-                        'id_kandang' => $id_kandang,
-                        'id_pakan' => $r->id_pakan[$i],
-                        'tgl' => $tgl,
-                        'pcs' => 0,
-                        'total_rp' => 0,
-                        'no_nota' => $no_nota,
-                        'pcs_kredit' =>  $r->gr_pakan[$i],
-                        'admin' => auth()->user()->name
-                    ];
-                    DB::table('stok_produk_perencanaan')->insert($dataStok);
-                    $id_pakan = $r->id_pakan[$i];
+                $dataPakan = [
+                    'id_kandang' => $id_kandang,
+                    'id_produk_pakan' => $r->id_pakan[$i],
+                    'tgl' => $tgl,
+                    'no_nota' => $no_nota,
+                    'gr' => $r->gr_pakan[$i],
+                    'persen' => $r->persen_pakan[$i],
+                    'admin' => auth()->user()->name
+                ];
+                DB::table('tb_pakan_perencanaan')->insert($dataPakan);
 
-                    $hrga = $this->getHargaSatuan($id_pakan);
-                    $nota_t = $this->getNoNota();
-                    $data = [
-                        'id_akun' => '519',
-                        'id_buku' => '2',
-                        'ket' => "Pengeluaran stok pakan-$no_nota-$id_pakan",
-                        'debit' => $r->gr_pakan[$i] * $hrga->rata_rata,
-                        'kredit' => '0',
-                        'tgl' => $tgl,
-                        'no_nota' => 'JPP-' . $nota_t,
-                        'admin' => auth()->user()->name,
-                    ];
-                    DB::table('jurnal')->insert($data);
+                $dataStok = [
+                    'id_kandang' => $id_kandang,
+                    'id_pakan' => $r->id_pakan[$i],
+                    'tgl' => $tgl,
+                    'pcs' => 0,
+                    'total_rp' => 0,
+                    'no_nota' => $no_nota,
+                    'pcs_kredit' =>  $r->gr_pakan[$i],
+                    'admin' => auth()->user()->name
+                ];
+                DB::table('stok_produk_perencanaan')->insert($dataStok);
+                $id_pakan = $r->id_pakan[$i];
 
-                    $data = [
-                        'id_akun' => '519',
-                        'id_buku' => '2',
-                        'ket' => "Pengeluaran stok pakan-$no_nota-$id_pakan",
-                        'kredit' => $r->gr_pakan[$i] * $hrga->rata_rata,
-                        'debit' => '0',
-                        'tgl' => $tgl,
-                        'no_nota' => 'JPP-' . $nota_t,
-                        'admin' => auth()->user()->name,
-                    ];
-                    DB::table('jurnal')->insert($data);
-                
+                $hrga = $this->getHargaSatuan($id_pakan);
+                $nota_t = $this->getNoNota();
+                $data = [
+                    'id_akun' => '519',
+                    'id_buku' => '2',
+                    'ket' => "Pengeluaran stok pakan-$no_nota-$id_pakan",
+                    'debit' => $r->gr_pakan[$i] * $hrga->rata_rata,
+                    'kredit' => '0',
+                    'tgl' => $tgl,
+                    'no_nota' => 'JPP-' . $nota_t,
+                    'admin' => auth()->user()->name,
+                ];
+                DB::table('jurnal')->insert($data);
+
+                $data = [
+                    'id_akun' => '519',
+                    'id_buku' => '2',
+                    'ket' => "Pengeluaran stok pakan-$no_nota-$id_pakan",
+                    'kredit' => $r->gr_pakan[$i] * $hrga->rata_rata,
+                    'debit' => '0',
+                    'tgl' => $tgl,
+                    'no_nota' => 'JPP-' . $nota_t,
+                    'admin' => auth()->user()->name,
+                ];
+                DB::table('jurnal')->insert($data);
             }
         }
 

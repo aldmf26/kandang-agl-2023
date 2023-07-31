@@ -48,10 +48,10 @@
         <input type="text" class="form-control kg_kg kg_kg{{$count}}" count="{{$count}}"
             style="text-align: right;font-size: 12px;" value="0" name="kg_kg[]">
     </td>
-    <td align="right">
+    {{-- <td align="right">
         <input type="text" class="form-control rak_kg rak_kg{{$count}}" count="{{$count}}"
             style="text-align: right;font-size: 12px;" value="0" name="rak_kg[]">
-    </td>
+    </td> --}}
     <td align="right">
         <input type="text" class="form-control rp_kg rp_kg{{$count}}" count="{{$count}}"
             style="text-align: right;font-size: 12px;">
