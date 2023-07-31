@@ -175,7 +175,7 @@ class DashboardKandangController extends Controller
 
     public function add_transfer_stok(Request $r)
     {
-        $cek = DB::table('stok_telur')->where('nota_transfer', '!=', '')->first();
+        $cek = DB::table('stok_telur')->where([['nota_transfer', '!=', ''],['nota_transfer', 'like', '%TF%']])->first();
         $nota_t = empty($cek) ? 1000 + 1 : str()->remove('TF-', $cek->nota_transfer) + 1;
 
         $data = [
@@ -1025,7 +1025,10 @@ class DashboardKandangController extends Controller
         $no_nota = strtoupper(str()->random(5));
         if (!empty($r->id_pakan)) {
             for ($i = 0; $i < count($r->id_pakan); $i++) {
-                
+                if ($r->stok[$i] < $r->gr_pakan[$i]) {
+                    $error = 'error';
+                    $pesan = 'STOK KURANG!! PERENCANAAN GAGAL DITAMBAH';
+                } else {
 
                     $dataPakan = [
                         'id_kandang' => $id_kandang,
@@ -1076,7 +1079,7 @@ class DashboardKandangController extends Controller
                         'admin' => auth()->user()->name,
                     ];
                     DB::table('jurnal')->insert($data);
-                
+                }
             }
         }
 
