@@ -1,20 +1,5 @@
 <x-theme.app title="{{ $title }}" table="T" sizeCard="12" cont="container-fluid">
-    <style>
-        .abu {
-            background-color: #d3d3d3 !important;
-            color: rgb(37, 37, 37);
-        }
 
-        .putih {
-            background-color: #968f8f !important;
-            color: rgb(37, 37, 37);
-        }
-
-        .abuGelap {
-            background-color: #c27878 !important;
-            color: rgb(37, 37, 37);
-        }
-    </style>
     <section class="row">
         <form action="{{ route('dashboard_kandang.save_penjualan_telur') }}" method="post">
             <div class="col-lg-12">
@@ -33,8 +18,8 @@
                                         value="{{ date('Y-m-d') }}">
                                 </td>
                                 <td>
-                                    <input type="text" class="form-control nota_bk" name="no_nota"
-                                        value="TM{{ $nota }}" readonly>
+                                    <input type="text" class="form-control nota_bk" name="no_nota" value="TM{{ $nota }}"
+                                        readonly>
                                 </td>
                                 <td>
                                     <input type="text" class="form-control" name="customer" required>
@@ -72,7 +57,7 @@
 
                                 <th class="dhead abuGelap" width="7%" style="text-align: center;">Pcs</th>
                                 <th class="dhead abuGelap" width="7%" style="text-align: center;">Kg</th>
-                                <th class="dhead abuGelap" width="7%" style="text-align: center;">Rak</th>
+                                {{-- <th class="dhead abuGelap" width="7%" style="text-align: center;">Rak</th> --}}
                                 <th class="dhead abuGelap" width="10%" style="text-align: center;">Rp Rak</th>
 
                                 <th class="dhead" width="10%" style="text-align: center; white-space: nowrap;">Total
@@ -88,27 +73,25 @@
                                     <select name="id_produk[]" class="select2_add" required>
                                         <option value="">-Pilih Produk-</option>
                                         @foreach ($produk as $p)
-                                            <option value="{{ $p->id_produk_telur }}">{{ $p->nm_telur }}</option>
+                                        <option value="{{ $p->id_produk_telur }}">{{ $p->nm_telur }}</option>
                                         @endforeach
                                     </select>
                                 </td>
                                 <td align="right">
                                     <input type="text" class="form-control pcs pcs1" count="1"
                                         style="text-align: right; font-size: 12px;">
-                                    <input type="hidden" class="form-control  pcs_biasa1" name="pcs_pcs[]"
-                                        value="0">
+                                    <input type="hidden" class="form-control  pcs_biasa1" name="pcs_pcs[]" value="0">
                                 </td>
                                 <td align="right">
                                     <input type="text" class="form-control kg_pcs kg_pcs1" count="1"
                                         style="text-align: right; font-size: 12px;">
-                                    <input type="hidden" class="form-control  kg_pcs_biasa1" name="kg_pcs[]"
-                                        value="0">
+                                    <input type="hidden" class="form-control  kg_pcs_biasa1" name="kg_pcs[]" value="0">
                                 </td>
                                 <td align="right">
                                     <input type="text" class="form-control rp_pcs pcs1" count="1"
                                         style="text-align: right;font-size: 12px;">
-                                    <input type="hidden" class="form-control rp_pcs_biasa rp_pcs_biasa1"
-                                        name="rp_pcs[]" value="0">
+                                    <input type="hidden" class="form-control rp_pcs_biasa rp_pcs_biasa1" name="rp_pcs[]"
+                                        value="0">
                                     <input type="hidden" class="ttl_rp_pcs1" value="0">
                                 </td>
                                 <!-- Jual Ikat -->
@@ -137,15 +120,15 @@
                                     <input type="text" class="form-control kg_kg kg_kg1" count="1"
                                         style="text-align: right;font-size: 12px;" value="0" name="kg_kg[]">
                                 </td>
-                                <td align="right">
+                                {{-- <td align="right">
                                     <input type="text" class="form-control rak_kg rak_kg1" count="1"
                                         style="text-align: right;font-size: 12px;" value="0" name="rak_kg[]">
-                                </td>
+                                </td> --}}
                                 <td align="right">
                                     <input type="text" class="form-control rp_kg rp_kg1" count="1"
                                         style="text-align: right;font-size: 12px;">
-                                    <input type="hidden" class="form-control  rp_kg_biasa rp_kg_biasa1"
-                                        name="rp_kg[]" value="0">
+                                    <input type="hidden" class="form-control  rp_kg_biasa rp_kg_biasa1" name="rp_kg[]"
+                                        value="0">
                                     <input type="hidden" class="ttl_rp_kg1" value="0">
                                 </td>
                                 <!-- Jual Kg -->
@@ -187,8 +170,8 @@
         </form>
     </section>
     @section('scripts')
-        <script>
-            $(document).ready(function() {
+    <script>
+        $(document).ready(function() {
                 $(document).on("keyup", ".pcs", function() {
                     var count = $(this).attr("count");
                     var input = $(this).val();
@@ -258,9 +241,9 @@
                     $('.ttl_rp' + count).text(total_rupiah);
                 });
             });
-        </script>
-        <script>
-            $(document).ready(function() {
+    </script>
+    <script>
+        $(document).ready(function() {
                 $(document).on("keyup", ".ikat", function() {
                     var count = $(this).attr("count");
                     var ikat = $('.ikat' + count).val();
@@ -343,9 +326,9 @@
                     $('.ttl_rp' + count).text(total_rupiah);
                 });
             });
-        </script>
-        <script>
-            $(document).ready(function() {
+    </script>
+    <script>
+        $(document).ready(function() {
                 $(document).on("keyup", ".kg_kg", function() {
                     var count = $(this).attr("count");
                     var kg = $('.kg_kg' + count).val();
@@ -436,9 +419,9 @@
                 });
 
             });
-        </script>
-        <script>
-            $(document).ready(function() {
+    </script>
+    <script>
+        $(document).ready(function() {
                 var count = 2;
                 $(document).on("click", ".tbh_baris_mtd", function() {
                     count = count + 1;
@@ -513,6 +496,6 @@
                     }
                 });
             });
-        </script>
+    </script>
     @endsection
 </x-theme.app>
