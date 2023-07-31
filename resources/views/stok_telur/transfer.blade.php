@@ -1,20 +1,5 @@
 <x-theme.app title="{{ $title }}" table="T" sizeCard="12" cont="container-fluid">
-    <style>
-        .abu {
-            background-color: #d3d3d3 !important;
-            color: rgb(37, 37, 37);
-        }
 
-        .putih {
-            background-color: #968f8f !important;
-            color: rgb(37, 37, 37);
-        }
-
-        .abuGelap {
-            background-color: #c27878 !important;
-            color: rgb(37, 37, 37);
-        }
-    </style>
     <section class="row">
         <form action="{{ route('dashboard_kandang.save_transfer') }}" method="post">
             <div class="col-lg-12">
@@ -32,7 +17,7 @@
                                 </td>
                                 <td>
                                     <input type="text" class="form-control nota_bk" name="no_nota"
-                                        value="TM{{ $nota }}" readonly>
+                                        value="TF-{{ $nota }}" readonly>
                                 </td>
                             </tr>
                         </table>
@@ -51,8 +36,14 @@
                     <table class="table table-striped table-bordered" style="white-space: nowrap;">
                         <thead>
                             <tr>
+                                <th width="20%" class="dhead" style="vertical-align: middle" rowspan="2">Produk</th>
+                                <th class="dhead text-center" colspan="2">Per Pcs</th>
+                                <th class="dhead text-center" colspan="2">Per Ikat</th>
+                                <th class="dhead text-center" colspan="2">Full Rak</th>
+                                <th width="5%" class="dhead text-center" rowspan="2">Aksi</th>
+                            </tr>
+                            <tr>
 
-                                <th class="dhead" width="10%">Produk </th>
                                 <th class="dhead abu" width="7%" style="text-align: center">Pcs</th>
                                 <th class="dhead abu" width="7%" style="text-align: center">Kg</th>
                                 {{-- <th class="dhead" width="10%" style="text-align: center;">Rp Pcs</th> --}}
@@ -63,9 +54,9 @@
 
                                 <th class="dhead abuGelap" width="7%" style="text-align: center;">Pcs</th>
                                 <th class="dhead abuGelap" width="7%" style="text-align: center;">Kg</th>
-                                <th class="dhead abuGelap" width="7%" style="text-align: center;">Rak</th>
+                                {{-- <th class="dhead abuGelap" width="7%" style="text-align: center;">Rak</th> --}}
                                 {{-- <th class="dhead" width="10%" style="text-align: center;">Rp Rak</th> --}}
-                                <th class="dhead" width="5%">Aksi</th>
+                                {{-- <th class="dhead" width="5%">Aksi</th> --}}
                             </tr>
                         </thead>
                         <tbody>
@@ -124,10 +115,10 @@
                                     <input type="text" class="form-control kg_kg kg_kg1" count="1"
                                         style="text-align: right;font-size: 12px;" value="0" name="kg_kg[]">
                                 </td>
-                                <td align="right">
+                                {{-- <td align="right">
                                     <input type="text" class="form-control rak_kg rak_kg1" count="1"
                                         style="text-align: right;font-size: 12px;" value="0" name="rak_kg[]">
-                                </td>
+                                </td> --}}
                                 {{-- <td align="right">
                                     <input type="text" class="form-control rp_kg rp_kg1" count="1"
                                         style="text-align: right;font-size: 12px;">
@@ -136,8 +127,8 @@
                                     <input type="hidden" class="ttl_rp_kg1" value="0">
                                 </td> --}}
                                 <!-- Jual Kg -->
-                                <td style="vertical-align: top;">
-                                    <button type="button" class="btn rounded-pill remove_baris_tf" count="1"><i
+                                <td align="center" style="vertical-align: top;">
+                                    <button type="button" class="btn rounded-pill remove_baris_tf " count="1"><i
                                             class="fas fa-trash text-danger"></i>
                                     </button>
                                 </td>
@@ -150,7 +141,7 @@
                         </tbody>
                         <tfoot>
                             <tr>
-                                <th colspan="9">
+                                <th colspan="8">
                                     <button type="button" class="btn btn-block btn-lg tbh_baris_mtd"
                                         style="background-color: #435EBE; color: white; font-size: 14px; padding: 13px;">
                                         <i class="fas fa-plus"></i> Tambah Baris Baru
@@ -159,8 +150,7 @@
                                 </th>
                             </tr>
                             <tr>
-                                <th colspan="8"></th>
-                                <th><button type="submit" class="btn btn-primary ">Simpan</button></th>
+                                <th colspan="8"><button type="submit" class="btn btn-primary float-end">Simpan</button></th>
                             </tr>
                         </tfoot>
 

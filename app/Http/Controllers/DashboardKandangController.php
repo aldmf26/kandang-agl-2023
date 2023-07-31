@@ -199,7 +199,7 @@ class DashboardKandangController extends Controller
 
     public function save_transfer(Request $r)
     {
-        $cek = DB::table('stok_telur')->where('nota_transfer', '!=', '')->first();
+        $cek = DB::table('stok_telur')->where([['nota_transfer', '!=', ''], ['nota_transfer', 'like', '%TF%']])->first();
         $nota_t = empty($cek) ? 1000 + 1 : str()->remove('TF-', $cek->nota_transfer) + 1;
 
         $pcs_pcs = $r->pcs_pcs;

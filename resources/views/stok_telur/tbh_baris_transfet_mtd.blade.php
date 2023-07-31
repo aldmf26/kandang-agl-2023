@@ -48,10 +48,10 @@
         <input type="text" class="form-control kg_kg kg_kg{{$count}}" count="{{$count}}"
             style="text-align: right;font-size: 12px;" value="0" name="kg_kg[]">
     </td>
-    <td align="right">
+    {{-- <td align="right">
         <input type="text" class="form-control rak_kg rak_kg{{$count}}" count="{{$count}}"
             style="text-align: right;font-size: 12px;" value="0" name="rak_kg[]">
-    </td>
+    </td> --}}
     {{-- <td align="right">
         <input type="text" class="form-control rp_kg rp_kg{{$count}}" count="{{$count}}"
             style="text-align: right;font-size: 12px;">
@@ -59,7 +59,7 @@
         <input type="hidden" class="ttl_rp_kg{{$count}}" value="0">
     </td> --}}
     <!-- Jual Kg -->
-    <td style="vertical-align: top;">
+    <td align="center" style="vertical-align: top;">
         <button type="button" class="btn rounded-pill remove_baris_tf" count="{{$count}}"><i
                 class="fas fa-trash text-danger"></i>
         </button>
