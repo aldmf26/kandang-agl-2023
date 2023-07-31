@@ -21,12 +21,10 @@
                         <th width="5">#</th>
                         <th>Tanggal</th>
                         <th>Nota</th>
-                        <th>Produk</th>
-                        <th>Keterangan</th>
                         <th>Pcs</th>
-                        <th>Kg</th>
-                        <th>Ikat</th>
-                        <th>Aksi</th>
+                        <th >Kg</th>
+                        <th >Ikat</th>
+                        <th >Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -34,9 +32,8 @@
                     <tr>
                         <td>{{ $no + 1 }}</td>
                         <td>{{ tanggal($s->tgl) }}</td>
-                        <td>{{ $s->nota_transfer }}</td>
-                        <td>{{ $s->nm_telur }}</td>
-                        <td>{{ $s->ket }}</td>
+                        <td>{{ $s->no_nota }}</td>
+                      
                         <td>{{ $s->pcs }}</td>
                         <td>{{ $s->kg }}</td>
                         <td>{{ number_format($s->pcs / 180, 2) }} </td>
@@ -47,13 +44,13 @@
                                 </span>
                                 <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1">
                                     <li><a class="dropdown-item text-primary "
-                                            href="{{ route('edit_telur', ['id_stok_telur' => $s->id_stok_telur]) }}"><i
+                                            href="{{ route('dashboard_kandang.edit_transfer_stok', ['nota' => $s->no_nota]) }}"><i
                                                 class="me-2 fas fa-pen"></i>Edit</a>
                                     </li>
 
                                     <li>
                                         <a class="dropdown-item text-danger delete_nota"
-                                            no_nota="{{ $s->id_stok_telur }}" href="#" data-bs-toggle="modal"
+                                            no_nota="{{ $s->id_invoice_mtd }}" href="#" data-bs-toggle="modal"
                                             data-bs-target="#delete"><i class="me-2 fas fa-trash"></i>Delete
                                         </a>
                                     </li>

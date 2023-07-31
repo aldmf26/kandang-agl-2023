@@ -364,8 +364,10 @@ Route::middleware('auth')->group(function () {
             // transfer stok
             Route::get('/transfer_stok', 'transfer_stok')->name('transfer_stok');
             Route::get('/add_transfer_stok', 'add_transfer_stok')->name('add_transfer_stok');
+            Route::get('/edit_transfer_stok', 'edit_transfer_stok')->name('edit_transfer_stok');
             Route::get('/tbh_baris_transfer_mtd', 'tbh_baris_transfer_mtd')->name('tbh_baris_transfer_mtd');
             Route::post('/save_transfer', 'save_transfer')->name('save_transfer');
+            Route::post('/update_transfer', 'update_transfer')->name('update_transfer');
 
             // penjualan umum
             Route::get('/penjualan_umum', 'penjualan_umum')->name('penjualan_umum');

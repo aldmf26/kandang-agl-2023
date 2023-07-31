@@ -1,7 +1,8 @@
 <x-theme.app title="{{ $title }}" table="T" sizeCard="12" cont="container-fluid">
 
     <section class="row">
-        <form action="{{ route('dashboard_kandang.save_transfer') }}" method="post">
+        <form action="{{ route('dashboard_kandang.update_transfer') }}" method="post">
+            @csrf
             <div class="col-lg-12">
                 <div class="row">
                     <div class="col-lg-4">
@@ -13,11 +14,11 @@
                             <tr>
                                 <td>
                                     <input type="date" class="form-control tgl_nota" name="tgl"
-                                        value="{{ date('Y-m-d') }}">
+                                        value="{{ $tgl }}">
                                 </td>
                                 <td>
                                     <input type="text" class="form-control nota_bk" name="no_nota"
-                                        value="TF-{{ $nota }}" readonly>
+                                        value="{{ $nota }}" readonly>
                                 </td>
                             </tr>
                         </table>
@@ -60,69 +61,46 @@
                             </tr>
                         </thead>
                         <tbody>
+                            @foreach ($datas as $d)
                             <tr class="baris1">
-
+                                <input type="hidden" name="id_invoice_mtd[]" value="{{ $d->id_invoice_mtd }}">
                                 <td>
                                     <select name="id_produk[]" class="select2_add" required>
                                         <option value="">-Pilih Produk-</option>
                                         @foreach ($produk as $p)
-                                        <option value="{{ $p->id_produk_telur }}">{{ $p->nm_telur }}</option>
+                                        <option {{$p->id_produk_telur == $d->id_produk ? 'selected' : ''}} value="{{ $p->id_produk_telur }}">{{ $p->nm_telur }}</option>
                                         @endforeach
                                     </select>
                                 </td>
                                 <td align="right">
                                     <input type="text" class="form-control pcs pcs1" count="1"
-                                        style="text-align: right; font-size: 12px;">
-                                    <input type="hidden" class="form-control  pcs_biasa1" name="pcs_pcs[]" value="0">
+                                        style="text-align: right; font-size: 12px;" value="{{ $d->pcs_pcs }}">
+                                    <input type="hidden" class="form-control  pcs_biasa1" name="pcs_pcs[]" value="{{ $d->pcs_pcs }}">
                                 </td>
                                 <td align="right">
-                                    <input type="text" class="form-control kg_pcs kg_pcs1" count="1"
-                                        style="text-align: right; font-size: 12px;" name="kg_pcs[]">
+                                    <input type="text" class="form-control kg_pcs kg_pcs1" value="{{ $d->kg_pcs }}" count="1"
+                                        style="text-align: right; font-size: 12px;">
+                                    <input type="hidden" class="form-control  kg_pcs_biasa1" name="kg_pcs[]" value="{{ $d->kg_pcs }}">
                                 </td>
-                                {{-- <td align="right">
-                                    <input type="text" class="form-control rp_pcs pcs1" count="1"
-                                        style="text-align: right;font-size: 12px;">
-                                    <input type="hidden" class="form-control rp_pcs_biasa rp_pcs_biasa1" name="rp_pcs[]"
-                                        value="0">
-                                    <input type="hidden" class="ttl_rp_pcs1" value="0">
-                                </td> --}}
+
                                 <!-- Jual Ikat -->
                                 <td align="right">
                                     <input type="text" class="form-control ikat ikat1" count="1"
-                                        style="text-align: right;font-size: 12px;" value="0" name="ikat[]">
+                                        style="text-align: right;font-size: 12px;" value="{{ $d->ikat }}" name="ikat[]">
                                 </td>
                                 <td align="right">
                                     <input type="text" class="form-control kg_ikat kg_ikat1" count="1"
-                                        style="text-align: right;font-size: 12px;" value="0" name="kg_ikat[]">
+                                        style="text-align: right;font-size: 12px;" value="{{ $d->kg_ikat }}" name="kg_ikat[]">
                                 </td>
-                                {{-- <td align="right">
-                                    <input type="text" class="form-control rp_ikat rp_ikat1 " count="1"
-                                        style="text-align: right;font-size: 12px;">
-                                    <input type="hidden" class="form-control  rp_ikat_biasa1" name="rp_ikat[]"
-                                        value="0">
-                                    <input type="hidden" class="ttl_rp_ikat1" value="0">
-                                </td> --}}
-                                <!-- Jual Ikat -->
                                 <!-- Jual Kg -->
                                 <td align="right">
                                     <input type="text" class="form-control" name="pcs_kg[]" count="1"
-                                        style="text-align: right;font-size: 12px;" value="0">
+                                        style="text-align: right;font-size: 12px;" value="{{ $d->pcs_kg }}">
                                 </td>
                                 <td align="right">
                                     <input type="text" class="form-control kg_kg kg_kg1" count="1"
-                                        style="text-align: right;font-size: 12px;" value="0" name="kg_kg[]">
+                                        style="text-align: right;font-size: 12px;" value="{{ $d->kg_kg }}" name="kg_kg[]">
                                 </td>
-                                {{-- <td align="right">
-                                    <input type="text" class="form-control rak_kg rak_kg1" count="1"
-                                        style="text-align: right;font-size: 12px;" value="0" name="rak_kg[]">
-                                </td> --}}
-                                {{-- <td align="right">
-                                    <input type="text" class="form-control rp_kg rp_kg1" count="1"
-                                        style="text-align: right;font-size: 12px;">
-                                    <input type="hidden" class="form-control  rp_kg_biasa rp_kg_biasa1" name="rp_kg[]"
-                                        value="0">
-                                    <input type="hidden" class="ttl_rp_kg1" value="0">
-                                </td> --}}
                                 <!-- Jual Kg -->
                                 <td align="center" style="vertical-align: top;">
                                     <button type="button" class="btn rounded-pill remove_baris_tf " count="1"><i
@@ -130,6 +108,7 @@
                                     </button>
                                 </td>
                             </tr>
+                            @endforeach
 
 
                         </tbody>
@@ -137,15 +116,7 @@
 
                         </tbody>
                         <tfoot>
-                            <tr>
-                                <th colspan="8">
-                                    <button type="button" class="btn btn-block btn-lg tbh_baris_mtd"
-                                        style="background-color: #435EBE; color: white; font-size: 14px; padding: 13px;">
-                                        <i class="fas fa-plus"></i> Tambah Baris Baru
 
-                                    </button>
-                                </th>
-                            </tr>
                             <tr>
                                 <th colspan="8"><button type="submit" class="btn btn-primary float-end">Simpan</button>
                                 </th>

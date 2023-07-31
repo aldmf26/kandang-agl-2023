@@ -159,11 +159,14 @@ class DashboardKandangController extends Controller
     {
         $tgl1 =  $this->tgl1;
         $tgl2 =  $this->tgl2;
-        $transfer = DB::table('stok_telur as a')
-            ->join('telur_produk as c', 'a.id_telur', 'c.id_produk_telur')
-            ->where('a.id_gudang', 2)
-            ->orderBy('a.id_stok_telur', 'DESC')
-            ->get();
+        $transfer = DB::select("SELECT 
+        b.nm_telur, sum(a.pcs_pcs + (a.ikat * 180) + a.pcs_kg) as pcs, a.* ,
+        sum(a.pcs_kg + a.kg_ikat + (((a.pcs_kg / 15) * 0.12) + a.kg_kg)) as kg
+        FROM `invoice_mtd` as a
+        LEFT JOIN telur_produk as b ON a.id_produk = b.id_produk_telur
+        WHERE a.jenis = 'tf'
+        GROUP BY a.no_nota
+        ORDER BY a.id_invoice_mtd DESC;");
         $data = [
             'title' => 'Transfer Stok',
             'tgl1' => $tgl1,
@@ -214,8 +217,8 @@ class DashboardKandangController extends Controller
         $kg_kg = $r->kg_kg;
         $rak_kg = $r->rak_kg;
         $rp_kg = $r->rp_kg;
-
         for ($x = 0; $x < count($r->id_produk); $x++) {
+
             $pcs_ikat = $ikat[$x] * 180;
             $total_pcs = $pcs_ikat + $pcs_pcs[$x] + $pcs_kg[$x];
             $total_kg_kotor = $kg_pcs[$x] + $kg_ikat[$x] + $kg_kg[$x];
@@ -241,6 +244,97 @@ class DashboardKandangController extends Controller
                 'jenis' => 'tf'
             ];
             DB::table('stok_telur')->insert($data);
+
+            $data = [
+                'tgl' => $r->tgl,
+                'no_nota' => 'TF-' . $nota_t,
+                'pcs_pcs' => $pcs_pcs[$x],
+                'kg_pcs' => $kg_pcs[$x],
+                'ikat' => $ikat[$x],
+                'kg_ikat' => $kg_ikat[$x],
+                'pcs_kg' => $pcs_kg[$x],
+                'kg_kg' => $kg_kg[$x],
+                'id_produk' => $r->id_produk[$x],
+                'jenis' => 'tf',
+                'admin' => auth()->user()->name
+            ];
+            DB::table('invoice_mtd')->insert($data);
+        }
+        return redirect()->route('dashboard_kandang.index')->with('sukses', 'Data berhasil di transfer');
+    }
+
+    public function edit_transfer_stok(Request $r)
+    {
+        $data = [
+            'title' => 'Edit Transfer',
+            'nota' => $r->nota,
+            'tgl' => DB::table('invoice_mtd')->first()->tgl,
+            'produk' => DB::table('telur_produk')->get(),
+            'datas' => DB::table('invoice_mtd')->where([['no_nota', $r->nota], ['jenis', 'tf']])->get()
+        ];
+        return view('stok_telur.edit_transfer',$data);
+    }
+
+    public function update_transfer(Request $r)
+    {
+        $nota_t = $r->no_nota;
+
+        $pcs_pcs = $r->pcs_pcs;
+        $kg_pcs = $r->kg_pcs;
+        $rp_pcs = $r->rp_pcs;
+
+        $ikat = $r->ikat;
+        $kg_ikat = $r->kg_ikat;
+        $rp_ikat = $r->rp_ikat;
+
+        $pcs_kg = $r->pcs_kg;
+        $kg_kg = $r->kg_kg;
+        $rak_kg = $r->rak_kg;
+        $rp_kg = $r->rp_kg;
+        DB::table('stok_telur')->where('nota_transfer', $nota_t)->delete();
+        DB::table('invoice_mtd')->where('no_nota', $nota_t)->delete();
+        for ($x = 0; $x < count($r->id_produk); $x++) {
+            
+            $pcs_ikat = $ikat[$x] * 180;
+            $total_pcs = $pcs_ikat + $pcs_pcs[$x] + $pcs_kg[$x];
+            $total_kg_kotor = $kg_pcs[$x] + $kg_ikat[$x] + $kg_kg[$x];
+            $data = [
+                'tgl' => $r->tgl,
+                'id_telur' => $r->id_produk[$x],
+                'pcs_kredit' => $total_pcs,
+                'kg_kredit' => $total_kg_kotor,
+                'admin' => auth()->user()->name,
+                'nota_transfer' =>$nota_t,
+                'id_gudang' => 1,
+                'jenis' => 'tf'
+            ];
+            DB::table('stok_telur')->insert($data);
+            $data = [
+                'tgl' => $r->tgl,
+                'id_telur' => $r->id_produk[$x],
+                'pcs' => $total_pcs,
+                'kg' => $total_kg_kotor,
+                'admin' => auth()->user()->name,
+                'nota_transfer' =>$nota_t,
+                'id_gudang' => 2,
+                'jenis' => 'tf'
+            ];
+            DB::table('stok_telur')->insert($data);
+
+            $data = [
+                'tgl' => $r->tgl,
+                'no_nota' => $nota_t,
+                'pcs_pcs' => $pcs_pcs[$x],
+                'kg_pcs' => $kg_pcs[$x],
+                'ikat' => $ikat[$x],
+                'kg_ikat' => $kg_ikat[$x],
+                'pcs_kg' => $pcs_kg[$x],
+                'kg_kg' => $kg_kg[$x],
+                'id_produk' => $r->id_produk[$x],
+                'jenis' => 'tf',
+                'admin' => auth()->user()->name
+            ];
+            DB::table('invoice_mtd')->insert($data);
         }
         return redirect()->route('dashboard_kandang.index')->with('sukses', 'Data berhasil di transfer');
     }
