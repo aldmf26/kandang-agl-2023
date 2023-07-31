@@ -1025,10 +1025,7 @@ class DashboardKandangController extends Controller
         $no_nota = strtoupper(str()->random(5));
         if (!empty($r->id_pakan)) {
             for ($i = 0; $i < count($r->id_pakan); $i++) {
-                if ($r->stok[$i] < $r->gr_pakan[$i]) {
-                    $error = 'error';
-                    $pesan = 'STOK KURANG!! PERENCANAAN GAGAL DITAMBAH';
-                } else {
+                
 
                     $dataPakan = [
                         'id_kandang' => $id_kandang,
@@ -1079,7 +1076,7 @@ class DashboardKandangController extends Controller
                         'admin' => auth()->user()->name,
                     ];
                     DB::table('jurnal')->insert($data);
-                }
+                
             }
         }
 
