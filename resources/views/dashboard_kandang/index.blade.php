@@ -11,6 +11,11 @@
                 color: rgb(37, 37, 37);
             }
 
+            .abuGelap {
+                background-color: #433b3b !important;
+                color: rgb(37, 37, 37);
+            }
+
             .merah {
                 background-color: #ff3030 !important;
                 color: white;
