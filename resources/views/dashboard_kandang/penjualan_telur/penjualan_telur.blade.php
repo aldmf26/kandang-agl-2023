@@ -19,6 +19,7 @@
                 <thead>
                     <tr>
                         <th width="5">#</th>
+                        <td></td>
                         <th>Tanggal</th>
                         <th>Nota</th>
                         <th>Customer</th>
@@ -31,6 +32,16 @@
                     @foreach ($penjualan as $no => $s)
                     <tr>
                         <td>{{ $no + 1 }}</td>
+
+                        <td>
+                            <a href="#" onclick="event.preventDefault();"
+                                class="detail_bayar detail_bayar{{ $s->no_nota }}" no_nota="{{ $s->no_nota }}"><i
+                                    class="fas fa-angle-down"></i></a>
+
+                            <a href="#" onclick="event.preventDefault();" class="hide_bayar hide_bayar{{ $s->no_nota }}"
+                                no_nota="{{ $s->no_nota }}"><i class="fas fa-angle-up"></i></a>
+                        </td>
+
                         <td>{{ tanggal($s->tgl) }}</td>
                         <td>{{ $s->no_nota }}</td>
                         <td>{{ $s->customer }}</td>
@@ -97,8 +108,35 @@
                             $("#detail_penjualan").html(data);
                         }
                     });
-                })
-            });
+                });
+                $('.hide_bayar').hide();
+                $(document).on("click", ".detail_bayar", function() {
+                    var no_nota = $(this).attr('no_nota');
+                    var clickedElement = $(this); // Simpan elemen yang diklik dalam variabel
+
+                    clickedElement.prop('disabled', true); // Menonaktifkan elemen yang diklik
+
+                    // $.ajax({
+                    //     type: "get",
+                    //     url: "/get_kreditBK?no_nota=" + no_nota,
+                    //     success: function(data) {
+                    //         $('.induk_detail' + no_nota).after("<tr>" + data + "</tr>");
+                    //         $(".show_detail" + no_nota).show();
+                    //         $(".detail_bayar" + no_nota).hide();
+                    //         $(".hide_bayar" + no_nota).show();
+
+                    //         clickedElement.prop('disabled',
+                    //             false
+                    //         ); // Mengaktifkan kembali elemen yang diklik setelah tampilan ditambahkan
+                    //     },
+                    //     error: function() {
+                    //         clickedElement.prop('disabled',
+                    //             false
+                    //         ); // Jika ada kesalahan dalam permintaan AJAX, pastikan elemen yang diklik diaktifkan kembali
+                    //     }
+                    // });
+                });
+        });
     </script>
     @endsection
 </x-theme.app>
