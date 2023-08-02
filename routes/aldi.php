@@ -360,6 +360,7 @@ Route::middleware('auth')->group(function () {
             Route::get('/add_transfer_stok', 'add_transfer_stok')->name('add_transfer_stok');
             Route::get('/edit_transfer_stok', 'edit_transfer_stok')->name('edit_transfer_stok');
             Route::get('/tbh_baris_transfer_mtd', 'tbh_baris_transfer_mtd')->name('tbh_baris_transfer_mtd');
+            Route::get('/cek_transfer', 'cek_transfer')->name('cek_transfer');
             Route::post('/save_transfer', 'save_transfer')->name('save_transfer');
             Route::post('/update_transfer', 'update_transfer')->name('update_transfer');
 

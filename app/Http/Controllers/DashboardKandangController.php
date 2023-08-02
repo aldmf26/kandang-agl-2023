@@ -268,7 +268,7 @@ class DashboardKandangController extends Controller
         $data = [
             'title' => 'Edit Transfer',
             'nota' => $r->nota,
-            'tgl' => DB::table('invoice_mtd')->first()->tgl,
+            'tgl' => DB::table('invoice_mtd')->where([['no_nota', $r->nota], ['jenis', 'tf']])->first()->tgl,
             'produk' => DB::table('telur_produk')->get(),
             'datas' => DB::table('invoice_mtd')->where([['no_nota', $r->nota], ['jenis', 'tf']])->get()
         ];
@@ -339,7 +339,17 @@ class DashboardKandangController extends Controller
         return redirect()->route('dashboard_kandang.index')->with('sukses', 'Data berhasil di transfer');
     }
 
-
+    public function cek_transfer(Request $r)
+    {
+        $data = [
+            'title' => 'Edit Transfer',
+            'nota' => $r->nota,
+            'tgl' => DB::table('invoice_mtd')->where([['no_nota', $r->nota], ['jenis', 'tf']])->first()->tgl,
+            'produk' => DB::table('telur_produk')->get(),
+            'datas' => DB::table('invoice_mtd')->where([['no_nota', $r->nota], ['jenis', 'tf']])->get()
+        ];
+        return view('stok_telur.cek_transfer',$data);
+    }
 
     public function penjualan_umum()
     {
