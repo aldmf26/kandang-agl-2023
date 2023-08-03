@@ -385,6 +385,7 @@ Route::middleware('auth')->group(function () {
             Route::get('/add_penjualan_telur', 'add_penjualan_telur')->name('add_penjualan_telur');
             Route::get('/edit_telur', 'edit_telur')->name('edit_telur');
             Route::get('/detail_penjualan_mtd', 'detail_penjualan_mtd')->name('detail_penjualan_mtd');
+            Route::get('/get_detail_penjualan_mtd', 'get_detail_penjualan_mtd')->name('get_detail_penjualan_mtd');
             Route::get('/delete_penjualan_mtd', 'delete_penjualan_mtd')->name('delete_penjualan_mtd');
             Route::post('/save_penjualan_telur', 'save_penjualan_telur')->name('save_penjualan_telur');
             Route::post('/save_edit_telur', 'save_edit_telur')->name('save_edit_telur');

@@ -13,9 +13,9 @@
         <input type="hidden" class="form-control  pcs_biasa{{$count}}" name="pcs_pcs[]" value="0">
     </td>
     <td align="right">
-        <input type="text" class="form-control kg_pcs kg_pcs{{$count}}" count="{{$count}}"
-            style="text-align: right; font-size: 12px;">
-        <input type="hidden" class="form-control  kg_pcs_biasa{{$count}}" name="kg_pcs[]" value="0">
+        <input type="text" class="form-control kg_pcs kg_pcs{{$count}}" name="kg_pcs[]" count="{{$count}}"
+            style="text-align: right; font-size: 12px;" value="0">
+        {{-- <input type="hidden" class="form-control  kg_pcs_biasa{{$count}}" value="0"> --}}
     </td>
     <td align="right">
         <input type="text" class="form-control rp_pcs pcs{{$count}}" count="{{$count}}"

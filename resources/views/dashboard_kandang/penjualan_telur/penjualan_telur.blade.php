@@ -30,7 +30,7 @@
                 </thead>
                 <tbody>
                     @foreach ($penjualan as $no => $s)
-                    <tr>
+                    <tr class="induk_detail{{ $s->no_nota }}">
                         <td>{{ $no + 1 }}</td>
 
                         <td>
@@ -48,14 +48,16 @@
                         <td>{{ number_format($s->ttl_rp, 0) }} </td>
                         <td><span class="btn btn-sm btn-success">{{ ucwords($s->admin_cek) ?? '' }}</span></td>
                         <td>
+                            <a class="btn btn-primary btn-sm detail" no_nota="{{$s->no_nota}}" href="#"><i
+                                    class="me-2 fas fa-eye"></i>Detail</a>
                             <div class="btn-group" role="group">
                                 <span class="btn btn-sm" data-bs-toggle="dropdown">
                                     <i class="fas fa-ellipsis-v text-primary"></i>
                                 </span>
                                 <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1">
-                                    <li><a class="dropdown-item text-primary detail" no_nota="{{$s->no_nota}}"
+                                    {{-- <li><a class="dropdown-item text-primary detail" no_nota="{{$s->no_nota}}"
                                             href="#"><i class="me-2 fas fa-eye"></i>Detail</a>
-                                    </li>
+                                    </li> --}}
                                     @if ($s->cek == 'Y')
 
                                     @else
@@ -116,25 +118,33 @@
 
                     clickedElement.prop('disabled', true); // Menonaktifkan elemen yang diklik
 
-                    // $.ajax({
-                    //     type: "get",
-                    //     url: "/get_kreditBK?no_nota=" + no_nota,
-                    //     success: function(data) {
-                    //         $('.induk_detail' + no_nota).after("<tr>" + data + "</tr>");
-                    //         $(".show_detail" + no_nota).show();
-                    //         $(".detail_bayar" + no_nota).hide();
-                    //         $(".hide_bayar" + no_nota).show();
+                    $.ajax({
+                        type: "get",
+                        url: "/dashboard_kandang/get_detail_penjualan_mtd?no_nota=" + no_nota,
+                        success: function(data) {
+                            $('.induk_detail' + no_nota).after("<tr>" + data + "</tr>");
+                            $(".show_detail" + no_nota).show();
+                            $(".detail_bayar" + no_nota).hide();
+                            $(".hide_bayar" + no_nota).show();
 
-                    //         clickedElement.prop('disabled',
-                    //             false
-                    //         ); // Mengaktifkan kembali elemen yang diklik setelah tampilan ditambahkan
-                    //     },
-                    //     error: function() {
-                    //         clickedElement.prop('disabled',
-                    //             false
-                    //         ); // Jika ada kesalahan dalam permintaan AJAX, pastikan elemen yang diklik diaktifkan kembali
-                    //     }
-                    // });
+                            clickedElement.prop('disabled',
+                                false
+                            ); // Mengaktifkan kembali elemen yang diklik setelah tampilan ditambahkan
+                        },
+                        error: function() {
+                            clickedElement.prop('disabled',
+                                false
+                            ); // Jika ada kesalahan dalam permintaan AJAX, pastikan elemen yang diklik diaktifkan kembali
+                        }
+                    });
+                });
+
+                $(document).on("click", ".hide_bayar", function() {
+                    var no_nota = $(this).attr('no_nota');
+                    $(".show_detail" + no_nota).remove();
+                    $(".detail_bayar" + no_nota).show();
+                    $(".hide_bayar" + no_nota).hide();
+
                 });
         });
     </script>

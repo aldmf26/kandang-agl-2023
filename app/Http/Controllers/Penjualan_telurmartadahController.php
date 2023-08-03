@@ -63,6 +63,15 @@ class Penjualan_telurmartadahController extends Controller
         return view('dashboard_kandang.penjualan_telur.penjualan_telur', $data);
     }
 
+    public function get_detail_penjualan_mtd(Request $r)
+    {
+        $data = [
+            'telur' => DB::select("SELECT * FROM invoice_mtd as a left join telur_produk as b on b.id_produk_telur = a.id_produk where a.no_nota = '$r->no_nota'"),
+            'no_nota' => $r->no_nota
+        ];
+        return view('dashboard_kandang.penjualan_telur.detail_telur', $data);
+    }
+
     public function add_penjualan_telur()
     {
         $max = DB::table('invoice_telur')->latest('urutan')->where('lokasi', 'mtd')->first();

@@ -207,15 +207,27 @@ class ObatPakanController extends Controller
     public function save_tambah_pakan(Request $r)
     {
         for ($x = 0; $x < count($r->id_pakan); $x++) {
-            $data = [
-                'id_pakan' => $r->id_pakan[$x],
-                'pcs' => $r->pcs[$x],
-                'total_rp' => $r->ttl_rp[$x],
-                'biaya_dll' => $r->biaya_dll[$x],
-                'admin' => auth()->user()->name,
-                'tgl' => $r->tgl
-            ];
-            DB::table('stok_produk_perencanaan')->insert($data);
+            if ($r->kategori == 'pakan') {
+                $data = [
+                    'id_pakan' => $r->id_pakan[$x],
+                    'pcs' => $r->pcs[$x] * 50000,
+                    'total_rp' => $r->ttl_rp[$x],
+                    'biaya_dll' => $r->biaya_dll[$x],
+                    'admin' => auth()->user()->name,
+                    'tgl' => $r->tgl
+                ];
+                DB::table('stok_produk_perencanaan')->insert($data);
+            } else {
+                $data = [
+                    'id_pakan' => $r->id_pakan[$x],
+                    'pcs' => $r->pcs[$x],
+                    'total_rp' => $r->ttl_rp[$x],
+                    'biaya_dll' => $r->biaya_dll[$x],
+                    'admin' => auth()->user()->name,
+                    'tgl' => $r->tgl
+                ];
+                DB::table('stok_produk_perencanaan')->insert($data);
+            }
         }
 
         return redirect()->route('dashboard_kandang.index')->with('sukses', 'Data berhasil di simpan');
@@ -226,6 +238,7 @@ class ObatPakanController extends Controller
         $data = [
             'produk' => DB::table('tb_produk_perencanaan')->where('kategori', 'pakan')->get(),
             'count' => $r->count,
+            'kategori' => 'pakan'
 
         ];
         return view('stok_pakan.tbh_baris_stok', $data);
@@ -235,7 +248,7 @@ class ObatPakanController extends Controller
         $data = [
             'produk' => DB::select("SELECT * FROM tb_produk_perencanaan as a where a.kategori in('obat_pakan','obat_air')"),
             'count' => $r->count,
-
+            'kategori' => 'vitamin'
         ];
         return view('stok_pakan.tbh_baris_stok', $data);
     }

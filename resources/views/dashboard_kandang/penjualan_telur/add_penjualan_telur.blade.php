@@ -93,7 +93,8 @@
                                 </td>
                                 <td align="right">
 
-                                    <input type="text" class="form-control  kg_pcs_biasa1" name="kg_pcs[]" value="0">
+                                    <input type="text" class="form-control  kg_pcs_biasa1" name="kg_pcs[]"
+                                        style="text-align: right; font-size: 12px;" value="0">
                                 </td>
                                 <td align="right">
                                     <input type="text" class="form-control rp_pcs pcs1" count="1"
