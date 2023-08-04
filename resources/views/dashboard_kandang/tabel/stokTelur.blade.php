@@ -48,9 +48,9 @@
                     ->put('errorMin', '1');
                     }
                     @endphp
-                    <td>{{ number_format($stok->pcs, 0) }}</td>
-                    <td>{{ number_format($stok->kg, 0) }}</td>
-                    <td>{{ number_format($stok->pcs / 180, 0) }}</td>
+                    <td align="right">{{ number_format($stok->pcs, 0) }}</td>
+                    <td align="right">{{ number_format($stok->kg, 0) }}</td>
+                    <td align="right">{{ number_format($stok->pcs / 180, 0) }}</td>
                     @endforeach
             </tr>
             <tr>
@@ -70,9 +70,9 @@
                 WHERE id_telur = '$d->id_produk_telur' AND jenis = 'penjualan' AND opname = 'T';");
 
                 @endphp
-                <td>{{ number_format($stok->pcs, 0) ?? 0 }}</td>
-                <td>{{ number_format($stok->kg, 0) ?? 0 }}</td>
-                <td>{{ number_format($stok->pcs / 180, 0) }}</td>
+                <td align="right">{{ number_format($stok->pcs, 0) ?? 0 }}</td>
+                <td align="right">{{ number_format($stok->kg, 0) ?? 0 }}</td>
+                <td align="right">{{ number_format($stok->pcs / 180, 0) }}</td>
                 @endforeach
             </tr>
             <tr>
@@ -93,9 +93,9 @@
                 WHERE id_telur = '$d->id_produk_telur' AND id_gudang = 2 AND opname = 'T'");
 
                 @endphp
-                <td>{{ number_format($stok->pcs) ?? 0 }}</td>
-                <td>{{ number_format($stok->kg, 0) ?? 0 }}</td>
-                <td>{{ number_format($stok->pcs / 180, 0) }}</td>
+                <td align="right">{{ number_format($stok->pcs) ?? 0 }}</td>
+                <td align="right">{{ number_format($stok->kg, 0) ?? 0 }}</td>
+                <td align="right">{{ number_format($stok->pcs / 180, 0) }}</td>
                 @endforeach
             </tr>
         </table>

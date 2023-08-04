@@ -40,7 +40,7 @@
                                 <th width="20%" class="dhead" style="vertical-align: middle" rowspan="2">Produk</th>
                                 <th class="dhead text-center" colspan="2">Per Pcs</th>
                                 <th class="dhead text-center" colspan="2">Per Ikat</th>
-                                <th class="dhead text-center" colspan="2">Full Rak</th>
+                                <th class="dhead text-center" colspan="3">Rak</th>
                                 <th width="5%" class="dhead text-center" rowspan="2">Aksi</th>
                             </tr>
                             <tr>
@@ -55,7 +55,7 @@
 
                                 <th class="dhead abuGelap" width="7%" style="text-align: center;">Pcs</th>
                                 <th class="dhead abuGelap" width="7%" style="text-align: center;">Kg</th>
-                                {{-- <th class="dhead abuGelap" width="7%" style="text-align: center;">Rak</th> --}}
+                                <th class="dhead abuGelap" width="7%" style="text-align: center;">Rak</th>
                                 {{-- <th class="dhead" width="10%" style="text-align: center;">Rp Rak</th> --}}
                                 {{-- <th class="dhead" width="5%">Aksi</th> --}}
                             </tr>
@@ -101,6 +101,10 @@
                                     <input type="text" class="form-control kg_kg kg_kg1" count="1"
                                         style="text-align: right;font-size: 12px;" value="{{ $d->kg_kg }}" name="kg_kg[]">
                                 </td>
+                                <td align="right">
+                                    <input type="text" class="form-control rak_kg rak_kg1" count="1"
+                                        style="text-align: right;font-size: 12px;" value="{{ $d->rak_kg }}" name="rak_kg[]">
+                                </td>
                                 <!-- Jual Kg -->
                                 <td align="center" style="vertical-align: top;">
                                     <button type="button" class="btn rounded-pill remove_baris_tf " count="1"><i
@@ -118,7 +122,7 @@
                         <tfoot>
 
                             <tr>
-                                <th colspan="8"><button type="submit" class="btn btn-primary float-end">Simpan</button>
+                                <th colspan="9"><button type="submit" class="btn btn-primary float-end">Simpan</button>
                                 </th>
                             </tr>
                         </tfoot>

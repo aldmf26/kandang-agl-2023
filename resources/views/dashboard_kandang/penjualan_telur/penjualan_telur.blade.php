@@ -30,51 +30,51 @@
                 </thead>
                 <tbody>
                     @foreach ($penjualan as $no => $s)
-                    <tr>
-                        <td>{{ $no + 1 }}</td>
+                        <tr>
+                            <td>{{ $no + 1 }}</td>
 
-                        <td>
-                            <a href="#" onclick="event.preventDefault();"
-                                class="detail_bayar detail_bayar{{ $s->no_nota }}" no_nota="{{ $s->no_nota }}"><i
-                                    class="fas fa-angle-down"></i></a>
+                            <td>
+                                <a href="#" onclick="event.preventDefault();"
+                                    class="detail_bayar detail_bayar{{ $s->no_nota }}"
+                                    no_nota="{{ $s->no_nota }}"><i class="fas fa-angle-down"></i></a>
 
-                            <a href="#" onclick="event.preventDefault();" class="hide_bayar hide_bayar{{ $s->no_nota }}"
-                                no_nota="{{ $s->no_nota }}"><i class="fas fa-angle-up"></i></a>
-                        </td>
+                                <a href="#" onclick="event.preventDefault();"
+                                    class="hide_bayar hide_bayar{{ $s->no_nota }}" no_nota="{{ $s->no_nota }}"><i
+                                        class="fas fa-angle-up"></i></a>
+                            </td>
 
-                        <td>{{ tanggal($s->tgl) }}</td>
-                        <td>{{ $s->no_nota }}</td>
-                        <td>{{ $s->customer }}</td>
-                        <td>{{ number_format($s->ttl_rp, 0) }} </td>
-                        <td><span class="btn btn-sm btn-success">{{ ucwords($s->admin_cek) ?? '' }}</span></td>
-                        <td>
-                            <div class="btn-group" role="group">
-                                <span class="btn btn-sm" data-bs-toggle="dropdown">
-                                    <i class="fas fa-ellipsis-v text-primary"></i>
-                                </span>
-                                <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1">
-                                    <li><a class="dropdown-item text-primary detail" no_nota="{{$s->no_nota}}"
-                                            href="#"><i class="me-2 fas fa-eye"></i>Detail</a>
-                                    </li>
-                                    @if ($s->cek == 'Y')
+                            <td>{{ tanggal($s->tgl) }}</td>
+                            <td>{{ $s->no_nota }}</td>
+                            <td>{{ $s->customer }}</td>
+                            <td>{{ number_format($s->ttl_rp, 0) }} </td>
+                            <td><span class="btn btn-sm btn-success">{{ ucwords($s->admin_cek) ?? '' }}</span></td>
+                            <td>
+                                <div class="btn-group" role="group">
+                                    <span class="btn btn-sm" data-bs-toggle="dropdown">
+                                        <i class="fas fa-ellipsis-v text-primary"></i>
+                                    </span>
+                                    <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                                        <li><a class="dropdown-item text-primary detail" no_nota="{{ $s->no_nota }}"
+                                                href="#"><i class="me-2 fas fa-eye"></i>Detail</a>
+                                        </li>
+                                        @if ($s->cek == 'Y')
+                                        @else
+                                            <li><a class="dropdown-item text-primary "
+                                                    href="{{ route('dashboard_kandang.edit_telur', ['no_nota' => $s->no_nota]) }}"><i
+                                                        class="me-2 fas fa-pen"></i>Edit</a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item text-danger delete_nota"
+                                                    no_nota="{{ $s->no_nota }}" href="#" data-bs-toggle="modal"
+                                                    data-bs-target="#delete"><i class="me-2 fas fa-trash"></i>Delete
+                                                </a>
+                                            </li>
+                                        @endif
 
-                                    @else
-                                    <li><a class="dropdown-item text-primary "
-                                            href="{{ route('dashboard_kandang.edit_telur', ['no_nota' => $s->no_nota ]) }}"><i
-                                                class="me-2 fas fa-pen"></i>Edit</a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item text-danger delete_nota" no_nota="{{ $s->no_nota  }}"
-                                            href="#" data-bs-toggle="modal" data-bs-target="#delete"><i
-                                                class="me-2 fas fa-trash"></i>Delete
-                                        </a>
-                                    </li>
-                                    @endif
-
-                                </ul>
-                            </div>
-                        </td>
-                    </tr>
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
                     @endforeach
 
                 </tbody>
@@ -91,19 +91,19 @@
         </section>
     </x-slot>
     @section('js')
-    <script>
-        $(document).ready(function() {
+        <script>
+            $(document).ready(function() {
                 $(document).on('click', '.delete_nota', function() {
                     var no_nota = $(this).attr('no_nota');
                     $('.no_nota').val(no_nota);
                 });
                 $(document).on('click', '.detail', function() {
                     var no_nota = $(this).attr('no_nota');
-                   
+
                     $.ajax({
                         type: "get",
                         url: "/dashboard_kandang/detail_penjualan_mtd?no_nota=" + no_nota,
-                        success: function (data) {
+                        success: function(data) {
                             $("#detail").modal('show');
                             $("#detail_penjualan").html(data);
                         }
@@ -136,7 +136,7 @@
                     //     }
                     // });
                 });
-        });
-    </script>
+            });
+        </script>
     @endsection
 </x-theme.app>

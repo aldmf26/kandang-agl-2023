@@ -39,7 +39,7 @@
                                 <th width="20%" class="dhead" style="vertical-align: middle" rowspan="2">Produk</th>
                                 <th class="dhead text-center" colspan="2">Per Pcs</th>
                                 <th class="dhead text-center" colspan="2">Per Ikat</th>
-                                <th class="dhead text-center" colspan="2">Full Rak</th>
+                                <th class="dhead text-center" colspan="3">Rak</th>
                                 <th width="5%" class="dhead text-center" rowspan="2">Aksi</th>
                             </tr>
                             <tr>
@@ -54,7 +54,7 @@
 
                                 <th class="dhead abuGelap" width="7%" style="text-align: center;">Pcs</th>
                                 <th class="dhead abuGelap" width="7%" style="text-align: center;">Kg</th>
-                                {{-- <th class="dhead abuGelap" width="7%" style="text-align: center;">Rak</th> --}}
+                                <th class="dhead abuGelap" width="7%" style="text-align: center;">Rak</th>
                                 {{-- <th class="dhead" width="10%" style="text-align: center;">Rp Rak</th> --}}
                                 {{-- <th class="dhead" width="5%">Aksi</th> --}}
                             </tr>
@@ -86,7 +86,7 @@
                                         value="0">
                                     <input type="hidden" class="ttl_rp_pcs1" value="0">
                                 </td> --}}
-                                <!-- Jual Ikat -->
+                                <!-- Jual Ikat -->  
                                 <td align="right">
                                     <input type="text" class="form-control ikat ikat1" count="1"
                                         style="text-align: right;font-size: 12px;" value="0" name="ikat[]">
@@ -112,10 +112,10 @@
                                     <input type="text" class="form-control kg_kg kg_kg1" count="1"
                                         style="text-align: right;font-size: 12px;" value="0" name="kg_kg[]">
                                 </td>
-                                {{-- <td align="right">
+                                <td align="right">
                                     <input type="text" class="form-control rak_kg rak_kg1" count="1"
                                         style="text-align: right;font-size: 12px;" value="0" name="rak_kg[]">
-                                </td> --}}
+                                </td>
                                 {{-- <td align="right">
                                     <input type="text" class="form-control rp_kg rp_kg1" count="1"
                                         style="text-align: right;font-size: 12px;">
@@ -138,7 +138,7 @@
                         </tbody>
                         <tfoot>
                             <tr>
-                                <th colspan="8">
+                                <th colspan="9">
                                     <button type="button" class="btn btn-block btn-lg tbh_baris_mtd"
                                         style="background-color: #435EBE; color: white; font-size: 14px; padding: 13px;">
                                         <i class="fas fa-plus"></i> Tambah Baris Baru
@@ -147,7 +147,7 @@
                                 </th>
                             </tr>
                             <tr>
-                                <th colspan="8"><button type="submit" class="btn btn-primary float-end">Simpan</button>
+                                <th colspan="9"><button type="submit" class="btn btn-primary float-end">Simpan</button>
                                 </th>
                             </tr>
                         </tfoot>

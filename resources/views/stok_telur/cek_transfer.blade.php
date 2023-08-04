@@ -6,118 +6,155 @@
                 <div class="card-header">
                     <div class="row">
                         <div class="col-lg-12">
-                            <h6 class="float-start">Cek Nota Transfer</h6>
-                            <x-theme.button modal="T" href="{{ route('dashboard_kandang.add_penjualan_telur') }}"
+                            <x-theme.button modal="T"
+                                href="{{ route('dashboard_kandang.add_transfer_stok', ['id_gudang' => 1]) }}"
                                 icon="fa-plus" addClass="float-end" teks="Buat Nota" />
+                            <x-theme.button modal="T"
+                                href="{{ route('dashboard_kandang.edit_transfer_stok', ['nota' => $nota]) }}"
+                                icon="fa-pen" addClass="float-end" teks="Edit Nota" />
                             <x-theme.btn_dashboard route="dashboard_kandang.index" />
                             <br>
                             <br>
                             <hr>
                         </div>
                         <div class="col-lg-6">
-                            <img src="https://agrilaras.putrirembulan.com/assets/img/logo.png" alt="Logo" width="150px">
+                            <img src="https://agrilaras.putrirembulan.com/assets/img/logo.png" alt="Logo"
+                                width="150px">
                         </div>
                         <div class="col-lg-6">
                             <table>
                                 <tr>
                                     <td style="padding: 5px">Tanggal</td>
                                     <td style="padding: 5px">:</td>
-                                    <td style="padding: 5px">{{Tanggal($tgl)}}</td>
+                                    <td style="padding: 5px">{{ Tanggal($tgl) }}</td>
                                 </tr>
                                 <tr>
-                                    <td style="padding: 5px">No. Nota</td>
+                                    <td style="padding: 5px">No. Nota </td>
                                     <td style="padding: 5px">:</td>
-                                    <td style="padding: 5px">{{$nota}}</td>
+                                    <td style="padding: 5px">{{ $nota }} <span class="text-warning">(copy di nota manual)</span></td>
                                 </tr>
-                           
-                                {{-- <tr>
-                                    <td style="padding: 5px">Pengirim</td>
+                                <tr>
+                                    <td style="padding: 5px">Admin</td>
                                     <td style="padding: 5px">:</td>
-                                    <td style="padding: 5px"></td>
-                                </tr> --}}
+                                    <td style="padding: 5px">{{ auth()->user()->name }}</td>
+                                </tr>
+
+
                             </table>
                         </div>
                     </div>
                 </div>
+                <h6 class="text-center">Transfer Telur Martadah</h6>
                 <div class="card-body">
-                    {{-- <table class="table  table-bordered" style="white-space: nowrap;">
+                    <table class="table  table-striped" style="white-space: nowrap;">
                         <thead>
                             <tr>
                                 <th class="dhead" width="10%" rowspan="2">Produk </th>
-                                <th style="text-align: center" class="dhead abu" colspan="3">Penjualan per pcs</th>
-                                <th style="text-align: center" class="dhead putih" colspan="3">Penjualan per ikat</th>
-                                <th style="text-align: center" class="dhead abuGelap" colspan="3">Penjualan per rak</th>
-                                <th rowspan="2" class="dhead" width="10%"
-                                    style="text-align: center; white-space: nowrap;">Total
-                                    Rp
+                                <th style="text-align: center" class="dhead abu" colspan="2">Per pcs</th>
+                                <th style="text-align: center" class="dhead putih" colspan="2">Per ikat
                                 </th>
+                                <th style="text-align: center" class="dhead abuGelap" colspan="3">Rak
+                                </th>
+
                             </tr>
                             <tr>
 
 
-                                <th class="dhead abu" width="7%" style="text-align: center">Pcs</th>
-                                <th class="dhead abu" width="7%" style="text-align: center">Kg</th>
-                                <th class="dhead abu" width="10%" style="text-align: center;">Rp Pcs</th>
+                                <th class="dhead text-end abu" width="7%" style="text-align: center">Pcs</th>
+                                <th class="dhead text-end abu" width="7%" style="text-align: center">Kg</th>
 
-                                <th class="dhead putih" width="7%" style="text-align: center;">Ikat</th>
-                                <th class="dhead putih" width="7%" style="text-align: center;">Kg</th>
-                                <th class="dhead putih" width="10%" style="text-align: center;">Rp Ikat</th>
+                                <th class="dhead text-end putih" width="7%" style="text-align: center;">Ikat</th>
+                                <th class="dhead text-end putih" width="7%" style="text-align: center;">Kg</th>
 
-                                <th class="dhead abuGelap" width="7%" style="text-align: center;">Pcs</th>
-                                <th class="dhead abuGelap" width="7%" style="text-align: center;">Kg</th>
-                                <th class="dhead abuGelap" width="10%" style="text-align: center;">Rp Rak</th>
+                                <th class="dhead text-end abuGelap" width="7%" style="text-align: center;">Pcs</th>
+                                <th class="dhead text-end abuGelap" width="7%" style="text-align: center;">Kg</th>
+                                <th class="dhead text-end abuGelap" width="7%" style="text-align: center;">Rak</th>
 
 
                             </tr>
                         </thead>
                         <tbody>
                             @php
-                            $total_semua = 0;
-                            $ttl_pcs = 0;
-                            $ttl_kg_kotor = 0;
-                            $ttl_kg_bersih = 0;
+                                $ttl_pcs = 0;
+                                $ttl_kg = 0;
+                                $ttl_rak = 0;
                             @endphp
-                            @foreach ($invoice as $i)
-                            <tr>
+                            @foreach ($datas as $d)
+                                @php
+                                    $ttl_pcs += $d->pcs_pcs + $d->ikat * 180 + $d->pcs_kg;
+                                    $ttl_kg += $d->pcs_kg + $d->kg_ikat + (($d->pcs_kg / 15) * 0.12 + $d->kg_kg);
+                                    $ttl_rak += $d->rak_kg;
+                                @endphp
+                                <tr class="baris1">
+                                    <input type="hidden" name="id_invoice_mtd[]" value="{{ $d->id_invoice_mtd }}">
+                                    <td>
+                                        @foreach ($produk as $p)
+                                            {{ $p->id_produk_telur == $d->id_produk ? $p->nm_telur : '' }}
+                                        @endforeach
 
-                                <td>{{$i->nm_telur}}</td>
-                                <td align="right">{{$i->pcs_pcs}}</td>
-                                <td align="right">{{$i->kg_pcs}}</td>
-                                <td align="right">Rp. {{number_format($i->rp_pcs,0)}}</td>
-                                <td align="right">{{$i->ikat}}</td>
-                                <td align="right">{{$i->kg_ikat}}</td>
-                                <td align="right">Rp. {{number_format($i->rp_ikat,0)}}</td>
-                                <td align="right">{{$i->pcs_kg}}</td>
-                                <td align="right">{{$i->kg_kg}}</td>
-                                <td align="right">Rp. {{number_format($i->rp_kg,0)}}</td>
-                                <td align="right">
-                                    @php
-                                    $rp_pcs = $i->pcs_pcs * $i->rp_pcs;
-                                    $rp_ikat = ($i->kg_ikat - $i->ikat) * $i->rp_ikat;
-                                    $rak_kotor = round(($i->pcs_kg/15) * 0.12,1);
-                                    $kg_rak_kotor = $i->kg_kg + $rak_kotor;
-                                    $rp_kg = $i->kg_kg * $i->rp_kg;
-                                    $total_rp = $rp_pcs + $rp_ikat + $rp_kg;
+                                    </td>
+                                    <td align="right">
+                                        {{ $d->pcs_pcs }}
 
-                                    $ikat_kg_bersih = $i->kg_ikat - $i->ikat;
+                                    </td>
+                                    <td align="right">
+                                        {{ $d->kg_pcs }}
+                                    </td>
 
-                                    @endphp
-                                    Rp. {{number_format($total_rp,0)}}
-                                </td>
-                            </tr>
-                            @php
-                            $total_semua += $total_rp;
-                            $ttl_pcs += $i->pcs_pcs + ($i->ikat * 180) + $i->pcs_kg;
-                            $ttl_kg_kotor += $i->kg_pcs + $i->kg_ikat + $kg_rak_kotor;
-                            $ttl_kg_bersih += $ikat_kg_bersih + $i->kg_kg;
-                            @endphp
+                                    <!-- Jual Ikat -->
+                                    <td align="right">
+                                        {{ $d->ikat }}
+
+                                    </td>
+                                    <td align="right">
+                                        {{ $d->kg_ikat }}
+
+                                    </td>
+                                    <!-- Jual Kg -->
+                                    <td align="right">
+                                        {{ $d->pcs_kg }}
+
+                                    </td>
+                                    <td align="right">
+                                        {{ $d->kg_kg }}
+
+                                    </td>
+                                    <td align="right">
+                                        {{ $d->rak_kg }}
+
+                                    </td>
+                                    <!-- Jual Kg -->
+
+                                </tr>
                             @endforeach
 
 
                         </tbody>
 
-                    </table> --}}
-                    {{-- <table width="100%">
+                    </table>
+                    <table width="50%" class="" style="white-space: nowrap;">
+                        {{-- <thead>
+                            <tr>
+                                <th class="dhead text-center" colspan="4">Total </th>
+                            </tr>
+                            <tr>
+                                <th class="dhead abu" width="2%" style="text-align: center">Pcs</th>
+                                <th class="dhead putih" width="2%" style="text-align: center;">Kg</th>
+                                <th class="dhead putih" width="2%" style="text-align: center;">Ikat</th>
+                                <th class="dhead putih" width="2%" style="text-align: center;">Rak</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td align="right">{{ number_format($ttl_pcs, 0) }}</td>
+                                <td align="right">{{ number_format($ttl_kg, 0) }}</td>
+                                <td align="right">{{ number_format($ttl_pcs / 180, 2) }}</td>
+                                <td align="right">{{ number_format($ttl_rak, 0) }}</td>
+
+
+
+                            </tr>
+                        </tbody> --}}
                         <tr>
                             <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                             <td>Total Pcs</td>
@@ -127,24 +164,27 @@
                         </tr>
                         <tr>
                             <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                            <td>Total (Bruto)</td>
+                            <td>Total Kg</td>
                             <td>:</td>
-                            <td>{{number_format($ttl_kg_kotor,0)}}</td>
+                            <td>{{number_format($ttl_kg,0)}}</td>
                             <td></td>
                         </tr>
                         <tr>
                             <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                            <td>Berat Bersih (Netto)</td>
+                            <td>Total Ikat</td>
                             <td>:</td>
-                            <td>{{number_format($ttl_kg_bersih,0)}}</td>
+                            <td>{{number_format($ttl_pcs / 180,2)}}</td>
                             <td></td>
                         </tr>
                         <tr>
-                            <td colspan="3"></td>
-                            <td><b>JUMLAH TOTAL </b></td>
-                            <td><b>Rp.{{ number_format($total_semua,0)}}</b></td>
+                            <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                            <td>Total Rak</td>
+                            <td>:</td>
+                            <td>{{number_format($ttl_rak,0)}}</td>
+                            <td></td>
                         </tr>
-                    </table> --}}
+
+                    </table>
                 </div>
             </div>
         </div>

@@ -15,9 +15,9 @@
         <thead>
             <tr>
                 <th class="text-center dhead">Produk</th>
-                <th width="30%" class="text-center dhead">Ttl Rp</th>
-                <th width="20%" class="text-center dhead">Nota PAGL</th>
-                <th width="16%" class="text-center dhead">Ttl Nota</th>
+                <th width="30%" class="text-end dhead">Ttl Rp</th>
+                <th width="20%" class="text-end dhead">Nota PAGL</th>
+                <th width="16%" class="text-end dhead">Ttl Nota</th>
             </tr>
         </thead>
         <tbody class="text-center">
@@ -34,15 +34,15 @@
 
                 <tr>
                     <td>{{ $d->nm_produk }}</td>
-                    <td>Rp. {{ !empty($datas) ? number_format($datas->ttl_rp, 0) ?? 0 : 0 }}</td>
+                    <td align="right">Rp. {{ !empty($datas) ? number_format($datas->ttl_rp, 0) ?? 0 : 0 }}</td>
                     @if (!empty($datas))
                         <td data-bs-toggle="modal" data-bs-target="#detail_nota"
                             class="detail_nota text-primary cursor-pointer"
                             urutan="{{ $urutan }}, {{ $d->id_produk }}">{{ $urutan }}</td>
                     @else
-                        <td>0</td>
+                        <td align="right">0</td>
                     @endif
-                    <td>{{ !empty($datas) ? $datas->ttl ?? 0 : 0 }}</td>
+                    <td align="right">{{ !empty($datas) ? $datas->ttl ?? 0 : 0 }}</td>
                 </tr>
             @endforeach
         </tbody>

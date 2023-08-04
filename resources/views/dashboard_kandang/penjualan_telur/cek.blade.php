@@ -6,6 +6,7 @@
                 <div class="card-header">
                     <div class="row">
                         <div class="col-lg-12">
+                            
                             <x-theme.button modal="T" href="{{ route('dashboard_kandang.add_penjualan_telur') }}"
                                 icon="fa-plus" addClass="float-end" teks="Buat Nota" />
                             <x-theme.button modal="T" href="{{ route('dashboard_kandang.penjualan_telur') }}"
@@ -44,6 +45,9 @@
                         </div>
                     </div>
                 </div>
+                <h6 class="text-center">
+                    Cek Nota Penjualan Telur
+                </h6>
                 <div class="card-body">
                     <table class="table  table-bordered" style="white-space: nowrap;">
                         <thead>

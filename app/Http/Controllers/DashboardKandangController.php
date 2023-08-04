@@ -178,8 +178,8 @@ class DashboardKandangController extends Controller
 
     public function add_transfer_stok(Request $r)
     {
-        $cek = DB::table('stok_telur')->where([['nota_transfer', '!=', ''], ['nota_transfer', 'like', '%TF%']])->first();
-        $nota_t = empty($cek) ? 1000 + 1 : str()->remove('TF-', $cek->nota_transfer) + 1;
+        $cek = DB::table('invoice_mtd')->where('jenis', 'tf')->orderBy('id_invoice_mtd', 'DESC')->first();
+        $nota_t = empty($cek) ? 1000 + 1 : str()->remove('TF-', $cek->no_nota) + 1;
 
         $data = [
             'title' => 'Buat Invoice',
@@ -254,13 +254,14 @@ class DashboardKandangController extends Controller
                 'kg_ikat' => $kg_ikat[$x],
                 'pcs_kg' => $pcs_kg[$x],
                 'kg_kg' => $kg_kg[$x],
+                'rak_kg' => $rak_kg[$x],
                 'id_produk' => $r->id_produk[$x],
                 'jenis' => 'tf',
                 'admin' => auth()->user()->name
             ];
             DB::table('invoice_mtd')->insert($data);
         }
-        return redirect()->route('dashboard_kandang.index')->with('sukses', 'Data berhasil di transfer');
+        return redirect()->route('dashboard_kandang.cek_transfer', ['nota' => "TF-$nota_t"])->with('sukses', 'Data berhasil di transfer');
     }
 
     public function edit_transfer_stok(Request $r)
@@ -272,11 +273,12 @@ class DashboardKandangController extends Controller
             'produk' => DB::table('telur_produk')->get(),
             'datas' => DB::table('invoice_mtd')->where([['no_nota', $r->nota], ['jenis', 'tf']])->get()
         ];
-        return view('stok_telur.edit_transfer',$data);
+        return view('stok_telur.edit_transfer', $data);
     }
 
     public function update_transfer(Request $r)
     {
+
         $nota_t = $r->no_nota;
 
         $pcs_pcs = $r->pcs_pcs;
@@ -294,7 +296,7 @@ class DashboardKandangController extends Controller
         DB::table('stok_telur')->where('nota_transfer', $nota_t)->delete();
         DB::table('invoice_mtd')->where('no_nota', $nota_t)->delete();
         for ($x = 0; $x < count($r->id_produk); $x++) {
-            
+
             $pcs_ikat = $ikat[$x] * 180;
             $total_pcs = $pcs_ikat + $pcs_pcs[$x] + $pcs_kg[$x];
             $total_kg_kotor = $kg_pcs[$x] + $kg_ikat[$x] + $kg_kg[$x];
@@ -304,7 +306,7 @@ class DashboardKandangController extends Controller
                 'pcs_kredit' => $total_pcs,
                 'kg_kredit' => $total_kg_kotor,
                 'admin' => auth()->user()->name,
-                'nota_transfer' =>$nota_t,
+                'nota_transfer' => $nota_t,
                 'id_gudang' => 1,
                 'jenis' => 'tf'
             ];
@@ -315,7 +317,7 @@ class DashboardKandangController extends Controller
                 'pcs' => $total_pcs,
                 'kg' => $total_kg_kotor,
                 'admin' => auth()->user()->name,
-                'nota_transfer' =>$nota_t,
+                'nota_transfer' => $nota_t,
                 'id_gudang' => 2,
                 'jenis' => 'tf'
             ];
@@ -330,25 +332,54 @@ class DashboardKandangController extends Controller
                 'kg_ikat' => $kg_ikat[$x],
                 'pcs_kg' => $pcs_kg[$x],
                 'kg_kg' => $kg_kg[$x],
+                'rak_kg' => $rak_kg[$x],
                 'id_produk' => $r->id_produk[$x],
                 'jenis' => 'tf',
                 'admin' => auth()->user()->name
             ];
             DB::table('invoice_mtd')->insert($data);
+
+            return redirect()->route('dashboard_kandang.index')->with('sukses', 'Data berhasil di transfer');
         }
-        return redirect()->route('dashboard_kandang.index')->with('sukses', 'Data berhasil di transfer');
     }
 
     public function cek_transfer(Request $r)
     {
         $data = [
-            'title' => 'Edit Transfer',
+            'title' => 'Nota Transfer',
             'nota' => $r->nota,
             'tgl' => DB::table('invoice_mtd')->where([['no_nota', $r->nota], ['jenis', 'tf']])->first()->tgl,
             'produk' => DB::table('telur_produk')->get(),
             'datas' => DB::table('invoice_mtd')->where([['no_nota', $r->nota], ['jenis', 'tf']])->get()
         ];
-        return view('stok_telur.cek_transfer',$data);
+        return view('stok_telur.cek_transfer', $data);
+    }
+
+    public function detail_transfer($no_nota)
+    {
+        $data = [
+            'title' => 'Nota Transfer',
+            'nota' => $no_nota,
+            'tgl' => DB::table('invoice_mtd')->where([['no_nota', $no_nota], ['jenis', 'tf']])->first()->tgl,
+            'produk' => DB::table('telur_produk')->get(),
+            'datas' => DB::table('invoice_mtd')->where([['no_nota', $no_nota], ['jenis', 'tf']])->get()
+        ];
+        return view('stok_telur.detail_transfer', $data);
+    }
+
+    public function void_transfer(Request $r)
+    {
+        DB::table('invoice_mtd')->where('no_nota', $r->nota)->update(['void' => empty($r->value) ? 'Y' : 'T']);
+
+        return redirect()->route('dashboard_kandang.transfer_stok', ['id_gudan' => 1])->with('sukses', 'Berhasil void');
+    }
+
+    public function delete_transfer(Request $r)
+    {
+        DB::table('invoice_mtd')->where('no_nota', $r->no_nota)->delete();
+        DB::table('stok_telur')->where('nota_transfer', $r->no_nota)->delete();
+
+        return redirect()->route('dashboard_kandang.transfer_stok', ['id_gudang' => 1])->with('sukses', 'Berhasil hapus data');
     }
 
     public function penjualan_umum()
@@ -436,30 +467,30 @@ class DashboardKandangController extends Controller
                 'lokasi' => 'mtd'
             ]);
 
-            $getProduk = DB::table('tb_stok_produk')->where('id_produk', $r->id_produk[$i])->orderBy('id_stok_produk', 'DESC')->first();
-            $notaProduk = buatNota('tb_stok_produk', 'urutan');
-            $jml_sebelumnya = $getProduk->jml_sebelumnya ?? 0;
-            $jml_sesudahnya = $jml_sebelumnya - $r->qty[$i];
-
-            DB::table("tb_stok_produk")->insert([
-                'id_produk' => $r->id_produk[$i],
-                'urutan' => $notaProduk,
-                'no_nota' => 'SK-' . $notaProduk,
-                'tgl' => $r->tgl,
-                'jenis' => 'selesai',
-                'status' => 'keluar',
-                'jml_sebelumnya' => $jml_sebelumnya,
-                'jml_sesudahnya' => $jml_sesudahnya,
-                'debit' => 0,
-                'kredit' => $r->qty[$i],
-                'rp_satuan' => 0,
-                'ket' => 'PUM-' . $r->no_nota,
-                'gudang_id' => $getProduk->gudang_id,
-                'kategori_id' => 3,
-                'departemen_id' => 1,
-                'admin' => auth()->user()->name,
-                'lokasi' => 'mtd'
-            ]);
+            // $getProduk = DB::table('tb_stok_produk')->where('id_produk', $r->id_produk[$i])->orderBy('id_stok_produk', 'DESC')->first();
+            // $notaProduk = buatNota('tb_stok_produk', 'urutan');
+            // $jml_sebelumnya = $getProduk->jml_sebelumnya ?? 0;
+            // $jml_sesudahnya = $jml_sebelumnya - $r->qty[$i];
+            // $gudang_id = DB::table('tb_produk')->where('id_produk', $r->id_produk[$i])->first()->gudang_id;
+            // DB::table("tb_stok_produk")->insert([
+            //     'id_produk' => $r->id_produk[$i],
+            //     'urutan' => $notaProduk,
+            //     'no_nota' => 'SK-' . $notaProduk,
+            //     'tgl' => $r->tgl,
+            //     'jenis' => 'selesai',
+            //     'status' => 'keluar',
+            //     'jml_sebelumnya' => $jml_sebelumnya,
+            //     'jml_sesudahnya' => $jml_sesudahnya,
+            //     'debit' => 0,
+            //     'kredit' => $r->qty[$i],
+            //     'rp_satuan' => 0,
+            //     'ket' => 'PUM-' . $r->no_nota,
+            //     'gudang_id' => $gudang_id,
+            //     'kategori_id' => 3,
+            //     'departemen_id' => 1,
+            //     'admin' => auth()->user()->name,
+            //     'lokasi' => 'mtd'
+            // ]);
         }
 
         return redirect()->route('dashboard_kandang.penjualan_umum')->with('sukses', 'Data Berhasil Ditambahkan');

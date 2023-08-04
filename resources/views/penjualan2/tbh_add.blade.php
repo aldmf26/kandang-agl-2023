@@ -10,12 +10,12 @@
             <option value="tambah">+ Produk</option>
         </select>
     </td>
-    <td>
+    {{-- <td>
         <input type="text" value="0" readonly class="form-control stok{{$count}}">
     </td>
-    <td></td>
+    <td></td> --}}
     <td>
-        <input name="qty[]" type="text" class="form-control qty qty{{$count}}">
+        <input name="qty[]" value="0" type="text" class="form-control qty qty{{$count}}">
     </td>
     <td>
         <input type="text" class="form-control dikanan setor-nohide text-end"

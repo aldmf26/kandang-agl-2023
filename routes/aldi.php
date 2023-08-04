@@ -361,6 +361,9 @@ Route::middleware('auth')->group(function () {
             Route::get('/edit_transfer_stok', 'edit_transfer_stok')->name('edit_transfer_stok');
             Route::get('/tbh_baris_transfer_mtd', 'tbh_baris_transfer_mtd')->name('tbh_baris_transfer_mtd');
             Route::get('/cek_transfer', 'cek_transfer')->name('cek_transfer');
+            Route::get('/void_transfer', 'void_transfer')->name('void_transfer');
+            Route::get('/detail_transfer/{no_nota}', 'detail_transfer')->name('detail_transfer');
+            Route::get('/delete_transfer', 'delete_transfer')->name('delete_transfer');
             Route::post('/save_transfer', 'save_transfer')->name('save_transfer');
             Route::post('/update_transfer', 'update_transfer')->name('update_transfer');
 

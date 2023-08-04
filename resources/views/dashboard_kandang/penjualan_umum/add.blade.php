@@ -44,8 +44,8 @@
                         <thead>
                             <tr>
                                 <th width="20%" class="dhead">Produk </th>
-                                <th width="5%" class="dhead">Stok </th>
-                                <th width="5%" class="dhead"></th>
+                                {{-- <th width="5%" class="dhead">Stok </th>
+                                <th width="5%" class="dhead"></th> --}}
                                 <th width="5%" class="dhead">Qty</th>
                                 <th width="10%" class="dhead text-end">Harga Satuan</th>
                                 <th width="10%" class="dhead text-end">Total Rp</th>
@@ -65,12 +65,12 @@
                                         <option value="tambah">+ Produk</option>
                                     </select>
                                 </td>
-                                <td>
+                                {{-- <td>
                                     <input type="text" value="0" readonly class="form-control stok1">
                                 </td>
                                 <td>
                                     <a target="_blank" href="{{ route('barang_dagangan.add') }}" data-bs-toggle="tooltip" title="Tambah Stok" class="badge bg-info"><i class="fas fa-plus"></i></a>
-                                </td>
+                                </td> --}}
                                 <td>
                                     <input count="1" name="qty[]" value="0" type="text" class="form-control qty qty1">
                                 </td>
