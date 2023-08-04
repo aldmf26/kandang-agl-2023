@@ -38,17 +38,17 @@
                         <td>{{ tanggal($s->tgl) }}</td>
                         <td>{{ $s->no_nota }}</td>
                         <td>{{ $s->customer }}</td>
-                        <td>{{ number_format($s->ttl_rp, 0) }} </td>
+                        <td align="right">{{ number_format($s->ttl_rp, 0) }} </td>
                         <td><span class="btn btn-sm btn-success">{{ ucwords($s->admin_cek) ?? '' }}</span></td>
-                        <td>
+                        <td align="center">
+                            <a class="btn btn-primary btn-sm detail" no_nota="{{$s->no_nota}}" href="#"><i
+                                    class="me-2 fas fa-eye"></i>Detail</a>
+                            @if ($s->void == 'Y' || $s->tgl == date('Y-m-d'))
                             <div class="btn-group" role="group">
                                 <span class="btn btn-sm" data-bs-toggle="dropdown">
                                     <i class="fas fa-ellipsis-v text-primary"></i>
                                 </span>
                                 <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1">
-                                    <li><a class="dropdown-item text-primary detail" no_nota="{{$s->no_nota}}"
-                                            href="#"><i class="me-2 fas fa-eye"></i>Detail</a>
-                                    </li>
                                     @if ($s->cek == 'Y')
 
                                     @else
@@ -63,10 +63,17 @@
                                         </a>
                                     </li>
                                     @endif
-
                                 </ul>
                             </div>
+                            @else
+                            @if (auth()->user()->posisi_id == 1)
+                            <x-theme.button modal="T"
+                                href="/dashboard_kandang/void_penjualan_mtd?no_nota={{$s->no_nota}}" icon="fa-times"
+                                variant="danger" teks="Void" />
+                            @endif
+                            @endif
                         </td>
+
                     </tr>
                     @endforeach
 
@@ -84,19 +91,19 @@
         </section>
     </x-slot>
     @section('js')
-        <script>
-            $(document).ready(function() {
+    <script>
+        $(document).ready(function() {
                 $(document).on('click', '.delete_nota', function() {
                     var no_nota = $(this).attr('no_nota');
                     $('.no_nota').val(no_nota);
                 });
                 $(document).on('click', '.detail', function() {
                     var no_nota = $(this).attr('no_nota');
-
+                   
                     $.ajax({
                         type: "get",
                         url: "/dashboard_kandang/detail_penjualan_mtd?no_nota=" + no_nota,
-                        success: function(data) {
+                        success: function (data) {
                             $("#detail").modal('show');
                             $("#detail_penjualan").html(data);
                         }
@@ -137,7 +144,7 @@
                     $(".hide_bayar" + no_nota).hide();
 
                 });
-            });
-        </script>
+        });
+    </script>
     @endsection
 </x-theme.app>
