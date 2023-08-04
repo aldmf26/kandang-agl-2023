@@ -1,4 +1,4 @@
-<x-theme.app title="{{ $title }}" table="Y" sizeCard="12">
+<x-theme.app title="{{ $title }}" table="Y" sizeCard="10">
     <x-slot name="cardHeader">
         <div class="row">
             <div class="col-lg-6">
@@ -19,11 +19,11 @@
                 <thead>
                     <tr>
                         <th width="5">#</th>
-                        <td></td>
+
                         <th>Tanggal</th>
                         <th>Nota</th>
                         <th>Customer</th>
-                        <th>Total Rp</th>
+                        <th style="text-align: right">Total Rp</th>
                         <th>Diterima</th>
                         <th>Aksi</th>
                     </tr>
@@ -33,31 +33,22 @@
                     <tr class="induk_detail{{ $s->no_nota }}">
                         <td>{{ $no + 1 }}</td>
 
-                        <td>
-                            <a href="#" onclick="event.preventDefault();"
-                                class="detail_bayar detail_bayar{{ $s->no_nota }}" no_nota="{{ $s->no_nota }}"><i
-                                    class="fas fa-angle-down"></i></a>
 
-                            <a href="#" onclick="event.preventDefault();" class="hide_bayar hide_bayar{{ $s->no_nota }}"
-                                no_nota="{{ $s->no_nota }}"><i class="fas fa-angle-up"></i></a>
-                        </td>
 
                         <td>{{ tanggal($s->tgl) }}</td>
                         <td>{{ $s->no_nota }}</td>
                         <td>{{ $s->customer }}</td>
-                        <td>{{ number_format($s->ttl_rp, 0) }} </td>
+                        <td align="right">{{ number_format($s->ttl_rp, 0) }} </td>
                         <td><span class="btn btn-sm btn-success">{{ ucwords($s->admin_cek) ?? '' }}</span></td>
-                        <td>
+                        <td align="center">
                             <a class="btn btn-primary btn-sm detail" no_nota="{{$s->no_nota}}" href="#"><i
                                     class="me-2 fas fa-eye"></i>Detail</a>
+                            @if ($s->void == 'Y' || $s->tgl == date('Y-m-d'))
                             <div class="btn-group" role="group">
                                 <span class="btn btn-sm" data-bs-toggle="dropdown">
                                     <i class="fas fa-ellipsis-v text-primary"></i>
                                 </span>
                                 <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1">
-                                    {{-- <li><a class="dropdown-item text-primary detail" no_nota="{{$s->no_nota}}"
-                                            href="#"><i class="me-2 fas fa-eye"></i>Detail</a>
-                                    </li> --}}
                                     @if ($s->cek == 'Y')
 
                                     @else
@@ -72,10 +63,17 @@
                                         </a>
                                     </li>
                                     @endif
-
                                 </ul>
                             </div>
+                            @else
+                            @if (auth()->user()->posisi_id == 1)
+                            <x-theme.button modal="T"
+                                href="/dashboard_kandang/void_penjualan_mtd?no_nota={{$s->no_nota}}" icon="fa-times"
+                                variant="danger" teks="Void" />
+                            @endif
+                            @endif
                         </td>
+
                     </tr>
                     @endforeach
 

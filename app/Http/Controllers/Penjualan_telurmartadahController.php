@@ -46,12 +46,12 @@ class Penjualan_telurmartadahController extends Controller
     {
         $tgl1 =  $this->tgl1;
         $tgl2 =  $this->tgl2;
-        $transfer = DB::select("SELECT a.cek, a.tgl, a.no_nota, a.customer,  b.nm_telur,  sum(a.total_rp) as ttl_rp , a.admin, a.admin_cek
+        $transfer = DB::select("SELECT a.void, a.cek, a.tgl, a.no_nota, a.customer,  b.nm_telur,  sum(a.total_rp) as ttl_rp , a.admin, a.admin_cek
         FROM invoice_telur as a 
         left join telur_produk as b on b.id_produk_telur = a.id_produk
         WHERE a.lokasi = 'mtd' and a.tgl between '$tgl1' and '$tgl2'
         GROUP by a.no_nota
-        order by a.urutan DESC
+        order by a.no_nota DESC
         ");
 
         $data = [
@@ -300,8 +300,9 @@ class Penjualan_telurmartadahController extends Controller
             $total_kg_kotor = $kg_pcs[$x] + $kg_ikat[$x] + $kg_kg[$x];
 
             $kg_bersih_ikat = $kg_ikat[$x] - $ikat[$x];
-            $rak_kali = round($rak_kg[$x] * 0.12, 1);
-            $kg_bersih_kg = $kg_kg[$x] - $rak_kali;
+            $rk = $pcs_kg[$x] / 15;
+            $rak_kali = round($rk  * 0.12, 1);
+            $kg_bersih_kg = $kg_kg[$x] + $rak_kali;
 
             $total_kg_bersih = $kg_bersih_ikat + $kg_bersih_kg;
             $total_rp_satuan = $rp_pcs[$x] + $rp_ikat[$x] + $rp_kg[$x];
@@ -328,7 +329,8 @@ class Penjualan_telurmartadahController extends Controller
                 'urutan' => $nota_t,
                 'urutan_customer' => $urutan_cus,
                 'driver' => '',
-                'lokasi' => 'mtd'
+                'lokasi' => 'mtd',
+                'void' => 'T'
             ];
             DB::table('invoice_telur')->insert($data);
             $data = [
@@ -348,8 +350,9 @@ class Penjualan_telurmartadahController extends Controller
 
                 'pcs_kg' => $pcs_kg[$x],
                 'kg_kg' => $kg_kg[$x],
-                'rak_kg' => $rak_kg[$x],
+                'rak_kg' =>  $rk,
                 'rp_kg' => $rp_kg[$x],
+                'void' => 'T'
             ];
             DB::table('invoice_mtd')->insert($data);
 
@@ -370,8 +373,9 @@ class Penjualan_telurmartadahController extends Controller
                 'check' => 'Y'
             ]);
         }
+        $no_nota = $r->no_nota;
 
-        return redirect()->route('dashboard_kandang.penjualan_telur')->with('sukses', 'Data berhasil ditambahkan');
+        return redirect()->route('dashboard_kandang.cek_penjualan_telur', ['no_nota' => $no_nota])->with('sukses', 'Data berhasil ditambahkan');
     }
 
     public function delete_penjualan_mtd(Request $r)
@@ -379,6 +383,13 @@ class Penjualan_telurmartadahController extends Controller
         DB::table('invoice_mtd')->where('no_nota', $r->no_nota)->delete();
         DB::table('invoice_telur')->where('no_nota', $r->no_nota)->delete();
         DB::table('stok_telur')->where('nota_transfer', $r->no_nota)->delete();
+        return redirect()->route('dashboard_kandang.penjualan_telur')->with('sukses', 'Data berhasil dihapus');
+    }
+    public function void_penjualan_mtd(Request $r)
+    {
+
+        DB::table('invoice_telur')->where('no_nota', $r->no_nota)->update(['void' => 'Y']);
+
         return redirect()->route('dashboard_kandang.penjualan_telur')->with('sukses', 'Data berhasil dihapus');
     }
 

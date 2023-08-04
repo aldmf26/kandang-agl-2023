@@ -15,10 +15,10 @@
                             <br>
                             <hr>
                         </div>
-                        <div class="col-lg-6">
+                        <div class="col-lg-5">
                             <img src="https://agrilaras.putrirembulan.com/assets/img/logo.png" alt="Logo" width="150px">
                         </div>
-                        <div class="col-lg-6">
+                        <div class="col-lg-7">
                             <table>
                                 <tr>
                                     <td style="padding: 5px">Tanggal</td>
@@ -28,7 +28,10 @@
                                 <tr>
                                     <td style="padding: 5px">No. Nota</td>
                                     <td style="padding: 5px">:</td>
-                                    <td style="padding: 5px">{{$invoice2->no_nota}}</td>
+                                    <td style="padding: 5px">{{$invoice2->no_nota}} <span class="text-danger">(mohon
+                                            dicopy
+                                            di nota manual)</span>
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td style="padding: 5px">Kpd Yth</td>

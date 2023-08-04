@@ -131,6 +131,7 @@ class DashboardKandangController extends Controller
 
     public function tambah_populasi(Request $r)
     {
+        $jual = 0;
         for ($x = 0; $x < count($r->id_kandang); $x++) {
             DB::table('populasi')->where([['id_kandang', $r->id_kandang[$x]], ['tgl', $r->tgl[$x]]])->delete();
             DB::table('populasi')->insert([
@@ -141,7 +142,17 @@ class DashboardKandangController extends Controller
                 'admin' => auth()->user()->name
             ]);
             $pesan = $r->mati[$x] > 3 ? 'error' : 'sukses';
+            $jual += $r->jual[$x];
+            $tgl = $r->tgl[$x];
         }
+        DB::table('stok_ayam')->where([['id_gudang', 1], ['tgl', $tgl]])->delete();
+        DB::table('stok_ayam')->insert([
+            'tgl' => $tgl,
+            'debit' => $jual,
+            'kredit' => 0,
+            'id_gudang' => 1,
+            'admin' => auth()->user()->name
+        ]);
 
         return redirect()->route('dashboard_kandang.index')->with($pesan, 'Data Berhasil Ditambahkan');
     }
@@ -272,7 +283,7 @@ class DashboardKandangController extends Controller
             'produk' => DB::table('telur_produk')->get(),
             'datas' => DB::table('invoice_mtd')->where([['no_nota', $r->nota], ['jenis', 'tf']])->get()
         ];
-        return view('stok_telur.edit_transfer',$data);
+        return view('stok_telur.edit_transfer', $data);
     }
 
     public function update_transfer(Request $r)
@@ -294,7 +305,7 @@ class DashboardKandangController extends Controller
         DB::table('stok_telur')->where('nota_transfer', $nota_t)->delete();
         DB::table('invoice_mtd')->where('no_nota', $nota_t)->delete();
         for ($x = 0; $x < count($r->id_produk); $x++) {
-            
+
             $pcs_ikat = $ikat[$x] * 180;
             $total_pcs = $pcs_ikat + $pcs_pcs[$x] + $pcs_kg[$x];
             $total_kg_kotor = $kg_pcs[$x] + $kg_ikat[$x] + $kg_kg[$x];
@@ -304,7 +315,7 @@ class DashboardKandangController extends Controller
                 'pcs_kredit' => $total_pcs,
                 'kg_kredit' => $total_kg_kotor,
                 'admin' => auth()->user()->name,
-                'nota_transfer' =>$nota_t,
+                'nota_transfer' => $nota_t,
                 'id_gudang' => 1,
                 'jenis' => 'tf'
             ];
@@ -315,7 +326,7 @@ class DashboardKandangController extends Controller
                 'pcs' => $total_pcs,
                 'kg' => $total_kg_kotor,
                 'admin' => auth()->user()->name,
-                'nota_transfer' =>$nota_t,
+                'nota_transfer' => $nota_t,
                 'id_gudang' => 2,
                 'jenis' => 'tf'
             ];
@@ -348,7 +359,7 @@ class DashboardKandangController extends Controller
             'produk' => DB::table('telur_produk')->get(),
             'datas' => DB::table('invoice_mtd')->where([['no_nota', $r->nota], ['jenis', 'tf']])->get()
         ];
-        return view('stok_telur.cek_transfer',$data);
+        return view('stok_telur.cek_transfer', $data);
     }
 
     public function penjualan_umum()

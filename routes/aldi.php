@@ -391,6 +391,7 @@ Route::middleware('auth')->group(function () {
             Route::post('/save_penjualan_telur', 'save_penjualan_telur')->name('save_penjualan_telur');
             Route::post('/save_edit_telur', 'save_edit_telur')->name('save_edit_telur');
             Route::get('/cek_penjualan_telur', 'cek_penjualan_telur')->name('cek_penjualan_telur');
+            Route::get('/void_penjualan_mtd', 'void_penjualan_mtd')->name('void_penjualan_mtd');
         });
 
     Route::controller(ObatPakanController::class)
