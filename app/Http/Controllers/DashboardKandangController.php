@@ -131,6 +131,7 @@ class DashboardKandangController extends Controller
 
     public function tambah_populasi(Request $r)
     {
+        $jual = 0;
         for ($x = 0; $x < count($r->id_kandang); $x++) {
             DB::table('populasi')->where([['id_kandang', $r->id_kandang[$x]], ['tgl', $r->tgl[$x]]])->delete();
             DB::table('populasi')->insert([
@@ -141,7 +142,17 @@ class DashboardKandangController extends Controller
                 'admin' => auth()->user()->name
             ]);
             $pesan = $r->mati[$x] > 3 ? 'error' : 'sukses';
+            $jual += $r->jual[$x];
+            $tgl = $r->tgl[$x];
         }
+        DB::table('stok_ayam')->where([['id_gudang', 1], ['tgl', $tgl]])->delete();
+        DB::table('stok_ayam')->insert([
+            'tgl' => $tgl,
+            'debit' => $jual,
+            'kredit' => 0,
+            'id_gudang' => 1,
+            'admin' => auth()->user()->name
+        ]);
 
         return redirect()->route('dashboard_kandang.index')->with($pesan, 'Data Berhasil Ditambahkan');
     }

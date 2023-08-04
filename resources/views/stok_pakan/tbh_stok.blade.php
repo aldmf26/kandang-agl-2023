@@ -2,13 +2,14 @@
     <div class="col-lg-4 mb-2">
         <label for="">Tanggal</label>
         <input type="date" value="{{ date('Y-m-d') }}" name="tgl" class="form-control" id="">
+        <input type="hidden" name="kategori" value="{{$kategori}}">
     </div>
     <div class="col-lg-12">
         <table class="table table-striped">
             <thead>
                 <tr>
                     <th class="dhead" width="25%">Produk</th>
-                    <th class="dhead" width="15%">Qty (Gr)</th>
+                    <th class="dhead" width="15%">Qty (Sak)</th>
                     <th class="dhead" width="25%">Total Rp</th>
                     <th class="dhead" width="25%">Biaya lain-lain & ongkir</th>
                     <th class="dhead" width="5%">Aksi</th>
@@ -25,7 +26,10 @@
                             <option value="tambah">+ Produk Baru</option>
                         </select>
                     </td>
-                    <td><input type="text" name="pcs[]" class="form-control"></td>
+                    <td>
+                        <input type="text" name="pcs[]" class="form-control">
+
+                    </td>
                     <td><input type="text" name="ttl_rp[]" class="form-control"></td>
                     <td><input type="text" name="biaya_dll[]" class="form-control"></td>
                     <td>

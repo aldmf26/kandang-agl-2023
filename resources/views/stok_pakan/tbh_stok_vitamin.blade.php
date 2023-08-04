@@ -2,6 +2,7 @@
     <div class="col-lg-4 mb-2">
         <label for="">Tanggal</label>
         <input type="date" value="{{ date('Y-m-d') }}" name="tgl" class="form-control" id="">
+        <input type="hidden" name="kategori" value="{{$kategori}}">
     </div>
     <div class="col-lg-12">
         <table class="table table-striped">

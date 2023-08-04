@@ -10,7 +10,9 @@
         </select>
     </td>
     <td><input type="text" name="pcs[]" class="form-control"></td>
+    @if ($kategori == 'vitamin')
     <td class="satuan_vitamin{{ $count }}"></td>
+    @endif
     <td><input type="text" name="ttl_rp[]" class="form-control"></td>
     <td><input type="text" name="biaya_dll[]" class="form-control"></td>
     <td>

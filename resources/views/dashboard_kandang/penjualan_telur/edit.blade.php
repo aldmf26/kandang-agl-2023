@@ -47,24 +47,31 @@
                     <table class="table table-striped table-bordered" style="white-space: nowrap;">
                         <thead>
                             <tr>
-
-                                <th class="dhead" width="10%">Produk </th>
-                                <th class="dhead" width="7%" style="text-align: center">Pcs</th>
-                                <th class="dhead" width="7%" style="text-align: center">Kg</th>
-                                <th class="dhead" width="10%" style="text-align: center;">Rp Pcs</th>
-
-                                <th class="dhead" width="7%" style="text-align: center;">Ikat</th>
-                                <th class="dhead" width="7%" style="text-align: center;">Kg</th>
-                                <th class="dhead" width="10%" style="text-align: center;">Rp Ikat</th>
-
-                                <th class="dhead" width="7%" style="text-align: center;">Pcs</th>
-                                <th class="dhead" width="7%" style="text-align: center;">Kg</th>
-                                <th class="dhead" width="7%" style="text-align: center;">Rak</th>
-                                <th class="dhead" width="10%" style="text-align: center;">Rp Rak</th>
-
-                                <th class="dhead" width="10%" style="text-align: center; white-space: nowrap;">Total Rp
+                                <th class="dhead" width="10%" rowspan="2">Produk </th>
+                                <th style="text-align: center" class="dhead abu" colspan="3">Penjualan per pcs</th>
+                                <th style="text-align: center" class="dhead putih" colspan="3">Penjualan per ikat</th>
+                                <th style="text-align: center" class="dhead abuGelap" colspan="3">Penjualan per rak</th>
+                                <th rowspan="2" class="dhead" width="10%"
+                                    style="text-align: center; white-space: nowrap;">Total
+                                    Rp
                                 </th>
-                                <th class="dhead" width="5%">Aksi</th>
+                                <th rowspan="2" class="dhead" width="5%">Aksi</th>
+                            </tr>
+                            <tr>
+                                <th class="dhead abu" width="7%" style="text-align: center">Pcs</th>
+                                <th class="dhead abu" width="7%" style="text-align: center">Kg</th>
+                                <th class="dhead abu" width="10%" style="text-align: center;">Rp Pcs</th>
+
+                                <th class="dhead putih" width="7%" style="text-align: center;">Ikat</th>
+                                <th class="dhead putih" width="7%" style="text-align: center;">Kg</th>
+                                <th class="dhead putih" width="10%" style="text-align: center;">Rp Ikat</th>
+
+                                <th class="dhead abuGelap" width="7%" style="text-align: center;">Pcs</th>
+                                <th class="dhead abuGelap" width="7%" style="text-align: center;">Kg Bersih <br> potong
+                                    rak
+                                </th>
+                                {{-- <th class="dhead abuGelap" width="7%" style="text-align: center;">Rak</th> --}}
+                                <th class="dhead abuGelap" width="10%" style="text-align: center;">Rp Rak</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -128,21 +135,22 @@
                                 <!-- Jual Kg -->
                                 <td align="right">
                                     <input type="text" class="form-control" name="pcs_kg[]" count="{{$no+1}}"
-                                        style="text-align: right;font-size: 12px;" value="0">
+                                        style="text-align: right;font-size: 12px;" value="{{$i->pcs_kg}}">
                                 </td>
                                 <td align="right">
                                     <input type="text" class="form-control kg_kg kg_kg{{$no+1}}" count="{{$no+1}}"
-                                        style="text-align: right;font-size: 12px;" value="0" name="kg_kg[]">
+                                        style="text-align: right;font-size: 12px;" value="{{$i->kg_kg}}" name="kg_kg[]">
                                 </td>
-                                <td align="right">
+                                {{-- <td align="right">
                                     <input type="text" class="form-control rak_kg rak_kg1" count="{{$no+1}}"
                                         style="text-align: right;font-size: 12px;" value="0" name="rak_kg[]">
-                                </td>
+                                </td> --}}
                                 <td align="right">
-                                    <input type="text" class="form-control rp_kg rp_kg1" count="{{$no+1}}"
-                                        style="text-align: right;font-size: 12px;">
+                                    <input type="text" class="form-control rp_kg rp_kg{{$no+1}}" count="{{$no+1}}"
+                                        style="text-align: right;font-size: 12px;"
+                                        value="{{number_format($i->rp_kg,0,',','.')}}">
                                     <input type="hidden" class="form-control  rp_kg_biasa rp_kg_biasa{{$no+1}}"
-                                        name="rp_kg[]" value="0">
+                                        name="rp_kg[]" value="{{$i->rp_kg}}">
                                     <input type="hidden" class="ttl_rp_kg{{$no+1}}" value="{{$rp_kg}}">
                                 </td>
                                 <!-- Jual Kg -->
@@ -161,7 +169,7 @@
                         </tbody>
                         <tfoot>
                             <tr>
-                                <th colspan="13">
+                                <th colspan="12">
                                     <button type="button" class="btn btn-block btn-lg tbh_baris_mtd"
                                         style="background-color: #435EBE; color: white; font-size: 14px; padding: 13px;">
                                         <i class="fas fa-plus"></i> Tambah Baris Baru
@@ -170,7 +178,7 @@
                                 </th>
                             </tr>
                             <tr>
-                                <th colspan="12"></th>
+                                <th colspan="11"></th>
                                 <th><button type="submit" class="btn btn-primary ">Simpan</button></th>
                             </tr>
                         </tfoot>
@@ -345,96 +353,96 @@
     </script>
     <script>
         $(document).ready(function() {
-            $(document).on("keyup", ".kg_kg", function() {
-                var count = $(this).attr("count");
-                var kg = $('.kg_kg' + count).val();
-                var rak = $('.rak_kg' + count).val();
-                var rp_kg_biasa = $('.rp_kg_biasa' + count).val();
-                var rak_rumus = parseFloat(rak) * 0.12;
-                var rak_kali = Math.round(rak_rumus * 10) / 10;
+                $(document).on("keyup", ".kg_kg", function() {
+                    var count = $(this).attr("count");
+                    var kg = $('.kg_kg' + count).val();
+                    var rak = $('.rak_kg' + count).val();
+                    var rp_kg_biasa = $('.rp_kg_biasa' + count).val();
+                    var rak_rumus = parseFloat(rak) * 0.12;
+                    var rak_kali = Math.round(rak_rumus * 10) / 10;
 
-                var total = (parseFloat(kg) - parseFloat(rak_kali)) * parseFloat(rp_kg_biasa);
-                $('.ttl_rp_kg' + count).val(total);
+                    var total = parseFloat(kg) * parseFloat(rp_kg_biasa);
+                    $('.ttl_rp_kg' + count).val(total);
 
-                var total_pcs = $('.ttl_rp_pcs' + count).val();
-                var total_ikat = $('.ttl_rp_ikat' + count).val();
-                var total_kg = $('.ttl_rp_kg' + count).val();
+                    var total_pcs = $('.ttl_rp_pcs' + count).val();
+                    var total_ikat = $('.ttl_rp_ikat' + count).val();
+                    var total_kg = $('.ttl_rp_kg' + count).val();
 
-                var total_all = parseFloat(total_pcs) + parseFloat(total_ikat) + parseFloat(total_kg);
+                    var total_all = parseFloat(total_pcs) + parseFloat(total_ikat) + parseFloat(total_kg);
 
-                var total_rupiah = total_all.toLocaleString("id-ID", {
-                    style: "currency",
-                    currency: "IDR",
+                    var total_rupiah = total_all.toLocaleString("id-ID", {
+                        style: "currency",
+                        currency: "IDR",
+                    });
+                    $('.ttl_rp' + count).text(total_rupiah);
                 });
-                $('.ttl_rp' + count).text(total_rupiah);
-            });
-            $(document).on("keyup", ".rak_kg", function() {
-                var count = $(this).attr("count");
-                var kg = $('.kg_kg' + count).val();
-                var rak = $('.rak_kg' + count).val();
-                var rp_kg_biasa = $('.rp_kg_biasa' + count).val();
+                // $(document).on("keyup", ".rak_kg", function() {
+                //     var count = $(this).attr("count");
+                //     var kg = $('.kg_kg' + count).val();
+                //     var rak = $('.rak_kg' + count).val();
+                //     var rp_kg_biasa = $('.rp_kg_biasa' + count).val();
 
-                var rak_rumus = parseFloat(rak) * 0.12;
-                var rak_kali = Math.round(rak_rumus * 10) / 10;
+                //     var rak_rumus = parseFloat(rak) * 0.12;
+                //     var rak_kali = Math.round(rak_rumus * 10) / 10;
 
 
-                var total = (parseFloat(kg) - parseFloat(rak_kali)) * parseFloat(rp_kg_biasa);
-                $('.ttl_rp_kg' + count).val(total);
+                //     var total = (parseFloat(kg) - parseFloat(rak_kali)) * parseFloat(rp_kg_biasa);
+                //     $('.ttl_rp_kg' + count).val(total);
 
 
-                var total_pcs = $('.ttl_rp_pcs' + count).val();
-                var total_ikat = $('.ttl_rp_ikat' + count).val();
-                var total_kg = $('.ttl_rp_kg' + count).val();
+                //     var total_pcs = $('.ttl_rp_pcs' + count).val();
+                //     var total_ikat = $('.ttl_rp_ikat' + count).val();
+                //     var total_kg = $('.ttl_rp_kg' + count).val();
 
-                var total_all = parseFloat(total_pcs) + parseFloat(total_ikat) + parseFloat(total_kg);
+                //     var total_all = parseFloat(total_pcs) + parseFloat(total_ikat) + parseFloat(total_kg);
 
-                var total_rupiah = total_all.toLocaleString("id-ID", {
-                    style: "currency",
-                    currency: "IDR",
+                //     var total_rupiah = total_all.toLocaleString("id-ID", {
+                //         style: "currency",
+                //         currency: "IDR",
+                //     });
+                //     $('.ttl_rp' + count).text(total_rupiah);
+                // });
+                $(document).on("keyup", ".rp_kg", function() {
+                    var count = $(this).attr("count");
+                    var input = $(this).val();
+                    input = input.replace(/[^\d\,]/g, "");
+                    input = input.replace(".", ",");
+                    input = input.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
+
+                    if (input === "") {
+                        $(this).val("");
+                        $('.rp_kg_biasa' + count).val(0);
+                    } else {
+                        $(this).val(input);
+                        input = input.replaceAll(".", "");
+                        input2 = input.replace(",", ".");
+                        $('.rp_kg_biasa' + count).val(input2);
+                    }
+
+                    var kg = $('.kg_kg' + count).val();
+                    var rak = $('.rak_kg' + count).val();
+                    var rp_kg_biasa = $('.rp_kg_biasa' + count).val();
+                    var rak_rumus = parseFloat(rak) * 0.12;
+                    var rak_kali = Math.round(rak_rumus * 10) / 10;
+
+                    var total = parseFloat(kg) * parseFloat(rp_kg_biasa);
+                    $('.ttl_rp_kg' + count).val(total);
+
+
+                    var total_pcs = $('.ttl_rp_pcs' + count).val();
+                    var total_ikat = $('.ttl_rp_ikat' + count).val();
+                    var total_kg = $('.ttl_rp_kg' + count).val();
+
+                    var total_all = parseFloat(total_pcs) + parseFloat(total_ikat) + parseFloat(total_kg);
+
+                    var total_rupiah = total_all.toLocaleString("id-ID", {
+                        style: "currency",
+                        currency: "IDR",
+                    });
+                    $('.ttl_rp' + count).text(total_rupiah);
                 });
-                $('.ttl_rp' + count).text(total_rupiah);
+
             });
-            $(document).on("keyup", ".rp_kg", function() {
-                var count = $(this).attr("count");
-                var input = $(this).val();
-                input = input.replace(/[^\d\,]/g, "");
-                input = input.replace(".", ",");
-                input = input.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
-
-                if (input === "") {
-                    $(this).val("");
-                    $('.rp_kg_biasa' + count).val(0);
-                } else {
-                    $(this).val(input);
-                    input = input.replaceAll(".", "");
-                    input2 = input.replace(",", ".");
-                    $('.rp_kg_biasa' + count).val(input2);
-                }
-
-                var kg = $('.kg_kg' + count).val();
-                var rak = $('.rak_kg' + count).val();
-                var rp_kg_biasa = $('.rp_kg_biasa' + count).val();
-                var rak_rumus = parseFloat(rak) * 0.12;
-                var rak_kali = Math.round(rak_rumus * 10) / 10;
-
-                var total = (parseFloat(kg) - parseFloat(rak_kali)) * parseFloat(rp_kg_biasa);
-                $('.ttl_rp_kg' + count).val(total);
-
-
-                var total_pcs = $('.ttl_rp_pcs' + count).val();
-                var total_ikat = $('.ttl_rp_ikat' + count).val();
-                var total_kg = $('.ttl_rp_kg' + count).val();
-
-                var total_all = parseFloat(total_pcs) + parseFloat(total_ikat) + parseFloat(total_kg);
-
-                var total_rupiah = total_all.toLocaleString("id-ID", {
-                    style: "currency",
-                    currency: "IDR",
-                });
-                $('.ttl_rp' + count).text(total_rupiah);
-            });
-
-        });
     </script>
     <script>
         $(document).ready(function() {
