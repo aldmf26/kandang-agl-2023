@@ -377,6 +377,8 @@ Route::middleware('auth')->group(function () {
             Route::get('/load_detail_nota/{urutan}', 'load_detail_nota')->name('load_detail_nota');
             Route::post('/update_penjualan', 'update_penjualan')->name('update_penjualan');
             Route::post('/save_penjualan_umum', 'save_penjualan_umum')->name('save_penjualan_umum');
+            // Transfer Ayam
+            Route::post('/transfer_ayam', 'transfer_ayam')->name('transfer_ayam');
         });
 
 

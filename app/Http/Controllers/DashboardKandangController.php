@@ -56,7 +56,12 @@ class DashboardKandangController extends Controller
                 ->get(),
             'telur' => DB::table('telur_produk')->get(),
             'produkPakan' => DB::table('tb_produk_perencanaan')->where('kategori', 'pakan')->get(),
-            'produk' => $this->produk
+            'produk' => $this->produk,
+            'stok_ayam' => DB::selectOne("SELECT sum(a.debit - a.kredit) as saldo_kandang FROM stok_ayam as a where a.id_gudang = '1' and a.jenis = 'ayam'"),
+            'stok_ayam_bjm' => DB::selectOne("SELECT sum(a.debit - a.kredit) as saldo_bjm FROM stok_ayam as a where a.id_gudang = '2' and a.jenis = 'ayam'"),
+            'stok_karung' => DB::selectOne("SELECT sum(a.debit - a.kredit) as saldo_karung FROM stok_ayam as a where a.id_gudang = '1' and a.jenis = 'karung'"),
+
+            'stok_pupuk' => DB::selectOne("SELECT sum(a.debit - a.kredit) as saldo_pupuk FROM stok_ayam as a where a.id_gudang = '1' and a.jenis = 'pupuk'"),
         ];
         return view('dashboard_kandang.index', $data);
     }
@@ -151,7 +156,8 @@ class DashboardKandangController extends Controller
             'debit' => $jual,
             'kredit' => 0,
             'id_gudang' => 1,
-            'admin' => auth()->user()->name
+            'admin' => auth()->user()->name,
+            'jenis' => 'ayam'
         ]);
 
         return redirect()->route('dashboard_kandang.index')->with($pesan, 'Data Berhasil Ditambahkan');
@@ -844,6 +850,7 @@ class DashboardKandangController extends Controller
         $kg_karung_sisa = $r->kg_karung_sisa;
         $no_nota = strtoupper(str()->random(5));
         if (!empty($r->id_pakan)) {
+            $total_kg_pakan = 0;
             for ($i = 0; $i < count($r->id_pakan); $i++) {
                 if ($r->stok[$i] < $r->gr_pakan[$i]) {
                     $error = 'error';
@@ -861,6 +868,8 @@ class DashboardKandangController extends Controller
                         'admin' => auth()->user()->name
                     ];
                     DB::table('tb_pakan_perencanaan')->insert($dataPakan);
+
+
 
                     $dataStok = [
                         'id_kandang' => $id_kandang,
@@ -901,7 +910,17 @@ class DashboardKandangController extends Controller
                     ];
                     DB::table('jurnal')->insert($data);
                 }
+                $total_kg_pakan += $r->gr_pakan[$i];
             }
+            $data = [
+                'tgl' => $tgl,
+                'debit' => ($total_kg_pakan / 1000) * 0.3,
+                'kredit' => 0,
+                'id_gudang' => '1',
+                'admin' =>  auth()->user()->name,
+                'jenis' => 'pupuk'
+            ];
+            DB::table('stok_ayam')->insert($data);
 
             if (!empty($kg_pakan_box)) {
                 $dataKarung = [
@@ -913,6 +932,16 @@ class DashboardKandangController extends Controller
                     'no_nota' => $no_nota,
                 ];
                 DB::table('tb_karung_perencanaan')->insert($dataKarung);
+
+                $data = [
+                    'tgl' => $tgl,
+                    'debit' => 0,
+                    'kredit' => $kg_pakan_box,
+                    'id_gudang' => '1',
+                    'admin' =>  auth()->user()->name,
+                    'jenis' => 'karung'
+                ];
+                DB::table('stok_ayam')->insert($data);
             }
 
             if (!empty($r->id_obat_pakan[0])) {
@@ -2175,5 +2204,30 @@ class DashboardKandangController extends Controller
         $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, 'Xlsx');
         $writer->save('php://output');
         exit();
+    }
+
+    public function transfer_ayam(Request $r)
+    {
+        $data = [
+            'tgl' => $r->tgl,
+            'debit' => $r->qty,
+            'kredit' => 0,
+            'id_gudang' => '2',
+            'admin' =>  auth()->user()->name,
+            'jenis' => 'ayam'
+        ];
+        DB::table('stok_ayam')->insert($data);
+
+        $data = [
+            'tgl' => $r->tgl,
+            'debit' => 0,
+            'kredit' => $r->qty,
+            'id_gudang' => '1',
+            'admin' =>  auth()->user()->name,
+            'jenis' => 'ayam'
+        ];
+        DB::table('stok_ayam')->insert($data);
+
+        return redirect()->route('dashboard_kandang.index')->with('Data Berhasil Ditambahkan');
     }
 }

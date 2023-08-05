@@ -42,7 +42,6 @@
 
     </x-slot>
     <x-slot name="cardBody">
-
         @include('dashboard_kandang.tabel.stokTelur')
         <section class="row">
             @if (session()->has('error'))
@@ -53,6 +52,7 @@
 
             @include('dashboard_kandang.tabel.penjualanUmum')
             @include('dashboard_kandang.tabel.inputKandangHarian')
+            @include('dashboard_kandang.tabel.stok_ayam')
             @include('dashboard_kandang.tabel.pakan')
 
 
@@ -60,6 +60,7 @@
             @include('dashboard_kandang.modal.tambah_obat_pakan')
             @include('dashboard_kandang.modal.tambah_obat_air')
             @include('dashboard_kandang.modal.tambah_obat_ayam')
+            @include('dashboard_kandang.modal.transfer_ayam')
         </section>
     </x-slot>
     @section('js')

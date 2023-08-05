@@ -47,7 +47,7 @@
                         <select name="id_kandang" class="form-control" id="">
                             <option value="">- Pilih Kandang -</option>
                             @foreach ($kandang as $d)
-                                <option value="{{ $d->id_kandang }}">{{ $d->nm_kandang }}</option>
+                            <option value="{{ $d->id_kandang }}">{{ $d->nm_kandang }}</option>
                             @endforeach
                         </select>
                     </td>

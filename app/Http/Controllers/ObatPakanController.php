@@ -217,6 +217,15 @@ class ObatPakanController extends Controller
                     'tgl' => $r->tgl
                 ];
                 DB::table('stok_produk_perencanaan')->insert($data);
+                $data = [
+                    'tgl' => $r->tgl,
+                    'debit' => $r->pcs[$x],
+                    'kredit' => 0,
+                    'id_gudang' => '1',
+                    'admin' =>  auth()->user()->name,
+                    'jenis' => 'karung'
+                ];
+                DB::table('stok_ayam')->insert($data);
             } else {
                 $data = [
                     'id_pakan' => $r->id_pakan[$x],

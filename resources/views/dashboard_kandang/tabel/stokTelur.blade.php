@@ -25,9 +25,9 @@
                 $telur = DB::table('telur_produk')->get();
                 @endphp
                 @foreach ($telur as $d)
-                <th class="dhead">Pcs</th>
-                <th class="dhead">Kg</th>
-                <th class="dhead">Ikat</th>
+                <th class="dhead text-end">Pcs</th>
+                <th class="dhead text-end">Kg</th>
+                <th class="dhead text-end">Ikat</th>
                 @endforeach
             </tr>
             <tr>
