@@ -1,4 +1,4 @@
-<div class="row baris{{$count}}">
+<div class="row baris{{$count}} barisAll">
     <div class="col-lg-3">
         <div class="form-group">
             <label for="">Type</label>

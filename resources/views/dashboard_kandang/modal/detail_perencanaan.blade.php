@@ -1,14 +1,15 @@
-<div class="collapse multi-collapse" id="perencanaan">
+<div class="collapse multi-collapse show" id="perencanaan">
     <div class="row">
         <div class="col-lg-3">
             <label for="">Tanggal</label>
-            <input type="date" name="tglPerencanaan" id="tglHistoryPerencanaan"
-                class="form-control">
+            <input value="{{ date('Y-m-d', strtotime(date('Y-m-d') . ' +1 day')) }}" type="date" name="tglPerencanaan"
+                id="tglHistoryPerencanaan" class="form-control">
         </div>
         <div class="col-lg-3">
             <label for="">Kandang</label>
             <input type="text" readonly value="{{ $kandang->nm_kandang }}" class="form-control">
-            <input type="hidden" id="id_kandangPerencanaan" readonly value="{{ $kandang->id_kandang }}" class="form-control" name="id_kandangPerencanaan">
+            <input type="hidden" id="id_kandangPerencanaan" readonly value="{{ $kandang->id_kandang }}"
+                class="form-control" name="id_kandangPerencanaan">
         </div>
         <div class="col-lg-2">
             <label for="">Aksi</label><br>
@@ -39,7 +40,8 @@
     <div class="row">
         <div class="col-lg-3">
             <label for="">Kandang</label>
-            <input type="text" readonly value="{{ $kandang->nm_kandang }}" class="form-control" name="id_kandangPullet">
+            <input type="text" readonly value="{{ $kandang->nm_kandang }}" class="form-control"
+                name="id_kandangPullet">
         </div>
         <div class="col-lg-3">
             <label for="">Dari</label>
