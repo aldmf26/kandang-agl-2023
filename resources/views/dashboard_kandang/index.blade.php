@@ -61,6 +61,7 @@
             @include('dashboard_kandang.modal.tambah_obat_air')
             @include('dashboard_kandang.modal.tambah_obat_ayam')
             @include('dashboard_kandang.modal.transfer_ayam')
+            @include('dashboard_kandang.modal.penjualan_ayam')
         </section>
     </x-slot>
     @section('js')
@@ -759,6 +760,21 @@
                         $('.satuan_vitamin' + count).text(data);
                     }
                 });
+
+            });
+            $(document).on("keyup", ".ekor", function() {
+                var ekor = $('.ekor').val();
+                var h_satuan = $('.h_satuan').val();
+                var ttl_rp = parseFloat(ekor) * parseFloat(h_satuan);
+            
+                $('.ttl_rp').val(ttl_rp);
+
+            });
+            $(document).on("keyup", ".h_satuan", function() {
+                var ekor = $('.ekor').val();
+                var h_satuan = $('.h_satuan').val();
+                var ttl_rp = parseFloat(ekor) * parseFloat(h_satuan);
+                $('.ttl_rp').val(ttl_rp);
 
             });
     </script>

@@ -379,6 +379,8 @@ Route::middleware('auth')->group(function () {
             Route::post('/save_penjualan_umum', 'save_penjualan_umum')->name('save_penjualan_umum');
             // Transfer Ayam
             Route::post('/transfer_ayam', 'transfer_ayam')->name('transfer_ayam');
+            Route::post('/penjualan_ayam', 'penjualan_ayam')->name('penjualan_ayam');
+            Route::get('/cek_penjualan_ayam', 'cek_penjualan_ayam')->name('cek_penjualan_ayam');
         });
 
 

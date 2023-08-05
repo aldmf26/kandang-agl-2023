@@ -150,7 +150,7 @@ class DashboardKandangController extends Controller
             $jual += $r->jual[$x];
             $tgl = $r->tgl[$x];
         }
-        DB::table('stok_ayam')->where([['id_gudang', 1], ['tgl', $tgl]])->delete();
+        DB::table('stok_ayam')->where([['id_gudang', 1], ['tgl', $tgl], ['no_nota', '=', '']])->delete();
         DB::table('stok_ayam')->insert([
             'tgl' => $tgl,
             'debit' => $jual,
@@ -2229,5 +2229,52 @@ class DashboardKandangController extends Controller
         DB::table('stok_ayam')->insert($data);
 
         return redirect()->route('dashboard_kandang.index')->with('Data Berhasil Ditambahkan');
+    }
+    public function penjualan_ayam(Request $r)
+    {
+        $max = DB::table('invoice_ayam')->latest('urutan')->first();
+        if (empty($max)) {
+            $nota_t = '1000';
+        } else {
+            $nota_t = $max->urutan + 1;
+        }
+        $data = [
+            'tgl' => $r->tgl,
+            'debit' => 0,
+            'kredit' => $r->qty,
+            'id_gudang' => '1',
+            'admin' =>  auth()->user()->name,
+            'jenis' => 'ayam',
+            'no_nota' => 'PA-' . $nota_t,
+        ];
+        DB::table('stok_ayam')->insert($data);
+
+        $max = DB::table('invoice_ayam')->latest('urutan')->first();
+        if (empty($max)) {
+            $nota_t = '1000';
+        } else {
+            $nota_t = $max->urutan + 1;
+        }
+        $data = [
+            'tgl' => $r->tgl,
+            'no_nota' => 'PA-' . $nota_t,
+            'customer' => $r->customer,
+            'qty' => $r->qty,
+            'h_satuan' => $r->qty,
+            'admin' =>  auth()->user()->name,
+            'urutan' =>  $nota_t
+        ];
+        DB::table('invoice_ayam')->insert($data);
+        $nota =  'PA-' . $nota_t;
+        return redirect()->route('dashboard_kandang.cek_penjualan_ayam', ['no_nota' => $nota])->with('Data Berhasil Ditambahkan');
+    }
+
+    public function cek_penjualan_ayam(Request $r)
+    {
+        $data = [
+            'title' => 'Cek invoice ayam',
+            'ayam' => DB::table('invoice_ayam')->where('no_nota', $r->no_nota)->first()
+        ];
+        return view('dashboard_kandang.penjualan_ayam.cek_invoice', $data);
     }
 }
