@@ -35,12 +35,12 @@
                     <h6>{{empty($stok_pupuk->saldo_pupuk) ? '0' : number_format($stok_pupuk->saldo_pupuk,1)}} Kg</h6>
                 </th>
             </tr>
-            <tr>
+            {{-- <tr>
                 <th style="text-align: center">
                     <a href="#" data-bs-toggle="modal" data-bs-target="#penjualan_pupuk"
                         class="btn btn-sm btn-primary">Penjualan Pupuk</a>
                 </th>
-            </tr>
+            </tr> --}}
 
         </table>
     </div>
