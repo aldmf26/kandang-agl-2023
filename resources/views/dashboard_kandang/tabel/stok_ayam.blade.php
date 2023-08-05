@@ -19,7 +19,9 @@
                     <a href="#" data-bs-toggle="modal" data-bs-target="#transfer_ayam"
                         class="btn btn-sm btn-primary">Transfer BJM</a>
                     <a href="#" data-bs-toggle="modal" data-bs-target="#penjualan_ayam"
-                        class="btn btn-sm btn-primary">Penjualan Ayam</a>
+                        class="btn btn-sm btn-primary">Penjualan </a>
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#history_ayam"
+                        class="btn btn-sm btn-primary">History </a>
                 </th>
             </tr>
 
