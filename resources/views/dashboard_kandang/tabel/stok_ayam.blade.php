@@ -8,7 +8,7 @@
             </tr>
             <tr>
                 <th style="text-align: center; height: 60px;">
-                    <h6>Stok Masuk <br>{{$stok_ayam->saldo_kandang}}</h6>
+                    <h6>Stok Martadah <br>{{$stok_ayam->saldo_kandang}}</h6>
                 </th>
                 <th style="text-align: center; height: 60px;">
                     <h6>Transfer BJM <br>{{empty($stok_ayam_bjm->saldo_bjm) ? '0' : $stok_ayam_bjm->saldo_bjm}}</h6>
@@ -18,6 +18,8 @@
                 <th style="text-align: center" colspan="2">
                     <a href="#" data-bs-toggle="modal" data-bs-target="#transfer_ayam"
                         class="btn btn-sm btn-primary">Transfer BJM</a>
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#penjualan_ayam"
+                        class="btn btn-sm btn-primary">Penjualan Ayam</a>
                 </th>
             </tr>
 
