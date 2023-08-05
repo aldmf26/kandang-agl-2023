@@ -49,7 +49,6 @@ class OpnamemtdController extends Controller
 
 
             if ($r->pcs_selisih[$x] + $r->kg_selisih[$x] == 0) {
-                # code...
             } else {
                 DB::table('stok_telur')->where(['opname' => 'T', 'id_gudang' => '1', 'id_telur' => $r->id_telur[$x]])->update(['opname' => 'Y']);
                 $data = [
@@ -57,6 +56,8 @@ class OpnamemtdController extends Controller
                     'tgl' => $r->tgl,
                     'pcs' => $r->pcs[$x],
                     'kg' => $r->kg[$x],
+                    'pcs_selisih' => $r->pcs_selisih[$x],
+                    'kg_selisih' => $r->kg_selisih[$x],
                     'admin' => Auth::user()->name,
                     'id_gudang' => '1',
                     'jenis' => 'Opname',
@@ -80,7 +81,18 @@ class OpnamemtdController extends Controller
             }
         }
 
-        return redirect()->route('opnamemtd')->with('sukses', 'Data berhasil ditambahkan');
+        return redirect()->route('opname_cek', 'Opname-' . $urutan)->with('sukses', 'Data berhasil ditambahkan');
+    }
+    public function cek($no_nota)
+    {
+        $data = [
+            'nota' => $no_nota,
+            'title' => 'Cek Opname',
+            'data' => DB::table('stok_telur')->where([['nota_transfer', $no_nota], ['jenis', 'Opname']])->first(),
+            'produk' => DB::table('telur_produk')->get(),
+            'datas' => DB::table('stok_telur')->where([['nota_transfer', $no_nota], ['jenis', 'Opname']])->get()
+        ];
+        return view('opname_telur_mtd.cek', $data);
     }
 
     public function bayar_opname(Request $r)

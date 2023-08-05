@@ -1,10 +1,12 @@
-<x-theme.app title="{{$title}}" table="Y" sizeCard="12">
+<x-theme.app title="{{$title}}" table="Y" sizeCard="11">
 
     <x-slot name="cardHeader">
         <div class="row justify-content-end">
-            <div class="col-lg-6">
+            <div class="col-lg-12">
+                <h6 class="float-start">{{ $title }}</h6>
                 <x-theme.button modal="T" href="/dashboard_kandang" icon="fa-home" addClass="float-end" teks="" />
             </div>
+            
         </div>
 
     </x-slot>
