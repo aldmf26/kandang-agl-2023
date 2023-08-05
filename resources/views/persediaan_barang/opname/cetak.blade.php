@@ -12,6 +12,7 @@
         table {
             font-size: 11px;
         }
+
         .dhead {
             background-color: #435EBE !important;
             color: white;
@@ -20,7 +21,6 @@
         .dborder {
             border-color: #435EBE
         }
-
     </style>
 </head>
 
@@ -31,10 +31,11 @@
                 <h3>Stok Masuk</h3>
             </div>
             <div class="col text-end">
-                <span style="font-size:10px;"><em><b>Tanggal Cetak: {{ tanggal(date('Y-m-d')) }}, {{ ucwords($detail->admin) }}</b></em></span>
+                <span style="font-size:10px;"><em><b>Tanggal Cetak: {{ tanggal(date('Y-m-d')) }}, {{
+                            ucwords($detail->admin) }}</b></em></span>
             </div>
         </div>
-        
+
         <hr>
         <table width="100%" cellpadding="10px">
             <tr>
@@ -73,27 +74,27 @@
             </thead>
             <tbody>
                 @php
-                    $ttlRp = 0;
-                    $ttlProgram = 0;
-                    $ttlDebit = 0;
-                    $ttlSelisih = 0;
+                $ttlRp = 0;
+                $ttlProgram = 0;
+                $ttlDebit = 0;
+                $ttlSelisih = 0;
                 @endphp
                 @foreach ($stok as $no => $d)
-                    @php
-                        $rpSatuan = $d->rp / $d->ttl;
-                        $ttlRp += $rpSatuan;
-                        $ttlProgram += $d->jml_sebelumnya;
-                        $ttlDebit += $d->debit;
-                        $ttlSelisih += $d->selisih;
-                    @endphp
-                    <tr>
-                        <td>{{ $no + 1 }}</td>
-                        <td>{{ $d->nm_produk }}</td>
-                        <td align="right">Rp. {{ number_format($rpSatuan, 0) }}</td>
-                        <td align="right">{{ $d->jml_sebelumnya }}</td>
-                        <td align="right">{{ $d->jml_sesudahnya }}</td>
-                        <td align="right">{{ $d->selisih }}</td>
-                    </tr>
+                @php
+                $rpSatuan = $d->rp / $d->ttl;
+                $ttlRp += $rpSatuan;
+                $ttlProgram += $d->jml_sebelumnya;
+                $ttlDebit += $d->debit;
+                $ttlSelisih += $d->selisih;
+                @endphp
+                <tr>
+                    <td>{{ $no + 1 }}</td>
+                    <td>{{ $d->nm_produk }}</td>
+                    <td align="right">Rp. {{ number_format($rpSatuan, 0) }}</td>
+                    <td align="right">{{ $d->jml_sebelumnya }}</td>
+                    <td align="right">{{ $d->jml_sesudahnya }}</td>
+                    <td align="right">{{ $d->selisih }}</td>
+                </tr>
                 @endforeach
                 <tr>
                     <td></td>
@@ -106,7 +107,7 @@
             </tbody>
 
         </table>
-        
+
         <div class="d-flex justify-content-end py-5">
             <div class="row">
                 <div class="col text-center">
@@ -120,7 +121,7 @@
             </div>
         </div>
     </div>
-    
+
 </body>
 
 </html>

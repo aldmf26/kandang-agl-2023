@@ -169,8 +169,9 @@
                         type: "GET",
                         url: `${link}/${id}`,
                         success: function(r) {
+                            // testing
+                            $('.barisAll').remove();
                             $(`#${load}`).html(r);
-
                             loadPakanPerencanaan()
                             loadObatPakan()
                             loadObatAir()
@@ -273,6 +274,7 @@
             }
 
             function loadPakanPerencanaan() {
+                
                 $.ajax({
                     type: "GET",
                     url: "{{ route('dashboard_kandang.load_pakan_perencanaan') }}",
@@ -286,15 +288,20 @@
                 });
             }
 
-            function plusRowPakan(classPlus, url, wew) {
+             function plusRowPakan(classPlus, url, wew) {
+                var appendedData = '';
+
                 $(document).on("click", "." + classPlus, function() {
                     wew += 1;
-                    alert(wew)
+                    // alert(wew)
                     $.ajax({
                         url: `${url}?count=` + count,
                         type: "GET",
                         success: function(data) {
-                            $("#" + classPlus).append(data);
+                            // Simpan data yang sudah di-append sebelumnya
+                            appendedData += data;
+                            // Tambahkan data baru beserta data yang sudah ada sebelumnya
+                            $("#" + classPlus).html(appendedData);
                             $(".select2-pakan").select2({
                                 dropdownParent: $(`#tambah_perencanaan .modal-content`)
                             });
@@ -322,7 +329,7 @@
                         10;
                     var number = kg_sisa.toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
                     $('#krng_s').val(number);
-                })
+                });
             }
             $(document).on("change", '.pakan_input', function() {
                 var id_pakan = $(this).val()

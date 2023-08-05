@@ -6,7 +6,7 @@
                 <div class="card-header">
                     <div class="row">
                         <div class="col-lg-12">
-                            
+
                             <x-theme.button modal="T" href="{{ route('dashboard_kandang.add_penjualan_telur') }}"
                                 icon="fa-plus" addClass="float-end" teks="Buat Nota" />
                             <x-theme.button modal="T" href="{{ route('dashboard_kandang.penjualan_telur') }}"
@@ -154,14 +154,14 @@
                             <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                             <td>Total (Bruto)</td>
                             <td>:</td>
-                            <td>{{number_format($ttl_kg_kotor,0)}}</td>
+                            <td>{{number_format($ttl_kg_kotor,1)}}</td>
                             <td></td>
                         </tr>
                         <tr>
                             <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                             <td>Berat Bersih (Netto)</td>
                             <td>:</td>
-                            <td>{{number_format($ttl_kg_bersih,0)}}</td>
+                            <td>{{number_format($ttl_kg_bersih,1)}}</td>
                             <td></td>
                         </tr>
                         <tr>

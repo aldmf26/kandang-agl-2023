@@ -34,7 +34,8 @@
                 <td align="left">
                     Martadah
                     <a href="{{ route('opnamemtd') }}" class="badge float-end me-2 bg-primary text-sm">Opname</a>
-                    <a data-bs-toggle="modal" data-bs-target="#history_opn" href="#" class="badge float-end me-2 bg-primary text-sm history_opname">History Opname</a>
+                    <a data-bs-toggle="modal" data-bs-target="#history_opn" href="#"
+                        class="badge float-end me-2 bg-primary text-sm history_opname">History Opname</a>
                 </td>
                 @foreach ($telur as $d)
                 @php

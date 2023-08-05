@@ -2,11 +2,11 @@
     <div class="col-lg-3">
         <div class="form-group">
             <label for="">Type</label>
-            <select name="id_pakan[]" id="" persen="1"
-                count="1" class="form-control select2-edit persen_pakan pakan_input">
+            <select name="id_pakan[]" id="" persen="1" count="1"
+                class="form-control select2-edit persen_pakan pakan_input">
                 <option value="">- Pilih Pakan -</option>
                 @foreach ($pakan as $p)
-                    <option value="{{ $p->id_produk }}">{{ $p->nm_produk }}</option>
+                <option value="{{ $p->id_produk }}">{{ $p->nm_produk }}</option>
                 @endforeach
                 <option value="tambah">+ Pakan Baru</option>
             </select>
@@ -21,15 +21,13 @@
     <div class="col-lg-2">
         <div class="form-group">
             <label for="">%</label>
-            <input type="text" id="prsn1" name="persen_pakan[]"
-                class="form-control pakan_input persen" kd="1">
+            <input type="text" id="prsn1" name="persen_pakan[]" class="form-control pakan_input persen" kd="1">
         </div>
     </div>
     <div class="col-lg-3">
         <div class="form-group">
             <label for="">Pakan (Gr)</label>
-            <input type="text" readonly name="gr_pakan[]" id="hasil1"
-                class="form-control hasil">
+            <input type="text" readonly name="gr_pakan[]" id="hasil1" class="form-control hasil">
         </div>
     </div>
     <div class="col-lg-2">
@@ -51,5 +49,3 @@
         <input type="text" readonly name="pakan_gr_total" id="total" class="form-control">
     </div>
 </div>
-
-
