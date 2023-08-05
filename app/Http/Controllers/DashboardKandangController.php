@@ -2260,7 +2260,7 @@ class DashboardKandangController extends Controller
             'no_nota' => 'PA-' . $nota_t,
             'customer' => $r->customer,
             'qty' => $r->qty,
-            'h_satuan' => $r->qty,
+            'h_satuan' => $r->h_satuan,
             'admin' =>  auth()->user()->name,
             'urutan' =>  $nota_t
         ];

@@ -1,7 +1,7 @@
 <x-theme.app title="{{ $title }}" table="T" sizeCard="12" cont="container-fluid">
 
     <section class="row justify-content-center">
-        <div class="col-lg-6">
+        <div class="col-lg-5">
             <div class="card">
                 <div class="card-header">
                     <div class="row">
@@ -50,32 +50,30 @@
                     <table class="table  table-bordered" style="white-space: nowrap;">
                         <thead>
                             <tr>
-
-
-                                <th class="dhead abu" width="7%" style="text-align: center">Ekor</th>
-                                <th class="dhead abu" width="7%" style="text-align: center">Kg</th>
-                                <th class="dhead abu" width="10%" style="text-align: center;">Rp Pcs</th>
-
-                                <th class="dhead putih" width="7%" style="text-align: center;">Ikat</th>
-                                <th class="dhead putih" width="7%" style="text-align: center;">Kg</th>
-                                <th class="dhead putih" width="10%" style="text-align: center;">Rp Ikat</th>
-
-                                <th class="dhead abuGelap" width="7%" style="text-align: center;">Pcs</th>
-                                <th class="dhead abuGelap" width="7%" style="text-align: center;">Kg</th>
-                                {{-- <th class="dhead" width="7%" style="text-align: center;">Rak</th> --}}
-                                <th class="dhead abuGelap" width="10%" style="text-align: center;">Rp Rak</th>
-
-
+                                <th class="dhead " width="7%" style="text-align: center">Ekor</th>
+                                <th class="dhead " width="7%" style="text-align: center">Harga Satuan </th>
+                                <th class="dhead " width="10%" style="text-align: center;">Total Rp</th>
                             </tr>
                         </thead>
-
-                        {{-- <tfoot>
+                        <tbody>
                             <tr>
-                                <td colspan="9"></td>
-                                <th>Total</th>
-                                <th style="text-align: right">Rp. {{number_format($total_semua,0)}}</th>
+                                <td align="right">{{$ayam->qty}}</td>
+                                <td align="right">Rp. {{number_format($ayam->h_satuan,0)}}</td>
+                                <td align="right">Rp. {{number_format($ayam->qty * $ayam->h_satuan,0)}}</td>
                             </tr>
-                        </tfoot> --}}
+                            <tr>
+                                <td align="right" style="height: 120px"></td>
+                                <td align="right"></td>
+                                <td align="right"></td>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th></th>
+                                <th>Total</th>
+                                <th style="text-align: right">Rp. {{number_format($ayam->qty * $ayam->h_satuan,0)}}</th>
+                            </tr>
+                        </tfoot>
                     </table>
                     {{-- <table width="100%">
                         <tr>
