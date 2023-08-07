@@ -20,7 +20,8 @@ class OpnamemtdController extends Controller
         $data = [
             'title' => 'Opname Telur',
             'nota' => $nota_t,
-            'produk' => DB::table('telur_produk')->get()
+            'produk' => DB::table('telur_produk')->get(),
+            'id_gudang' => $r->id_gudang
 
         ];
         return view('opname_telur_mtd.index', $data);
@@ -50,7 +51,7 @@ class OpnamemtdController extends Controller
 
             if ($r->pcs_selisih[$x] + $r->kg_selisih[$x] == 0) {
             } else {
-                DB::table('stok_telur')->where(['opname' => 'T', 'id_gudang' => '1', 'id_telur' => $r->id_telur[$x]])->update(['opname' => 'Y']);
+                DB::table('stok_telur')->where(['opname' => 'T', 'id_gudang' => $r->id_gudang, 'id_telur' => $r->id_telur[$x]])->update(['opname' => 'Y']);
                 $data = [
                     'id_telur' => $r->id_telur[$x],
                     'tgl' => $r->tgl,
@@ -59,7 +60,7 @@ class OpnamemtdController extends Controller
                     'pcs_selisih' => $r->pcs_selisih[$x],
                     'kg_selisih' => $r->kg_selisih[$x],
                     'admin' => Auth::user()->name,
-                    'id_gudang' => '1',
+                    'id_gudang' => $r->id_gudang,
                     'jenis' => 'Opname',
                     'nota_transfer' => 'Opname-' . $urutan,
                     'opname' => 'T',
