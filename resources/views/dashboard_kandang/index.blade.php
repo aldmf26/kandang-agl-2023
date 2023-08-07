@@ -281,7 +281,7 @@
                         $('.select2-edit').select2({
                             dropdownParent: $(`#tambah_perencanaan .modal-content`)
                         });
-                        plusRowPakan('tbhPakan', 'dashboard_kandang/tbh_pakan', 1)
+                        plusRowPakan('tbhPakan', 'dashboard_kandang/tbh_pakan')
                     }
                 });
             }
@@ -364,18 +364,18 @@
                         $('.select2-edit').select2({
                             dropdownParent: $(`#tambah_perencanaan .modal-content`)
                         });
-                        plusRowObatPakan('tbhObatPakan', 'dashboard_kandang/tbh_obatPakan')
+                        plusRowObatPakan('tbhObatPakan', 'dashboard_kandang/tbh_obatPakan' ,1)
                     }
                 });
             }
-
-            function plusRowObatPakan(classPlus, url) {
+            function plusRowObatPakan(classPlus, url, countObatPakan) {
+                
                 $(document).on("click", "." + classPlus, function() {
-                    count += 1;
                     $.ajax({
-                        url: `${url}?count=` + count,
+                        url: `${url}?count=` + countObatPakan,
                         type: "GET",
                         success: function(data) {
+                            countObatPakan += 1;
                             $("#" + classPlus).append(data);
                             $(".select2-pakan").select2({
                                 dropdownParent: $(`#tambah_perencanaan .modal-content`)
@@ -438,12 +438,13 @@
 
             function plusRowObatAir(classPlus, url) {
                 $(document).on("click", "." + classPlus, function() {
-                    count += 1;
+                    var appendData = ''
                     $.ajax({
                         url: `${url}?count=` + count,
                         type: "GET",
                         success: function(data) {
-                            $("#" + classPlus).append(data);
+                            appendData += data
+                            $("#" + classPlus).append(appendData);
                             $(".select2-pakan").select2({
                                 dropdownParent: $(`#tambah_perencanaan .modal-content`)
                             });
