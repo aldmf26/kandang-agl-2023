@@ -289,7 +289,6 @@
             function plusRowPakan(classPlus, url, wew) {
                 $(document).on("click", "." + classPlus, function() {
                     wew += 1;
-                    alert(wew)
                     $.ajax({
                         url: `${url}?count=` + count,
                         type: "GET",

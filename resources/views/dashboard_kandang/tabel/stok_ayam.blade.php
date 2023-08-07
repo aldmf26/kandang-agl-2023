@@ -60,6 +60,12 @@
                     <h6>{{empty($stok_karung->saldo_karung) ? '0' : $stok_karung->saldo_karung}} Karung</h6>
                 </th>
             </tr>
+            <tr>
+                <th style="text-align: center" colspan="2">
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#history_karung"
+                        class="btn btn-sm btn-primary">History </a>
+                </th>
+            </tr>
 
         </table>
     </div>
