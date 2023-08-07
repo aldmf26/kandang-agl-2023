@@ -21,11 +21,11 @@
                     <tr>
                         <th width="5%">#</th>
                         <th width="10%">Tanggal</th>
-                        <th width="15%">Nota</th>
-                        <th class="text-end" width="10%">Pcs</th>
-                        <th class="text-end" width="10%">Kg</th>
-                        <th class="text-end" width="10%">Ikat</th>
-                        <th class="text-center" width="15%">Aksi</th>
+                        <th width="10%">Nota</th>
+                        <th class="text-end" width="8%">Pcs</th>
+                        <th class="text-end" width="8%">Kg</th>
+                        <th class="text-end" width="8%">Ikat</th>
+                        <th class="text-center" width="20%">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -42,37 +42,44 @@
                                 <a class="btn btn-primary btn-sm detail_transfer" data-bs-target="#detail_transfer"
                                     data-bs-toggle="modal" no_nota="{{ $s->no_nota }}" href="#"><i
                                         class="me-2 fas fa-eye"></i>Detail</a>
-                                @if ($s->void == 'Y' || $s->tgl == date('Y-m-d'))
-                                    <div class="btn-group" role="group">
-                                        <span class="btn btn-sm" data-bs-toggle="dropdown">
-                                            <i class="fas fa-ellipsis-v text-primary"></i>
-                                        </span>
-                                        <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1">
-                                            <li><a class="dropdown-item text-primary "
-                                                    href="{{ route('dashboard_kandang.edit_transfer_stok', ['nota' => $s->no_nota]) }}"><i
-                                                        class="me-2 fas fa-pen"></i>Edit</a>
-                                            </li>
-                                            <li>
-                                                <a class="dropdown-item text-danger delete_nota"
-                                                    no_nota="{{ $s->no_nota }}" href="#" data-bs-toggle="modal"
-                                                    data-bs-target="#delete"><i class="me-2 fas fa-trash"></i>Delete
-                                                </a>
-                                            </li>
-                                            @if (auth()->user()->posisi_id == 1)
-                                                <a class="dropdown-item"
-                                                    href="{{ route('dashboard_kandang.void_transfer', ['nota' => $s->no_nota, 'value' => 'T']) }}"><i
-                                                        class="me-2 fas fa-window"></i>Tutup Akses
-                                                </a>
-                                            @endif
-                                        </ul>
-                                    </div>
+                                @php
+                                    $void = DB::table('tb_void')
+                                        ->where('no_nota', $s->no_nota)
+                                        ->where('status', 'T')
+                                        ->first();
+                                @endphp
+                                @if (auth()->user()->posisi_id == 1)
+                                    @if (!empty($void))
+                                        <button type="button" onclick="copyToClipboard('{{ $void->voucher }}')"
+                                            class="btn btn-sm btn-danger">Salin Voucher : {{ $void->voucher }}</button>
+                                    @else
+                                        <a
+                                            class="btn btn-danger btn-sm "href="{{ route('dashboard_kandang.void_transfer', ['no_nota' => $s->no_nota, 'tgl1' => $tgl1, 'tgl2' => $tgl2]) }}"><i
+                                                class="me-2 fas fa-newspaper"></i>Voucher Edit</a>
+                                    @endif
                                 @else
-                                    @if (auth()->user()->posisi_id == 1)
-                                        <x-theme.button
-                                            href="{{ route('dashboard_kandang.void_transfer', ['nota' => $s->no_nota]) }}"
-                                            icon="fa-times" variant="danger" teks="Void" />
+                                    @if ($s->void == 'Y' || $s->tgl == date('Y-m-d'))
+                                        <div class="btn-group" role="group">
+                                            <span class="btn btn-sm" data-bs-toggle="dropdown">
+                                                <i class="fas fa-ellipsis-v text-primary"></i>
+                                            </span>
+                                            <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                                                <li><a class="dropdown-item text-primary "
+                                                        href="{{ route('dashboard_kandang.edit_transfer_stok', ['nota' => $s->no_nota]) }}"><i
+                                                            class="me-2 fas fa-pen"></i>Edit</a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item text-danger delete_nota"
+                                                        no_nota="{{ $s->no_nota }}" href="#"
+                                                        data-bs-toggle="modal" data-bs-target="#delete"><i
+                                                            class="me-2 fas fa-trash"></i>Delete
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>
                                     @endif
                                 @endif
+
                             </td>
                         </tr>
                     @endforeach
@@ -92,6 +99,7 @@
             :tgl2="$tgl2" />
     </x-slot>
     @section('js')
+        <script src="{{ asset('js/salin_voucher.js') }}"></script>
         <script>
             edit('detail_transfer', 'no_nota', 'detail_transfer', 'detail_jurnal')
             $(document).ready(function() {

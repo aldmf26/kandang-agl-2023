@@ -371,6 +371,7 @@ Route::middleware('auth')->group(function () {
             Route::get('/penjualan_umum', 'penjualan_umum')->name('penjualan_umum');
             Route::get('/tbh_add', 'tbh_add')->name('tbh_add');
             Route::get('/get_stok', 'get_stok')->name('get_stok');
+            Route::get('/void_penjualan_umum', 'void_penjualan_umum')->name('void_penjualan_umum');
             Route::get('/edit_penjualan', 'edit_penjualan')->name('edit_penjualan');
             Route::get('/add_penjualan_umum', 'add_penjualan_umum')->name('add_penjualan_umum');
             Route::get('/detail/{urutan}', 'detail')->name('detail');
