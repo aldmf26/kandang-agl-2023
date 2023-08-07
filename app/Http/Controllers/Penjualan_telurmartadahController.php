@@ -163,7 +163,7 @@ class Penjualan_telurmartadahController extends Controller
             $total_kg_kotor = $kg_pcs[$x] + $kg_ikat[$x] + $kg_kg[$x];
 
             $kg_bersih_ikat = $kg_ikat[$x] - $ikat[$x];
-            $rk = $pcs_kg[$x] / 15;
+            $rk = $pcs_kg[$x] / 30;
             $rak_kali = round($rk  * 0.12, 1);
             $kg_bersih_kg = $kg_kg[$x] + $rak_kali;
 
