@@ -45,9 +45,9 @@
         @include('dashboard_kandang.tabel.stokTelur')
         <section class="row">
             @if (session()->has('error'))
-            <div class="col-lg-12">
-                <x-theme.alert pesan="kontak dr anto kalo ada yg merah" />
-            </div>
+                <div class="col-lg-12">
+                    <x-theme.alert pesan="kontak dr anto kalo ada yg merah" />
+                </div>
             @endif
 
             @include('dashboard_kandang.tabel.penjualanUmum')
@@ -65,8 +65,8 @@
         </section>
     </x-slot>
     @section('js')
-    <script>
-        function modalSelect2() {
+        <script>
+            function modalSelect2() {
                 $('.select2-kandang').select2({
                     dropdownParent: $('#tambah_kandang .modal-content')
                 });
@@ -161,9 +161,11 @@
                 }).showToast();
             }
             editPerencanaan('tambah_perencanaan', 'id_kandang', 'dashboard_kandang/load_perencanaan', 'load_perencanaan')
+            var countPakan = 1;
 
             function editPerencanaan(kelas, attr, link, load) {
                 $(document).on('click', `.${kelas}`, function() {
+                    countPakan = 1
                     var id = $(this).attr(`${attr}`)
                     $.ajax({
                         type: "GET",
@@ -285,13 +287,11 @@
                     }
                 });
             }
-
-            function plusRowPakan(classPlus, url, wew) {
+            function plusRowPakan(classPlus, url) {
                 $(document).on("click", "." + classPlus, function() {
-                    wew += 1;
-                    alert(wew)
+                    countPakan += 1;
                     $.ajax({
-                        url: `${url}?count=` + count,
+                        url: `${url}?count=` + countPakan,
                         type: "GET",
                         success: function(data) {
                             $("#" + classPlus).append(data);
@@ -323,6 +323,8 @@
                     var number = kg_sisa.toFixed(2).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
                     $('#krng_s').val(number);
                 })
+
+
             }
             $(document).on("change", '.pakan_input', function() {
                 var id_pakan = $(this).val()
@@ -365,12 +367,13 @@
                         $('.select2-edit').select2({
                             dropdownParent: $(`#tambah_perencanaan .modal-content`)
                         });
-                        plusRowObatPakan('tbhObatPakan', 'dashboard_kandang/tbh_obatPakan' ,1)
+                        plusRowObatPakan('tbhObatPakan', 'dashboard_kandang/tbh_obatPakan', 1)
                     }
                 });
             }
+
             function plusRowObatPakan(classPlus, url, countObatPakan) {
-                
+
                 $(document).on("click", "." + classPlus, function() {
                     $.ajax({
                         url: `${url}?count=` + countObatPakan,
@@ -597,10 +600,10 @@
 
 
             // pakan
-    </script>
+        </script>
 
-    <script>
-        function load_stok_pakan() {
+        <script>
+            function load_stok_pakan() {
                 $.ajax({
                     type: "GET",
                     url: "{{ route('dashboard_kandang.load_stok_pakan') }}",
@@ -672,7 +675,7 @@
                     success: function(r) {
                         $("#history_stk").html(r);
                         $("#history_stok").modal("show");
-                      
+
                     },
                 });
             });
@@ -758,7 +761,7 @@
                 $.ajax({
                     type: "get",
                     url: "dashboard_kandang/get_satuan_vitmin_mtd?id_produk=" + id_vitamin,
-                    success: function (data) {
+                    success: function(data) {
                         $('.satuan_vitamin' + count).text(data);
                     }
                 });
@@ -768,7 +771,7 @@
                 var ekor = $('.ekor').val();
                 var h_satuan = $('.h_satuan').val();
                 var ttl_rp = parseFloat(ekor) * parseFloat(h_satuan);
-            
+
                 $('.ttl_rp').val(ttl_rp);
 
             });
@@ -779,6 +782,6 @@
                 $('.ttl_rp').val(ttl_rp);
 
             });
-    </script>
+        </script>
     @endsection
 </x-theme.app>

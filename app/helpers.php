@@ -63,6 +63,28 @@ if (!function_exists('kode')) {
     }
 }
 
+if (!function_exists('void')) {
+    function void($no_nota, $nm_menu, $tbl = 'invoice_mtd')
+    {
+        $split_data = explode("-", $no_nota);
+        $prefix = $split_data[0];
+        $suffix = $split_data[1];
+        
+        $kolom = $prefix == 'PUM' ? 'urutan' : 'no_nota';
+
+        $query = DB::table($tbl)->where($kolom, $prefix == 'PUM' ? $suffix : $no_nota);
+        $admin = $query->first()->admin;
+        DB::table('tb_void')->insert([
+            'no_nota' => $prefix == 'PUM' ? "$prefix-$suffix" : $no_nota,
+            'voucher' => str()->random(5),
+            'tgl' => now(),
+            'nm_menu' => ucwords($nm_menu),
+            'admin' => $admin
+        ]);
+        $query->update(['void' => 'Y']);
+    }
+}
+
 if (!function_exists('buatNota')) {
     function buatNota($tbl, $kolom)
     {

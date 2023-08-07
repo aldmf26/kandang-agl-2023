@@ -11,7 +11,7 @@
                     <h6>Stok Martadah <br>{{$stok_ayam->saldo_kandang}}</h6>
                 </th>
                 <th style="text-align: center; height: 60px;">
-                    <h6>Transfer BJM <br>{{empty($stok_ayam_bjm->saldo_bjm) ? '0' : $stok_ayam_bjm->saldo_bjm}}</h6>
+                    <h6>Stok BJM <br>{{empty($stok_ayam_bjm->saldo_bjm) ? '0' : $stok_ayam_bjm->saldo_bjm}}</h6>
                 </th>
             </tr>
             <tr>
@@ -19,7 +19,7 @@
                     <a href="#" data-bs-toggle="modal" data-bs-target="#transfer_ayam"
                         class="btn btn-sm btn-primary">Transfer BJM</a>
                     <a href="#" data-bs-toggle="modal" data-bs-target="#penjualan_ayam"
-                        class="btn btn-sm btn-primary">Penjualan </a>
+                        class="btn btn-sm btn-primary">Penjualan Martadah</a>
                     <a href="#" data-bs-toggle="modal" data-bs-target="#history_ayam"
                         class="btn btn-sm btn-primary">History </a>
                 </th>

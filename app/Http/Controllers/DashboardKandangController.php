@@ -219,8 +219,8 @@ class DashboardKandangController extends Controller
 
     public function save_transfer(Request $r)
     {
-        $cek = DB::table('stok_telur')->where([['nota_transfer', '!=', ''], ['nota_transfer', 'like', '%TF%']])->first();
-        $nota_t = empty($cek) ? 1000 + 1 : str()->remove('TF-', $cek->nota_transfer) + 1;
+        $cek = DB::table('invoice_mtd')->where('jenis', 'tf')->orderBy('id_invoice_mtd', 'DESC')->first();
+        $nota_t = empty($cek) ? 1000 + 1 : str()->remove('TF-', $cek->no_nota) + 1;
 
         $pcs_pcs = $r->pcs_pcs;
         $kg_pcs = $r->kg_pcs;
@@ -310,54 +310,61 @@ class DashboardKandangController extends Controller
         $kg_kg = $r->kg_kg;
         $rak_kg = $r->rak_kg;
         $rp_kg = $r->rp_kg;
-        DB::table('stok_telur')->where('nota_transfer', $nota_t)->delete();
-        DB::table('invoice_mtd')->where('no_nota', $nota_t)->delete();
-        for ($x = 0; $x < count($r->id_produk); $x++) {
+        $voucher = DB::table('tb_void')->where([['no_nota', $nota_t], ['voucher', $r->voucher], ['status', 'T']])->count();
+        $voucherUpdate = $voucher > 0 || $r->tgl == date('Y-m-d') ? true : false;
 
-            $pcs_ikat = $ikat[$x] * 180;
-            $total_pcs = $pcs_ikat + $pcs_pcs[$x] + $pcs_kg[$x];
-            $total_kg_kotor = $kg_pcs[$x] + $kg_ikat[$x] + $kg_kg[$x];
-            $data = [
-                'tgl' => $r->tgl,
-                'id_telur' => $r->id_produk[$x],
-                'pcs_kredit' => $total_pcs,
-                'kg_kredit' => $total_kg_kotor,
-                'admin' => auth()->user()->name,
-                'nota_transfer' => $nota_t,
-                'id_gudang' => 1,
-                'jenis' => 'tf'
-            ];
-            DB::table('stok_telur')->insert($data);
-            $data = [
-                'tgl' => $r->tgl,
-                'id_telur' => $r->id_produk[$x],
-                'pcs' => $total_pcs,
-                'kg' => $total_kg_kotor,
-                'admin' => auth()->user()->name,
-                'nota_transfer' => $nota_t,
-                'id_gudang' => 2,
-                'jenis' => 'tf'
-            ];
-            DB::table('stok_telur')->insert($data);
+        if ($voucherUpdate) {
+            DB::table('stok_telur')->where('nota_transfer', $nota_t)->delete();
+            DB::table('invoice_mtd')->where('no_nota', $nota_t)->delete();
+            for ($x = 0; $x < count($r->id_produk); $x++) {
 
-            $data = [
-                'tgl' => $r->tgl,
-                'no_nota' => $nota_t,
-                'pcs_pcs' => $pcs_pcs[$x],
-                'kg_pcs' => $kg_pcs[$x],
-                'ikat' => $ikat[$x],
-                'kg_ikat' => $kg_ikat[$x],
-                'pcs_kg' => $pcs_kg[$x],
-                'kg_kg' => $kg_kg[$x],
-                'rak_kg' => $rak_kg[$x],
-                'id_produk' => $r->id_produk[$x],
-                'jenis' => 'tf',
-                'admin' => auth()->user()->name
-            ];
-            DB::table('invoice_mtd')->insert($data);
+                $pcs_ikat = $ikat[$x] * 180;
+                $total_pcs = $pcs_ikat + $pcs_pcs[$x] + $pcs_kg[$x];
+                $total_kg_kotor = $kg_pcs[$x] + $kg_ikat[$x] + $kg_kg[$x];
+                $data = [
+                    'tgl' => $r->tgl,
+                    'id_telur' => $r->id_produk[$x],
+                    'pcs_kredit' => $total_pcs,
+                    'kg_kredit' => $total_kg_kotor,
+                    'admin' => auth()->user()->name,
+                    'nota_transfer' => $nota_t,
+                    'id_gudang' => 1,
+                    'jenis' => 'tf'
+                ];
+                DB::table('stok_telur')->insert($data);
+                $data = [
+                    'tgl' => $r->tgl,
+                    'id_telur' => $r->id_produk[$x],
+                    'pcs' => $total_pcs,
+                    'kg' => $total_kg_kotor,
+                    'admin' => auth()->user()->name,
+                    'nota_transfer' => $nota_t,
+                    'id_gudang' => 2,
+                    'jenis' => 'tf'
+                ];
+                DB::table('stok_telur')->insert($data);
 
-            return redirect()->route('dashboard_kandang.index')->with('sukses', 'Data berhasil di transfer');
+                $data = [
+                    'tgl' => $r->tgl,
+                    'no_nota' => $nota_t,
+                    'pcs_pcs' => $pcs_pcs[$x],
+                    'kg_pcs' => $kg_pcs[$x],
+                    'ikat' => $ikat[$x],
+                    'kg_ikat' => $kg_ikat[$x],
+                    'pcs_kg' => $pcs_kg[$x],
+                    'kg_kg' => $kg_kg[$x],
+                    'rak_kg' => $rak_kg[$x],
+                    'id_produk' => $r->id_produk[$x],
+                    'jenis' => 'tf',
+                    'admin' => auth()->user()->name
+                ];
+                DB::table('invoice_mtd')->insert($data);
+            }
+            DB::table('tb_void')->where([['no_nota', $nota_t], ['voucher', $r->voucher]])->update(['status' => 'Y']);
+        } else {
+            return redirect()->route('dashboard_kandang.edit_transfer_stok', ['nota' => $nota_t])->with('error', 'Voucher Update Salah!');
         }
+        return redirect()->route('dashboard_kandang.index')->with('sukses', 'Data berhasil di transfer');
     }
 
     public function cek_transfer(Request $r)
@@ -386,7 +393,7 @@ class DashboardKandangController extends Controller
 
     public function void_transfer(Request $r)
     {
-        DB::table('invoice_mtd')->where('no_nota', $r->nota)->update(['void' => empty($r->value) ? 'Y' : 'T']);
+        void($r->no_nota, 'transfer martadah');
 
         return redirect()->route('dashboard_kandang.transfer_stok', ['id_gudan' => 1])->with('sukses', 'Berhasil void');
     }
@@ -483,31 +490,6 @@ class DashboardKandangController extends Controller
                 'admin' => auth()->user()->name,
                 'lokasi' => 'mtd'
             ]);
-
-            // $getProduk = DB::table('tb_stok_produk')->where('id_produk', $r->id_produk[$i])->orderBy('id_stok_produk', 'DESC')->first();
-            // $notaProduk = buatNota('tb_stok_produk', 'urutan');
-            // $jml_sebelumnya = $getProduk->jml_sebelumnya ?? 0;
-            // $jml_sesudahnya = $jml_sebelumnya - $r->qty[$i];
-            // $gudang_id = DB::table('tb_produk')->where('id_produk', $r->id_produk[$i])->first()->gudang_id;
-            // DB::table("tb_stok_produk")->insert([
-            //     'id_produk' => $r->id_produk[$i],
-            //     'urutan' => $notaProduk,
-            //     'no_nota' => 'SK-' . $notaProduk,
-            //     'tgl' => $r->tgl,
-            //     'jenis' => 'selesai',
-            //     'status' => 'keluar',
-            //     'jml_sebelumnya' => $jml_sebelumnya,
-            //     'jml_sesudahnya' => $jml_sesudahnya,
-            //     'debit' => 0,
-            //     'kredit' => $r->qty[$i],
-            //     'rp_satuan' => 0,
-            //     'ket' => 'PUM-' . $r->no_nota,
-            //     'gudang_id' => $gudang_id,
-            //     'kategori_id' => 3,
-            //     'departemen_id' => 1,
-            //     'admin' => auth()->user()->name,
-            //     'lokasi' => 'mtd'
-            // ]);
         }
 
         return redirect()->route('dashboard_kandang.penjualan_umum')->with('sukses', 'Data Berhasil Ditambahkan');
@@ -533,52 +515,43 @@ class DashboardKandangController extends Controller
 
     public function update_penjualan(Request $r)
     {
-        DB::table('tb_stok_produk')->where('no_nota', 'PUM-' . $r->no_nota)->delete();
-        DB::table('penjualan_agl')->where('urutan', $r->no_nota)->delete();
-
-        for ($i = 0; $i < count($r->id_produk); $i++) {
-            DB::table('penjualan_agl')->insert([
-                'urutan' => $r->no_nota,
-                'nota_manual' => $r->nota_manual,
-                'tgl' => $r->tgl,
-                'id_customer' => $r->id_customer,
-                'driver' => '',
-                'id_produk' => $r->id_produk[$i],
-                'qty' => $r->qty[$i],
-                'rp_satuan' => $r->rp_satuan[$i],
-                'total_rp' => $r->total_rp[$i],
-                'ket' => '',
-                'id_jurnal' => 0,
-                'admin' => auth()->user()->name,
-                'lokasi' => 'mtd'
-            ]);
-            $getProduk = DB::table('tb_stok_produk')->where('id_produk', $r->id_produk[$i])->orderBy('id_stok_produk', 'DESC')->first();
-            $notaProduk = buatNota('tb_stok_produk', 'urutan');
-            $jml_sebelumnya = $getProduk->jml_sebelumnya ?? 0;
-            $jml_sesudahnya = $jml_sebelumnya - $r->qty[$i];
-
-            DB::table("tb_stok_produk")->insert([
-                'id_produk' => $r->id_produk[$i],
-                'urutan' => $notaProduk,
-                'no_nota' => 'SK-' . $notaProduk,
-                'tgl' => $r->tgl,
-                'jenis' => 'selesai',
-                'status' => 'keluar',
-                'jml_sebelumnya' => $jml_sebelumnya,
-                'jml_sesudahnya' => $jml_sesudahnya,
-                'debit' => 0,
-                'kredit' => $r->qty[$i],
-                'rp_satuan' => 0,
-                'ket' => 'PUM-' . $r->no_nota,
-                'gudang_id' => $getProduk->gudang_id,
-                'kategori_id' => 3,
-                'departemen_id' => 1,
-                'admin' => auth()->user()->name,
-                'lokasi' => 'mtd'
-            ]);
+        $voucher = DB::table('tb_void')->where([['no_nota', "PUM-$r->no_nota"], ['voucher', $r->voucher], ['status', 'T']])->count();
+        $voucherUpdate = $voucher > 0 || $r->tgl == date('Y-m-d') ? true : false;
+        if($voucherUpdate) {
+            DB::table('tb_void')->where([['no_nota', "PUM-$r->no_nota"], ['voucher', $r->voucher]])->update(['status' => 'Y']);
+            DB::table('tb_stok_produk')->where('no_nota', 'PUM-' . $r->no_nota)->delete();
+            DB::table('penjualan_agl')->where('urutan', $r->no_nota)->delete();
+    
+            for ($i = 0; $i < count($r->id_produk); $i++) {
+                DB::table('penjualan_agl')->insert([
+                    'urutan' => $r->no_nota,
+                    'nota_manual' => $r->nota_manual,
+                    'tgl' => $r->tgl,
+                    'id_customer' => $r->id_customer,
+                    'driver' => '',
+                    'kode' => 'PUM',
+                    'id_produk' => $r->id_produk[$i],
+                    'qty' => $r->qty[$i],
+                    'rp_satuan' => $r->rp_satuan[$i],
+                    'total_rp' => $r->total_rp[$i],
+                    'ket' => '',
+                    'id_jurnal' => 0,
+                    'admin' => auth()->user()->name,
+                    'lokasi' => 'mtd'
+                ]);
+            }
+        } else {
+            return redirect()->route('dashboard_kandang.edit_penjualan', ['urutan' => $r->no_nota])->with('error', 'Voucher Update Salah!');
         }
 
         return redirect()->route('dashboard_kandang.penjualan_umum')->with('sukses', 'Data Berhasil Ditambahkan');
+    }
+    
+    public function void_penjualan_umum(Request $r)
+    {
+        void($r->no_nota, 'Penjualan Umum', 'penjualan_agl');
+
+        return redirect()->route('dashboard_kandang.penjualan_umum')->with('sukses', 'Data berhasil ditambahkan void');
     }
 
     public function detail($no_nota)

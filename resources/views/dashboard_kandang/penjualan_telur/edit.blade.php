@@ -4,13 +4,16 @@
         <form action="{{route('dashboard_kandang.save_edit_telur')}}" method="post">
             <div class="col-lg-12">
                 <div class="row">
-                    <div class="col-lg-6">
+                    <div class="col-lg-7">
                         <table class="table">
                             <tr>
                                 <th class="dhead">Tanggal</th>
                                 <th class="dhead">No Nota</th>
                                 <th class="dhead">Customer</th>
                                 <th class="dhead">HP</th>
+                                @if ($invoice2->tgl != date('Y-m-d'))
+                                    <th class="dhead">Voucher Edit</th>
+                                @endif
                             </tr>
                             <tr>
                                 <td>
@@ -30,6 +33,11 @@
                                     <input type="text" class="form-control no_hp" name="no_hp" required
                                         value="{{$invoice2->no_hp}}">
                                 </td>
+                                @if ($invoice2->tgl != date('Y-m-d'))
+                                    <td>
+                                        <input type="text" class="form-control" name="voucher">
+                                    </td>
+                                @endif
                             </tr>
                         </table>
                     </div>
