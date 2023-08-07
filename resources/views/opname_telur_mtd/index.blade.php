@@ -6,7 +6,7 @@
                 <h6 class="float-start">{{ $title }}</h6>
                 <x-theme.button modal="T" href="/dashboard_kandang" icon="fa-home" addClass="float-end" teks="" />
             </div>
-            
+
         </div>
 
     </x-slot>
@@ -45,7 +45,7 @@
                             a.kg_kredit) as kg
                             FROM stok_telur as a
                             left JOIN telur_produk as b on b.id_produk_telur = a.id_telur
-                            WHERE a.id_gudang = 1 and a.id_telur = '$p->id_produk_telur' and a.opname = 'T'
+                            WHERE a.id_gudang = '$id_gudang' and a.id_telur = '$p->id_produk_telur' and a.opname = 'T'
                             GROUP by a.id_telur;")
                             @endphp
                             <tr>
@@ -90,6 +90,7 @@
 
                                     <input type="hidden" name="kg_selisih[]"
                                         class="kg_selisih_biasa{{$p->id_produk_telur}}" readonly value="0">
+
                                 </td>
                             </tr>
                             @endforeach
@@ -97,6 +98,7 @@
                     </table>
                 </div>
             </section>
+            <input type="hidden" name="id_gudang" readonly value="{{$id_gudang}}">
     </x-slot>
     <x-slot name="cardFooter">
         <button type="submit" class="float-end btn btn-primary button-save ">Simpan</button>
