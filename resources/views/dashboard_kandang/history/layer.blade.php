@@ -46,7 +46,7 @@
                         {{ $d->nm_kandang }}</td>
                     @php
                         $populasi = DB::table('populasi')
-                            ->where([['id_kandang', $d->id_kandang], ['tgl', date('Y-m-d')]])
+                            ->where([['id_kandang', $d->id_kandang], ['tgl', $tgl]])
                             ->first();
                         
                         $mati = $populasi->mati ?? 0;
