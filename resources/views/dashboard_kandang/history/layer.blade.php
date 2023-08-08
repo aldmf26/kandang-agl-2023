@@ -86,7 +86,6 @@
                     @endphp
                     @foreach ($telur as $t)
                         @php
-                            $tgl = date('Y-m-d');
                             $tglKemarin = Carbon\Carbon::yesterday()->format('Y-m-d');
                             
                             $stok = DB::selectOne("SELECT * FROM stok_telur as a WHERE a.id_kandang = '$d->id_kandang'
