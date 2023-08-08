@@ -94,7 +94,6 @@
                             $stokKemarin = DB::selectOne("SELECT * FROM stok_telur as a WHERE a.id_kandang =
                     '$d->id_kandang'
                     AND a.tgl = '$tglKemarin' AND a.id_telur = '$t->id_produk_telur'");
-                                dd($stok);
                             $pcs = $stok->pcs ?? 0;
                             $pcsKemarin = $stokKemarin->pcs ?? 0;
                             
