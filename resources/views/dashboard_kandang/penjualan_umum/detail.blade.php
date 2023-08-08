@@ -37,7 +37,7 @@
             @endphp
             <tr>
                 <td>{{ $no + 1 }}</td>
-                <td>PAGL-{{ $a->urutan }}</td>
+                <td>PUM-{{ $a->urutan }}</td>
                 <td>{{ $a->id_customer }}</td>
                 <td align="right">{{ number_format($a->rp_satuan, 0) }}</td>
                 <td align="center">{{ $a->qty }}</td>
