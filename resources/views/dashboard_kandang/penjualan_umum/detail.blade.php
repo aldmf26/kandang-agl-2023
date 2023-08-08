@@ -17,7 +17,7 @@
         <tr>
             <th class="dhead" width="5">#</th>
             <th class="dhead">Nota</th>
-            <th class="dhead">Nama Produk</th>
+            <th class="dhead">Nama Pelanggan</th>
             <th width="15%" class="dhead" style="text-align: right">Rp Satuan</th>
             <th width="15%" class="dhead text-center">Qty</th>
             <th width="15%" class="dhead" style="text-align: right">Total Rp</th>
@@ -38,7 +38,7 @@
             <tr>
                 <td>{{ $no + 1 }}</td>
                 <td>PAGL-{{ $a->urutan }}</td>
-                <td>{{ $a->nm_produk }}</td>
+                <td>{{ $a->id_customer }}</td>
                 <td align="right">{{ number_format($a->rp_satuan, 0) }}</td>
                 <td align="center">{{ $a->qty }}</td>
                 <td align="right">{{ number_format($a->total_rp, 0) }}</td>
