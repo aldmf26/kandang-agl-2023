@@ -37,9 +37,11 @@
             </tr>
 
             <tr>
-                <th width="2%" class="dhead text-center">Minggu <br> (85)</th>
-                <th width="1%" class="dhead text-center">Pop</th>
-                <th width="6%" class="dhead text-center">Mati / Jual</th>
+                <th width="2%" class="dhead text-center">Minggu <br> (85) <i class="fas text-white fa-question-circle rumus"
+                    rumus="minggu" style="cursor: pointer"></i></th>
+                <th width="1%" class="dhead text-center">Pop </th>
+                <th width="6%" class="dhead text-center">Mati / Jual <i class="fas text-white fa-question-circle rumus"
+                    rumus="mati" style="cursor: pointer"></i></th>
                 @php
                     $telur = DB::table('telur_produk')->get();
                 @endphp
@@ -47,10 +49,13 @@
                     <th width="1%" class="dhead text-center">
                         {{ ucwords(str_replace('telur', '', strtolower($d->nm_telur))) }}</th>
                 @endforeach
-                <th width="1%" class="dhead text-center">Ttl Pcs</th>
-                <th width="1%" class="dhead text-center">Ttl Kg</th>
+                <th width="1%" class="dhead text-center">Ttl Pcs <i class="fas text-white fa-question-circle rumus"
+                        rumus="ttlPcs" style="cursor: pointer"></i></th>
+                <th width="1%" class="dhead text-center">Ttl Kg <i class="fas text-white fa-question-circle rumus"
+                        rumus="ttlKg" style="cursor: pointer"></i></th>
                 <th width="1%" class="dhead text-center">Kg</th>
-                <th width="3%" class="dhead text-center">Gr / Ekor</th>
+                <th width="3%" class="dhead text-center">Gr / Ekor <i class="fas text-white fa-question-circle rumus"
+                    rumus="grEkor" style="cursor: pointer"></i></th>
 
             </tr>
         </thead>
@@ -88,7 +93,9 @@
                 WHERE a.id_kandang = '$d->id_kandang';");
                         
                         $pop = $popu->stok_awal - $popu->pop;
-                    $kelasPop = ($pop / $popu->stok_awal) * 100 <= 85 ? 'merah' : 'putih'; @endphp <td data-bs-toggle="modal" id_kandang="{{ $d->id_kandang }}"
+                    $kelasPop = ($pop / $popu->stok_awal) * 100 <= 85 ? 'merah' : 'putih'; 
+                    @endphp 
+                    <td data-bs-toggle="modal" id_kandang="{{ $d->id_kandang }}"
                         nm_kandang="{{ $d->nm_kandang }}" class="tambah_populasi putih"
                         data-bs-target="#tambah_populasi">{{ $pop }} </td>
 
@@ -151,8 +158,10 @@
                         $gr_pakan = DB::selectOne("SELECT sum(a.gr) as ttl, a.no_nota FROM tb_pakan_perencanaan as a
                         where a.id_kandang = '$d->id_kandang' and a.tgl = '$tgl' group by a.id_kandang");
                         $gr_perekor = empty($pakan) ? 0 : $pakan->total / $pop;
-                    $kelas = $gr_perekor < 100 ? 'merah' : 'putih'; @endphp <td data-bs-toggle="modal" id_kandang="{{ $d->id_kandang }}"
-                        class="tambah_perencanaan" data-bs-target="#tambah_perencanaan">
+                        $kelas = $gr_perekor < 100 ? 'merah' : 'putih';
+                    @endphp
+                    <td data-bs-toggle="modal" id_kandang="{{ $d->id_kandang }}" class="tambah_perencanaan"
+                        data-bs-target="#tambah_perencanaan">
                         {{ empty($gr_pakan) ? 0 : number_format($gr_pakan->ttl / 1000, 1) }}</td>
                     <td data-bs-toggle="modal" id_kandang="{{ $d->id_kandang }}"
                         class="{{ $kelas }} tambah_perencanaan" data-bs-target="#tambah_perencanaan">
@@ -196,6 +205,9 @@
         </tfoot>
     </table>
 </div>
+<x-theme.modal title="Rumus" btnSave='T' idModal="rumus">
+    <div id="rumus_layer"></div>
+</x-theme.modal>
 
 @include('dashboard_kandang.modal.tambah_kandang')
 @include('dashboard_kandang.modal.tambah_karung')

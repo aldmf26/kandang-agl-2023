@@ -66,6 +66,20 @@
     </x-slot>
     @section('js')
         <script>
+            $(document).on('click', '.rumus', function() {
+                var rumus = $(this).attr('rumus');
+                $.ajax({
+                    type: "get",
+                    url: "/dashboard_kandang/rumus?rumus=" + rumus,
+                    success: function(r) {
+                        // alert(r)
+                        $("#rumus_layer").html(r)
+                        $("#rumus").modal('show');
+
+                    }
+                });
+            });
+
             function modalSelect2() {
                 $('.select2-kandang').select2({
                     dropdownParent: $('#tambah_kandang .modal-content')
@@ -287,6 +301,7 @@
                     }
                 });
             }
+
             function plusRowPakan(classPlus, url) {
                 $(document).on("click", "." + classPlus, function() {
                     countPakan += 1;

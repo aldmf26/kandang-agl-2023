@@ -310,6 +310,7 @@ Route::middleware('auth')->group(function () {
         ->prefix('dashboard_kandang')
         ->name('dashboard_kandang.')
         ->group(function () {
+            Route::get('/rumus', 'rumus')->name('rumus');
             Route::get('/', 'index')->name('index');
             Route::post('/tambah_telur', 'tambah_telur')->name('tambah_telur');
             Route::post('/export_telur', 'export_telur')->name('export_telur');

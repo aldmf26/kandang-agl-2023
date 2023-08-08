@@ -814,6 +814,31 @@ class DashboardKandangController extends Controller
         return $nota_t;
     }
 
+    public function rumus(Request $r)
+    {
+        if ($r->rumus == 'ttlKg') {
+            echo "<b>Note =</b> <em >Jika Ttl Kg hari ini - Ttl Kg Kemarin = 2.5kg maka merah</em>";
+        }
+        if ($r->rumus == 'ttlPcs') {
+            echo "<b>Note =</b> <em >Jika Ttl Pcs hari ini - Ttl Pcs Kemarin = kurang 60 pcs maka merah</em>";
+        }
+
+        if ($r->rumus == 'grEkor') {
+            echo "<b>Gr / Ekor =</b> <em >Total pakan / Populasi</em><br><br>";
+            echo "<b>Note =</b> <em >Gr perekor - 100 maka kolom merah</em>";
+        }
+        if ($r->rumus == 'mati') {
+            echo "<b>Note =</b> <em >Mati lebih dari 3 maka kolom merah</em>";
+        }
+        if ($r->rumus == 'populasi') {
+            echo "<b>Note =</b> <em >Mati lebih dari 3 maka kolom merah</em>";
+        }
+        if ($r->rumus == 'minggu') {
+            echo "<b>Note =</b> <em >Minggu lebih dari 85 maka kolom merah</em>";
+        }
+        
+    }
+
     public function tambah_perencanaan(Request $r)
     {
         // $tgl = $r->tgl;
