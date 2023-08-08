@@ -17,7 +17,6 @@
                             <tr>
                                 <th width="4%" class="dhead">Tanggal</th>
                                 <th width="9%" class="dhead">No Nota</th>
-                                <th width="9%" class="dhead">Nota Manual</th>
                                 <th width="10%" class="dhead">Pelanggan</th>
                                 @if ($getPenjualan->tgl != date('Y-m-d'))
                                     <th class="dhead" width="10%">Voucher Edit</th>
@@ -36,10 +35,7 @@
                                     <input value="{{ $getPenjualan->urutan }}" type="hidden" required
                                         class="form-control" name="no_nota">
                                 </td>
-                                <td>
-                                    <input value="{{ $getPenjualan->nota_manual }}" type="text"
-                                        class="form-control" name="nota_manual">
-                                </td>
+                            
                                 <td>
                                     <input type="text" name="id_customer" class="form-control" value="{{ $getPenjualan->id_customer }}">
                                 </td>
