@@ -23,6 +23,8 @@
                                 <td>
                                     <input type="text" class="form-control nota_bk" name="no_nota"
                                         value="{{ $invoice2->no_nota }}" readonly>
+                                    <input type="hidden" class="form-control" name="urutan"
+                                        value="{{ $invoice2->urutan }}" readonly>
                                 </td>
                                 <td>
                                     <input type="text" class="form-control" name="customer" required
