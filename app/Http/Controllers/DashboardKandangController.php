@@ -1290,7 +1290,10 @@ class DashboardKandangController extends Controller
     {
         $data = [
             'title' => 'Layer',
-            'kandang' => DB::table('kandang')->get(),
+            'kandang' => DB::table('kandang as a')
+                ->select(DB::raw("FLOOR(DATEDIFF('$r->tgl', a.chick_in) / 7) AS mgg"), 'a.*')
+                ->where('selesai', 'T')
+                ->get(),
             'tgl' => $r->tgl
         ];
         return view('dashboard_kandang.history.layer', $data);
