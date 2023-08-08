@@ -578,6 +578,7 @@ class DashboardKandangController extends Controller
         $id_produk = $urutan[count($urutan) - 1];
 
         $produk = DB::table('penjualan_agl as a')
+            ->select('a.admin as admin', 'a.*', 'b.nm_produk')
             ->join('tb_produk as b', 'a.id_produk', 'b.id_produk')
             ->where('a.id_produk', $id_produk)
             ->whereIn('a.urutan', $urutan)
