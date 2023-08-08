@@ -36,8 +36,8 @@
                             <td>{{ tanggal($s->tgl) }}</td>
                             <td>{{ $s->no_nota }}</td>
 
-                            <td align="right">{{ $s->pcs }}</td>
-                            <td align="right">{{ $s->kg }}</td>
+                            <td align="right">{{ number_format($s->pcs,0) }}</td>
+                            <td align="right">{{ number_format($s->kg,2) }}</td>
                             <td align="right">{{ number_format($s->pcs / 180, 2) }} </td>
                             <td align="center">
                                 <a class="btn btn-primary btn-sm detail_transfer" data-bs-target="#detail_transfer"
