@@ -128,7 +128,6 @@
                         GROUP BY a.id_kandang");
                         $gr_pakan = DB::selectOne("SELECT sum(a.gr) as ttl, a.no_nota FROM tb_pakan_perencanaan as a
                         where a.id_kandang = '$d->id_kandang' and a.tgl = '$tgl' group by a.id_kandang");
-                        dd($pop);
                         $gr_perekor = empty($pakan) ? 0 : $pakan->total / $pop;
                         $kelas = $gr_perekor < 100 ? 'merah' : 'putih';
                     @endphp
