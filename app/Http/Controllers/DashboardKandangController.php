@@ -883,33 +883,7 @@ class DashboardKandangController extends Controller
                         'admin' => auth()->user()->name
                     ];
                     DB::table('stok_produk_perencanaan')->insert($dataStok);
-                    $id_pakan = $r->id_pakan[$i];
-
-                    // $hrga = $this->getHargaSatuan($id_pakan);
-                    // $nota_t = $this->getNoNota();
-                    // $data = [
-                    //     'id_akun' => '519',
-                    //     'id_buku' => '2',
-                    //     'ket' => "Pengeluaran stok pakan-$no_nota-$id_pakan",
-                    //     'debit' => $r->gr_pakan[$i] * $hrga->rata_rata,
-                    //     'kredit' => '0',
-                    //     'tgl' => $tgl,
-                    //     'no_nota' => 'JPP-' . $nota_t,
-                    //     'admin' => auth()->user()->name,
-                    // ];
-                    // DB::table('jurnal')->insert($data);
-
-                    // $data = [
-                    //     'id_akun' => '519',
-                    //     'id_buku' => '2',
-                    //     'ket' => "Pengeluaran stok pakan-$no_nota-$id_pakan",
-                    //     'kredit' => $r->gr_pakan[$i] * $hrga->rata_rata,
-                    //     'debit' => '0',
-                    //     'tgl' => $tgl,
-                    //     'no_nota' => 'JPP-' . $nota_t,
-                    //     'admin' => auth()->user()->name,
-                    // ];
-                    // DB::table('jurnal')->insert($data);
+        
                 }
                 $total_kg_pakan += $r->gr_pakan[$i];
             }
@@ -960,7 +934,6 @@ class DashboardKandangController extends Controller
 
                     DB::table('tb_obat_perencanaan')->insert($data1);
                     $id_obat_pakan = $r->id_obat_pakan[$i];
-                    $stok = DB::selectOne("SELECT sum(pcs) as stok FROM stok_produk_perencanaan WHERE id_pakan = '$id_obat_pakan'");
                     $dataStok = [
                         'id_kandang' => $id_kandang,
                         'id_pakan' => $id_obat_pakan,
@@ -973,33 +946,6 @@ class DashboardKandangController extends Controller
                         'admin' => auth()->user()->name
                     ];
                     DB::table('stok_produk_perencanaan')->insert($dataStok);
-
-                    $hrga = $this->getHargaSatuan($id_obat_pakan);
-                    $nota_t = $this->getNoNota();
-
-                    // $data = [
-                    //     'id_akun' => '520',
-                    //     'id_buku' => '2',
-                    //     'ket' => "Pengeluaran stok vitamin-$no_nota-$id_obat_pakan",
-                    //     'debit' => $r->dosis_obat_pakan[$i] * $hrga->rata_rata,
-                    //     'kredit' => '0',
-                    //     'tgl' => $tgl,
-                    //     'no_nota' => 'JPP-' . $nota_t,
-                    //     'admin' => auth()->user()->name,
-                    // ];
-                    // DB::table('jurnal')->insert($data);
-
-                    // $data = [
-                    //     'id_akun' => '520',
-                    //     'id_buku' => '2',
-                    //     'ket' => "Pengeluaran stok vitamin-$no_nota-$id_obat_pakan",
-                    //     'kredit' => $r->dosis_obat_pakan[$i] * $hrga->rata_rata,
-                    //     'debit' => '0',
-                    //     'tgl' => $tgl,
-                    //     'no_nota' => 'JPP-' . $nota_t,
-                    //     'admin' => auth()->user()->name,
-                    // ];
-                    // DB::table('jurnal')->insert($data);
                 }
             }
 
@@ -1021,7 +967,6 @@ class DashboardKandangController extends Controller
                     DB::table('tb_obat_perencanaan')->insert($data1);
 
                     $id_obat_air = $r->id_obat_air[$i];
-                    $stok = DB::selectOne("SELECT sum(pcs) as stok FROM stok_produk_perencanaan WHERE id_pakan = '$id_obat_air'");
                     $dataStok = [
                         'id_kandang' => $id_kandang,
                         'id_pakan' => $id_obat_air,
@@ -1033,33 +978,6 @@ class DashboardKandangController extends Controller
                         'admin' => auth()->user()->name
                     ];
                     DB::table('stok_produk_perencanaan')->insert($dataStok);
-
-                    $hrga = $this->getHargaSatuan($id_obat_air);
-                    $nota_t = $this->getNoNota();
-
-                    // $data = [
-                    //     'id_akun' => '520',
-                    //     'id_buku' => '2',
-                    //     'ket' => "Pengeluaran stok vitamin-$no_nota-$id_obat_air",
-                    //     'debit' => $r->dosis_obat_pakan[$i] * $hrga->rata_rata,
-                    //     'kredit' => '0',
-                    //     'tgl' => $tgl,
-                    //     'no_nota' => 'JPP-' . $nota_t,
-                    //     'admin' => auth()->user()->name,
-                    // ];
-                    // DB::table('jurnal')->insert($data);
-
-                    // $data = [
-                    //     'id_akun' => '520',
-                    //     'id_buku' => '2',
-                    //     'ket' => "Pengeluaran stok vitamin-$no_nota-$id_obat_air",
-                    //     'kredit' => $r->dosis_obat_pakan[$i] * $hrga->rata_rata,
-                    //     'debit' => '0',
-                    //     'tgl' => $tgl,
-                    //     'no_nota' => 'JPP-' . $nota_t,
-                    //     'admin' => auth()->user()->name,
-                    // ];
-                    // DB::table('jurnal')->insert($data);
                 }
             }
 
@@ -1077,7 +995,6 @@ class DashboardKandangController extends Controller
                 DB::table('tb_obat_perencanaan')->insert($data1);
 
                 $id_obat_ayam = $r->id_obat_ayam;
-                $stok = DB::selectOne("SELECT sum(pcs) as stok FROM stok_produk_perencanaan WHERE id_pakan = '$id_obat_ayam'");
                 $dataStok = [
                     'id_kandang' => $id_kandang,
                     'id_pakan' => $id_obat_ayam,
@@ -1090,32 +1007,6 @@ class DashboardKandangController extends Controller
                 ];
                 DB::table('stok_produk_perencanaan')->insert($dataStok);
 
-                $hrga = $this->getHargaSatuan($id_obat_ayam);
-                $nota_t = $this->getNoNota();
-
-                // $data = [
-                //     'id_akun' => '520',
-                //     'id_buku' => '2',
-                //     'ket' => "Pengeluaran stok vitamin-$no_nota-$id_obat_ayam",
-                //     'debit' => $r->dosis_obat_ayam * $hrga->rata_rata,
-                //     'kredit' => '0',
-                //     'tgl' => $tgl,
-                //     'no_nota' => 'JPP-' . $nota_t,
-                //     'admin' => auth()->user()->name,
-                // ];
-                // DB::table('jurnal')->insert($data);
-
-                // $data = [
-                //     'id_akun' => '520',
-                //     'id_buku' => '2',
-                //     'ket' => "Pengeluaran stok vitamin-$no_nota-$id_obat_ayam",
-                //     'kredit' => $r->dosis_obat_ayam * $hrga->rata_rata,
-                //     'debit' => '0',
-                //     'tgl' => $tgl,
-                //     'no_nota' => 'JPP-' . $nota_t,
-                //     'admin' => auth()->user()->name,
-                // ];
-                // DB::table('jurnal')->insert($data);
             }
 
             return redirect()->route('dashboard_kandang.index')->with($error ?? 'sukses', $pesan ?? 'Data Perencanaan Berhasil ditambahkan');
