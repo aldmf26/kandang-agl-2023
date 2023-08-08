@@ -108,8 +108,9 @@ class Penjualan_telurmartadahController extends Controller
         left join telur_produk as b on b.id_produk_telur = a.id_produk
         where a.no_nota = '$r->no_nota';");
 
-        $penjualan_mtd_detail = DB::selectOne("SELECT a.*, b.nm_telur FROM invoice_mtd as a 
+        $penjualan_mtd_detail = DB::selectOne("SELECT a.*, b.nm_telur, c.urutan FROM invoice_mtd as a 
         left join telur_produk as b on b.id_produk_telur = a.id_produk
+        left_join invoice_telur as c on c.no_nota = a.no_nota
         where a.no_nota = '$r->no_nota';");
         $data =  [
             'title' => 'Edit Stok Telur',
