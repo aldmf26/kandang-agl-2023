@@ -15,7 +15,7 @@
     <div class="col-lg-2">
         <div class="form-group">
             <label for="">Dosis</label>
-            <input type="text" name="dosis_obat_pakan[]" readonly class="form-control">
+            <input type="text" name="dosis_obat_pakan[]" class="form-control">
         </div>
     </div>
     <div class="col-lg-2">

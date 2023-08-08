@@ -41,11 +41,11 @@
                 <th width="1%" class="dhead text-center">Pop</th>
                 <th width="6%" class="dhead text-center">Mati / Jual</th>
                 @php
-                $telur = DB::table('telur_produk')->get();
+                    $telur = DB::table('telur_produk')->get();
                 @endphp
                 @foreach ($telur as $d)
-                <th width="1%" class="dhead text-center">
-                    {{ ucwords(str_replace('telur', '', strtolower($d->nm_telur))) }}</th>
+                    <th width="1%" class="dhead text-center">
+                        {{ ucwords(str_replace('telur', '', strtolower($d->nm_telur))) }}</th>
                 @endforeach
                 <th width="1%" class="dhead text-center">Ttl Pcs</th>
                 <th width="1%" class="dhead text-center">Ttl Kg</th>
@@ -56,34 +56,34 @@
         </thead>
         <tbody class="text-end">
             @foreach ($kandang as $no => $d)
-            <tr>
-                <td align="center" class="detail_perencanaan" id_kandang="{{ $d->id_kandang }}" data-bs-toggle="modal"
-                    data-bs-target="#detail_perencanaan">
-                    {{ $d->nm_kandang }}</td>
-                @php
-                $populasi = DB::table('populasi')
-                ->where([['id_kandang', $d->id_kandang], ['tgl', date('Y-m-d')]])
-                ->first();
+                <tr>
+                    <td align="center" class="detail_perencanaan" id_kandang="{{ $d->id_kandang }}"
+                        data-bs-toggle="modal" data-bs-target="#detail_perencanaan">
+                        {{ $d->nm_kandang }}</td>
+                    @php
+                        $populasi = DB::table('populasi')
+                            ->where([['id_kandang', $d->id_kandang], ['tgl', date('Y-m-d')]])
+                            ->first();
+                        
+                        $mati = $populasi->mati ?? 0;
+                        $jual = $populasi->jual ?? 0;
+                        $kelas = $mati > 3 ? 'merah' : 'putih';
+                        $kelasMgg = $d->mgg >= 85 ? 'merah' : 'putih';
+                    @endphp
+                    <td data-bs-toggle="modal" id_kandang="{{ $d->id_kandang }}" nm_kandang="{{ $d->nm_kandang }}"
+                        class="tambah_populasi {{ $kelasMgg }}" data-bs-target="#tambah_populasi">
+                        {{ $d->mgg }} /
+                        {{ number_format(($d->mgg / 85) * 100, 0) }} %</td>
 
-                $mati = $populasi->mati ?? 0;
-                $jual = $populasi->jual ?? 0;
-                $kelas = $mati > 3 ? 'merah' : 'putih';
-                $kelasMgg = $d->mgg >= 85 ? 'merah' : 'putih';
-                @endphp
-                <td data-bs-toggle="modal" id_kandang="{{ $d->id_kandang }}" nm_kandang="{{ $d->nm_kandang }}"
-                    class="tambah_populasi {{ $kelasMgg }}" data-bs-target="#tambah_populasi">
-                    {{ $d->mgg }} /
-                    {{ number_format(($d->mgg / 85) * 100, 0) }} %</td>
-
-                @php
-                $popu = DB::selectOne("SELECT sum(a.mati + a.jual) as pop,b.stok_awal FROM populasi as a
+                    @php
+                        $popu = DB::selectOne("SELECT sum(a.mati + a.jual) as pop,b.stok_awal FROM populasi as a
                 LEFT JOIN kandang as b ON a.id_kandang = b.id_kandang
                 WHERE a.id_kandang = '$d->id_kandang';");
-
-                $pop = $popu->stok_awal - $popu->pop;
-                $kelasPop = ($pop / $popu->stok_awal) * 100 <= 85 ? 'merah' : 'putih' ; @endphp <td
-                    data-bs-toggle="modal" id_kandang="{{ $d->id_kandang }}" nm_kandang="{{ $d->nm_kandang }}"
-                    class="tambah_populasi putih" data-bs-target="#tambah_populasi">{{ $pop }} </td>
+                        
+                        $pop = $popu->stok_awal - $popu->pop;
+                    $kelasPop = ($pop / $popu->stok_awal) * 100 <= 85 ? 'merah' : 'putih'; @endphp <td data-bs-toggle="modal" id_kandang="{{ $d->id_kandang }}"
+                        nm_kandang="{{ $d->nm_kandang }}" class="tambah_populasi putih"
+                        data-bs-target="#tambah_populasi">{{ $pop }} </td>
 
                     {{-- mati dan jual --}}
                     <td data-bs-toggle="modal" id_kandang="{{ $d->id_kandang }}" nm_kandang="{{ $d->nm_kandang }}"
@@ -93,72 +93,74 @@
 
                     {{-- telur --}}
                     @php
-                    $telur = DB::table('telur_produk')->get();
-                    $ttlKg = 0;
-                    $ttlPcs = 0;
-                    $ttlPcsKemarin = 0;
-                    $ttlKgKemarin = 0;
+                        $telur = DB::table('telur_produk')->get();
+                        $ttlKg = 0;
+                        $ttlPcs = 0;
+                        $ttlPcsKemarin = 0;
+                        $ttlKgKemarin = 0;
                     @endphp
                     @foreach ($telur as $t)
-                    @php
-                    $tgl = date('Y-m-d');
-                    $tglKemarin = Carbon\Carbon::yesterday()->format('Y-m-d');
-
-                    $stok = DB::selectOne("SELECT * FROM stok_telur as a WHERE a.id_kandang = '$d->id_kandang'
+                        @php
+                            $tgl = date('Y-m-d');
+                            $tglKemarin = Carbon\Carbon::yesterday()->format('Y-m-d');
+                            
+                            $stok = DB::selectOne("SELECT * FROM stok_telur as a WHERE a.id_kandang = '$d->id_kandang'
                     AND a.tgl = '$tgl' AND a.id_telur = '$t->id_produk_telur'");
-
-                    $stokKemarin = DB::selectOne("SELECT * FROM stok_telur as a WHERE a.id_kandang =
+                            
+                            $stokKemarin = DB::selectOne("SELECT * FROM stok_telur as a WHERE a.id_kandang =
                     '$d->id_kandang'
                     AND a.tgl = '$tglKemarin' AND a.id_telur = '$t->id_produk_telur'");
-
-                    $pcs = $stok->pcs ?? 0;
-                    $pcsKemarin = $stokKemarin->pcs ?? 0;
-
-                    $ttlKg += $stok->kg ?? 0;
-                    $ttlPcs += $stok->pcs ?? 0;
-
-                    $ttlPcsKemarin += $pcsKemarin;
-                    $ttlKgKemarin += $stokKemarin->kg ?? 0;
-                    // dd($pcsKemarin - $pcs);
-                    $kelasTtlPcsTelur = $ttlPcs - $ttlPcsKemarin < -60 ? 'merah' : 'abu' ; $kelasTtKgTelur=$ttlKg -
-                        $ttlKgKemarin < 2.5 ? 'merah' : 'abu' ; @endphp <td data-bs-toggle="modal"
-                        id_kandang="{{ $d->id_kandang }}" nm_kandang="{{ $d->nm_kandang }}" class="tambah_telur "
-                        data-bs-target="#tambah_telur">
-                        <span>{{ $stok->pcs ?? 0 }}</span>
-                        </td>
-                        @endforeach
+                            
+                            $pcs = $stok->pcs ?? 0;
+                            $pcsKemarin = $stokKemarin->pcs ?? 0;
+                            
+                            $ttlKg += $stok->kg ?? 0;
+                            $ttlPcs += $stok->pcs ?? 0;
+                            
+                            $ttlPcsKemarin += $pcsKemarin;
+                            $ttlKgKemarin += $stokKemarin->kg ?? 0;
+                            // dd($pcsKemarin - $pcs);
+                            $kelasTtlPcsTelur = $ttlPcs - $ttlPcsKemarin < -60 ? 'merah' : 'abu';
+                            $kelasTtKgTelur = $ttlKg - $ttlKgKemarin < 2.5 ? 'merah' : 'abu';
+                        @endphp
                         <td data-bs-toggle="modal" id_kandang="{{ $d->id_kandang }}" nm_kandang="{{ $d->nm_kandang }}"
-                            class="tambah_telur {{ $kelasTtlPcsTelur }}" data-bs-target="#tambah_telur">
-                            {{ $ttlPcs }}
+                            class="tambah_telur " data-bs-target="#tambah_telur">
+                            <span>{{ $stok->pcs ?? 0 }}</span>
                         </td>
-                        <td data-bs-toggle="modal" id_kandang="{{ $d->id_kandang }}" nm_kandang="{{ $d->nm_kandang }}"
-                            class="tambah_telur {{ $kelasTtKgTelur }}" data-bs-target="#tambah_telur">{{ $ttlKg }}
-                        </td>
-                        {{-- end telur --}}
+                    @endforeach
+                    <td data-bs-toggle="modal" id_kandang="{{ $d->id_kandang }}" nm_kandang="{{ $d->nm_kandang }}"
+                        class="tambah_telur {{ $kelasTtlPcsTelur }}" data-bs-target="#tambah_telur">
+                        {{ $ttlPcs }}
+                    </td>
+                    <td data-bs-toggle="modal" id_kandang="{{ $d->id_kandang }}" nm_kandang="{{ $d->nm_kandang }}"
+                        class="tambah_telur {{ $kelasTtKgTelur }}" data-bs-target="#tambah_telur">{{ $ttlKg }}
+                    </td>
+                    {{-- end telur --}}
 
-                        {{-- pakan --}}
-                        @php
+                    {{-- pakan --}}
+                    @php
                         $pakan = DB::selectOne("SELECT *,sum(gr) as total FROM tb_pakan_perencanaan as a
                         WHERE a.tgl = '$tgl' AND a.id_kandang = '$d->id_kandang'
                         GROUP BY a.id_kandang");
                         $gr_pakan = DB::selectOne("SELECT sum(a.gr) as ttl, a.no_nota FROM tb_pakan_perencanaan as a
                         where a.id_kandang = '$d->id_kandang' and a.tgl = '$tgl' group by a.id_kandang");
                         $gr_perekor = empty($pakan) ? 0 : $pakan->total / $pop;
-                        $kelas = $gr_perekor < 100 ? 'merah' : 'putih' ; @endphp <td data-bs-toggle="modal"
-                            id_kandang="{{ $d->id_kandang }}" class="tambah_perencanaan"
-                            data-bs-target="#tambah_perencanaan">
-                            {{ empty($gr_pakan) ? 0 : $gr_pakan->ttl / 1000 }}</td>
-                            <td data-bs-toggle="modal" id_kandang="{{ $d->id_kandang }}"
-                                class="{{ $kelas }} tambah_perencanaan" data-bs-target="#tambah_perencanaan">
-                                {{ number_format($gr_perekor,0) }}</td>
+                        $kelas = $gr_perekor < 100 ? 'merah' : 'putih';
+                    @endphp
+                    <td data-bs-toggle="modal" id_kandang="{{ $d->id_kandang }}" class="tambah_perencanaan"
+                        data-bs-target="#tambah_perencanaan">
+                        {{ empty($gr_pakan) ? 0 : $gr_pakan->ttl / 1000 }}</td>
+                    <td data-bs-toggle="modal" id_kandang="{{ $d->id_kandang }}"
+                        class="{{ $kelas }} tambah_perencanaan" data-bs-target="#tambah_perencanaan">
+                        {{ number_format($gr_perekor, 0) }}</td>
 
-                            {{-- end pakan --}}
-                            <td align="center">
-                                <a onclick="return confirm('Yakin ingin di selesaikan ?')"
-                                    href="{{ route('dashboard_kandang.kandang_selesai', $d->id_kandang) }}"
-                                    class="badge bg-primary"><i class="fas fa-check"></i></a>
-                            </td>
-            </tr>
+                    {{-- end pakan --}}
+                    <td align="center">
+                        <a onclick="return confirm('Yakin ingin di selesaikan ?')"
+                            href="{{ route('dashboard_kandang.kandang_selesai', $d->id_kandang) }}"
+                            class="badge bg-primary"><i class="fas fa-check"></i></a>
+                    </td>
+                </tr>
             @endforeach
         </tbody>
     </table>
@@ -249,7 +251,7 @@
                 <select name="id_kandang" class="form-control" id="">
                     <option value="">- Pilih Kandang -</option>
                     @foreach ($kandang as $kd)
-                    <option value="{{ $kd->id_kandang }}">{{ $kd->nm_kandang }}</option>
+                        <option value="{{ $kd->id_kandang }}">{{ $kd->nm_kandang }}</option>
                     @endforeach
                 </select>
             </div>
@@ -265,7 +267,7 @@
                 <select name="id_kandang" class="form-control" id="">
                     <option value="">- Pilih Kandang -</option>
                     @foreach ($kandang as $kd)
-                    <option value="{{ $kd->id_kandang }}">{{ $kd->nm_kandang }}</option>
+                        <option value="{{ $kd->id_kandang }}">{{ $kd->nm_kandang }}</option>
                     @endforeach
                 </select>
             </div>
@@ -281,7 +283,7 @@
                 <select name="id_kandang" class="form-control" id="">
                     <option value="">- Pilih Kandang -</option>
                     @foreach ($kandang as $kd)
-                    <option value="{{ $kd->id_kandang }}">{{ $kd->nm_kandang }}</option>
+                        <option value="{{ $kd->id_kandang }}">{{ $kd->nm_kandang }}</option>
                     @endforeach
                 </select>
             </div>
