@@ -841,7 +841,7 @@ class DashboardKandangController extends Controller
 
     public function tambah_perencanaan(Request $r)
     {
-        $tgl = $r->tgl;
+        $tgl = date('Y-m-d');
         $id_kandang = $r->id_kandang;
         $kg_pakan_box = $r->kg_pakan_box;
         $populasi = $r->populasi;
@@ -868,8 +868,6 @@ class DashboardKandangController extends Controller
                         'admin' => auth()->user()->name
                     ];
                     DB::table('tb_pakan_perencanaan')->insert($dataPakan);
-
-
 
                     $dataStok = [
                         'id_kandang' => $id_kandang,
