@@ -26,6 +26,13 @@
             </tr>
         </thead>
         <tbody class="text-center">
+            @php
+                $total_populasi = 0;
+                $total_mati = 0;
+                $total_jual = 0;
+                $total_kilo = 0;
+                $total_kg_pakan = 0;
+            @endphp
             @foreach ($kandang as $no => $d)
                 <tr>
                     <td align="center" class="detail_perencanaan">
@@ -85,12 +92,49 @@
                     <td class="tambah_telur abu">{{ $ttlKg }}</td>
                     {{-- end telur --}}
 
-                    <td class="tambah_perencanaan">150</td>
-                    <td class="tambah_perencanaan">65</td>
+                    {{-- pakan --}}
+                    @php
+                        $pakan = DB::selectOne("SELECT *,sum(gr) as total FROM tb_pakan_perencanaan as a
+                        WHERE a.tgl = '$tgl' AND a.id_kandang = '$d->id_kandang'
+                        GROUP BY a.id_kandang");
+                        $gr_pakan = DB::selectOne("SELECT sum(a.gr) as ttl, a.no_nota FROM tb_pakan_perencanaan as a
+                        where a.id_kandang = '$d->id_kandang' and a.tgl = '$tgl' group by a.id_kandang");
+                        $gr_perekor = empty($pakan) ? 0 : $pakan->total / $pop;
+                        $kelas = $gr_perekor < 100 ? 'merah' : 'putih';
+                    @endphp
 
+                    <td class="tambah_perencanaan">{{ empty($gr_pakan) ? 0 : number_format($gr_pakan->ttl / 1000, 1) }}</td>
+                    <td class="tambah_perencanaan">{{ number_format($gr_perekor, 0) }}</td>
+                    @php
+                    $total_populasi += $pop;
+                    $total_mati += $mati;
+                    $total_jual += $jual;
+                    $total_kilo += $ttlKg;
+                    $total_kg_pakan += empty($gr_pakan) ? 0 : $gr_pakan->ttl / 1000;
+                @endphp
                 </tr>
             @endforeach
         </tbody>
+        <tfoot>
+            <th colspan="2">Total</th>
+            <th class="text-end">{{ number_format($total_populasi, 0) }}</th>
+            <th class="text-end">{{ number_format($total_mati, 0) }} / {{ number_format($total_jual, 0) }}</th>
+            @php
+                $total_pcs = 0;
+            @endphp
+            @foreach ($telur as $t)
+                @php
+                    $totalstok = DB::selectOne("SELECT sum(a.pcs) as total_pcs FROM stok_telur as a WHERE a.tgl = '$tgl' AND a.id_telur = '$t->id_produk_telur' and a.id_kandang != '0'");
+                    $total_pcs += $totalstok->total_pcs;
+                @endphp
+                <th class="text-end">{{ number_format($totalstok->total_pcs, 0) }}</th>
+            @endforeach
+            <th class="text-end">{{ number_format($total_pcs, 0) }}</th>
+            <th class="text-end">{{ number_format($total_kilo, 1) }}</th>
+            <th class="text-end">{{ number_format($total_kg_pakan, 1) }}</th>
+            <th></th>
+            <th></th>
+        </tfoot>
 
     </table>
 </div>
