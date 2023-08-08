@@ -30,6 +30,9 @@
                 </thead>
                 <tbody>
                     @foreach ($transfer as $no => $s)
+                    @php
+                        dd($s);
+                    @endphp
                         <tr>
                             <td>{{ $no + 1 }}</td>
                             <td>{{ tanggal($s->tgl) }}</td>
