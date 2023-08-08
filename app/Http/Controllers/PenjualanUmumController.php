@@ -350,6 +350,7 @@ class PenjualanUmumController extends Controller
             'title' => 'Detail Penjaulan Umum',
             'head_jurnal' => $penjualan,
             'produk' => DB::table('penjualan_agl as a')
+                ->select('a.admin as admin', 'a.*', 'b.nm_produk')
                 ->join('tb_produk as b', 'a.id_produk', 'b.id_produk')
                 ->where('urutan', $no_nota)
                 ->get()
