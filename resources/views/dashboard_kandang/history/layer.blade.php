@@ -6,15 +6,14 @@
                 <th colspan="3" class="text-center  putih">Populasi</th>
                 <th colspan="7" class="text-center abu"> Telur </th>
                 <th colspan="2" class="text-center putih">pakan</th>
-                <th width="2%" class="text-center dhead" rowspan="2">Aksi</th>
             </tr>
 
             <tr>
-                <th width="2%" class="dhead text-center">Minggu <br> (85) <i class="fas text-white fa-question-circle rumus"
-                    rumus="minggu" style="cursor: pointer"></i></th>
+                <th width="2%" class="dhead text-center">Minggu <br> (85) <i
+                        class="fas text-white fa-question-circle rumus" rumus="minggu" style="cursor: pointer"></i></th>
                 <th width="1%" class="dhead text-center">Pop </th>
-                <th width="6%" class="dhead text-center">Mati / Jual <i class="fas text-white fa-question-circle rumus"
-                    rumus="mati" style="cursor: pointer"></i></th>
+                <th width="6%" class="dhead text-center">Mati / Jual <i
+                        class="fas text-white fa-question-circle rumus" rumus="mati" style="cursor: pointer"></i></th>
                 @php
                     $telur = DB::table('telur_produk')->get();
                 @endphp
@@ -27,8 +26,8 @@
                 <th width="1%" class="dhead text-center">Ttl Kg <i class="fas text-white fa-question-circle rumus"
                         rumus="ttlKg" style="cursor: pointer"></i></th>
                 <th width="1%" class="dhead text-center">Kg</th>
-                <th width="3%" class="dhead text-center">Gr / Ekor <i class="fas text-white fa-question-circle rumus"
-                    rumus="grEkor" style="cursor: pointer"></i></th>
+                <th width="3%" class="dhead text-center">Gr / Ekor <i
+                        class="fas text-white fa-question-circle rumus" rumus="grEkor" style="cursor: pointer"></i></th>
 
             </tr>
         </thead>
@@ -66,11 +65,10 @@
                 WHERE a.id_kandang = '$d->id_kandang';");
                         
                         $pop = $popu->stok_awal - $popu->pop;
-                    $kelasPop = ($pop / $popu->stok_awal) * 100 <= 85 ? 'merah' : 'putih'; 
-                    @endphp 
-                    <td data-bs-toggle="modal" id_kandang="{{ $d->id_kandang }}"
-                        nm_kandang="{{ $d->nm_kandang }}" class="tambah_populasi putih"
-                        data-bs-target="#tambah_populasi">{{ $pop }} </td>
+                        $kelasPop = ($pop / $popu->stok_awal) * 100 <= 85 ? 'merah' : 'putih';
+                    @endphp
+                    <td data-bs-toggle="modal" id_kandang="{{ $d->id_kandang }}" nm_kandang="{{ $d->nm_kandang }}"
+                        class="tambah_populasi putih" data-bs-target="#tambah_populasi">{{ $pop }} </td>
 
                     {{-- mati dan jual --}}
                     <td data-bs-toggle="modal" id_kandang="{{ $d->id_kandang }}" nm_kandang="{{ $d->nm_kandang }}"
@@ -97,7 +95,7 @@
                             $stokKemarin = DB::selectOne("SELECT * FROM stok_telur as a WHERE a.id_kandang =
                     '$d->id_kandang'
                     AND a.tgl = '$tglKemarin' AND a.id_telur = '$t->id_produk_telur'");
-                            
+                                dd($stok);
                             $pcs = $stok->pcs ?? 0;
                             $pcsKemarin = $stokKemarin->pcs ?? 0;
                             
@@ -108,8 +106,10 @@
                             $ttlKgKemarin += $stokKemarin->kg ?? 0;
                             // dd($pcsKemarin - $pcs);
                             $kelasTtlPcsTelur = $ttlPcs - $ttlPcsKemarin < -60 ? 'merah' : 'abu';
-                        $kelasTtKgTelur = $ttlKg - $ttlKgKemarin < 2.5 ? 'merah' : 'abu'; @endphp <td data-bs-toggle="modal" id_kandang="{{ $d->id_kandang }}"
-                            nm_kandang="{{ $d->nm_kandang }}" class="tambah_telur " data-bs-target="#tambah_telur">
+                            $kelasTtKgTelur = $ttlKg - $ttlKgKemarin < 2.5 ? 'merah' : 'abu';
+                        @endphp
+                        <td data-bs-toggle="modal" id_kandang="{{ $d->id_kandang }}" nm_kandang="{{ $d->nm_kandang }}"
+                            class="tambah_telur " data-bs-target="#tambah_telur">
                             <span>{{ $stok->pcs ?? 0 }}</span>
                         </td>
                     @endforeach
@@ -141,11 +141,7 @@
                         {{ number_format($gr_perekor, 0) }}</td>
 
                     {{-- end pakan --}}
-                    <td align="center">
-                        <a onclick="return confirm('Yakin ingin di selesaikan ?')"
-                            href="{{ route('dashboard_kandang.kandang_selesai', $d->id_kandang) }}"
-                            class="badge bg-primary"><i class="fas fa-check"></i></a>
-                    </td>
+
                 </tr>
                 @php
                     $total_populasi += $pop;
@@ -173,7 +169,6 @@
             <th class="text-end">{{ number_format($total_pcs, 0) }}</th>
             <th class="text-end">{{ number_format($total_kilo, 1) }}</th>
             <th class="text-end">{{ number_format($total_kg_pakan, 1) }}</th>
-            <th></th>
             <th></th>
         </tfoot>
     </table>
