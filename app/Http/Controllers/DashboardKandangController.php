@@ -519,11 +519,11 @@ class DashboardKandangController extends Controller
     {
         $voucher = DB::table('tb_void')->where([['no_nota', "PUM-$r->no_nota"], ['voucher', $r->voucher], ['status', 'T']])->count();
         $voucherUpdate = $voucher > 0 || $r->tgl == date('Y-m-d') ? true : false;
-        if($voucherUpdate) {
+        if ($voucherUpdate) {
             DB::table('tb_void')->where([['no_nota', "PUM-$r->no_nota"], ['voucher', $r->voucher]])->update(['status' => 'Y']);
             DB::table('tb_stok_produk')->where('no_nota', 'PUM-' . $r->no_nota)->delete();
             DB::table('penjualan_agl')->where('urutan', $r->no_nota)->delete();
-    
+
             for ($i = 0; $i < count($r->id_produk); $i++) {
                 DB::table('penjualan_agl')->insert([
                     'urutan' => $r->no_nota,
@@ -548,7 +548,7 @@ class DashboardKandangController extends Controller
 
         return redirect()->route('dashboard_kandang.penjualan_umum')->with('sukses', 'Data Berhasil Ditambahkan');
     }
-    
+
     public function void_penjualan_umum(Request $r)
     {
         void($r->no_nota, 'Penjualan Umum', 'penjualan_agl');
@@ -565,6 +565,7 @@ class DashboardKandangController extends Controller
             'title' => 'Detail Penjaulan Umum',
             'head_jurnal' => $penjualan,
             'produk' => DB::table('penjualan_agl as a')
+                ->select('a.admin as admin', 'a.*', 'b.nm_produk')
                 ->join('tb_produk as b', 'a.id_produk', 'b.id_produk')
                 ->where('urutan', $no_nota)
                 ->get()
@@ -837,7 +838,6 @@ class DashboardKandangController extends Controller
         if ($r->rumus == 'minggu') {
             echo "<b>Note =</b> <em >Minggu lebih dari 85 maka kolom merah</em>";
         }
-        
     }
 
     public function tambah_perencanaan(Request $r)
@@ -881,7 +881,6 @@ class DashboardKandangController extends Controller
                         'admin' => auth()->user()->name
                     ];
                     DB::table('stok_produk_perencanaan')->insert($dataStok);
-        
                 }
                 $total_kg_pakan += $r->gr_pakan[$i];
             }
@@ -1004,7 +1003,6 @@ class DashboardKandangController extends Controller
                     'admin' => auth()->user()->name
                 ];
                 DB::table('stok_produk_perencanaan')->insert($dataStok);
-
             }
 
             return redirect()->route('dashboard_kandang.index')->with($error ?? 'sukses', $pesan ?? 'Data Perencanaan Berhasil ditambahkan');
