@@ -115,28 +115,6 @@
         </table>
        
         <table width="30%" style="white-space: nowrap;">
-            {{-- <thead>
-                        <tr>
-                            <th class="dhead text-center" colspan="4">Total </th>
-                        </tr>
-                        <tr>
-                            <th class="dhead abu" width="2%" style="text-align: center">Pcs</th>
-                            <th class="dhead putih" width="2%" style="text-align: center;">Kg</th>
-                            <th class="dhead putih" width="2%" style="text-align: center;">Ikat</th>
-                            <th class="dhead putih" width="2%" style="text-align: center;">Rak</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td align="right">{{ number_format($ttl_pcs, 0) }}</td>
-                            <td align="right">{{ number_format($ttl_kg, 0) }}</td>
-                            <td align="right">{{ number_format($ttl_pcs / 180, 2) }}</td>
-                            <td align="right">{{ number_format($ttl_rak, 0) }}</td>
-
-
-
-                        </tr>
-                    </tbody> --}}
             <tr>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                 <td>Total Pcs</td>
