@@ -12,7 +12,7 @@
                                 <th class="dhead">Customer</th>
                                 <th class="dhead">HP</th>
                                 @if ($invoice2->tgl != date('Y-m-d'))
-                                    <th class="dhead">Voucher Edit</th>
+                                <th class="dhead">Voucher Edit</th>
                                 @endif
                             </tr>
                             <tr>
@@ -34,9 +34,9 @@
                                         value="{{$invoice2->no_hp}}">
                                 </td>
                                 @if ($invoice2->tgl != date('Y-m-d'))
-                                    <td>
-                                        <input type="text" class="form-control" name="voucher">
-                                    </td>
+                                <td>
+                                    <input type="text" class="form-control" name="voucher">
+                                </td>
                                 @endif
                             </tr>
                         </table>
@@ -89,7 +89,7 @@
                                 $rp_pcs = $i->pcs_pcs * $i->rp_pcs;
                                 $rp_ikat = ($i->kg_ikat - $i->ikat) * $i->rp_ikat;
                                 $rak_kali = round($i->rak_kg * 0.12,1);
-                                $rp_kg = ($i->kg_kg - $rak_kali) * $i->rp_kg;
+                                $rp_kg = $i->kg_kg * $i->rp_kg;
                                 $total_rp = $rp_pcs + $rp_ikat + $rp_kg;
 
                                 @endphp

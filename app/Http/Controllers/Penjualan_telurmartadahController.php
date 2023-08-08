@@ -302,27 +302,27 @@ class Penjualan_telurmartadahController extends Controller
             for ($x = 0; $x < count($r->id_produk); $x++) {
                 $pcs_ikat = $ikat[$x] * 180;
                 $total_pcs = $pcs_ikat + $pcs_pcs[$x] + $pcs_kg[$x];
-                $total_kg_kotor = $kg_pcs[$x] + $kg_ikat[$x] + $kg_kg[$x];
 
                 $kg_bersih_ikat = $kg_ikat[$x] - $ikat[$x];
-                $rk = $pcs_kg[$x] / 15;
+                $rk = $pcs_kg[$x] / 30;
                 $rak_kali = round($rk  * 0.12, 1);
                 $kg_bersih_kg = $kg_kg[$x] + $rak_kali;
+                $total_kg_kotor = $kg_pcs[$x] + $kg_ikat[$x] + $kg_bersih_kg;
 
-                $total_kg_bersih = $kg_bersih_ikat + $kg_bersih_kg;
+                $total_kg_bersih = $kg_bersih_ikat + $kg_kg[$x];
                 $total_rp_satuan = $rp_pcs[$x] + $rp_ikat[$x] + $rp_kg[$x];
 
                 $ttl_rp_pcs = $pcs_pcs[$x] * $rp_pcs[$x];
                 $ttl_rp_ikat = $kg_bersih_ikat * $rp_ikat[$x];
-                $ttl_rp_kg = $kg_bersih_kg * $r->rp_kg[$x];
+                $ttl_rp_kg = $kg_kg[$x] * $r->rp_kg[$x];
 
                 $total_rp = $ttl_rp_pcs + $ttl_rp_ikat + $ttl_rp_kg;
-
 
                 $data = [
                     'tgl' => $r->tgl,
                     'customer' => $r->customer,
                     'no_nota' => $no_nota,
+                    'id_produk' => $r->id_produk[$x],
                     'id_produk' => $r->id_produk[$x],
                     'pcs' => $total_pcs,
                     'kg' => $total_kg_kotor,
@@ -334,8 +334,7 @@ class Penjualan_telurmartadahController extends Controller
                     'urutan' => $nota_t,
                     'urutan_customer' => $urutan_cus,
                     'driver' => '',
-                    'lokasi' => 'mtd',
-                    'void' => 'T'
+                    'lokasi' => 'mtd'
                 ];
                 DB::table('invoice_telur')->insert($data);
                 $data = [
