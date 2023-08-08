@@ -332,7 +332,7 @@ class Penjualan_telurmartadahController extends Controller
                     'rp_satuan' => $total_rp_satuan,
                     'total_rp' => $total_rp,
                     'admin' => auth()->user()->name,
-                    'urutan' => $nota_t,
+                    'urutan' => $r->urutan,
                     'urutan_customer' => $urutan_cus,
                     'driver' => '',
                     'lokasi' => 'mtd'
