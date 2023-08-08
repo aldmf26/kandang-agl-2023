@@ -106,7 +106,7 @@
                     <td class="tambah_perencanaan">{{ empty($gr_pakan) ? 0 : number_format($gr_pakan->ttl / 1000, 1) }}</td>
                     <td class="tambah_perencanaan">{{ number_format($gr_perekor, 0) }}</td>
                     @php
-                    $total_populasi += $pop;
+                    $total_populasi += $pop->pop;
                     $total_mati += $mati;
                     $total_jual += $jual;
                     $total_kilo += $ttlKg;
