@@ -841,8 +841,7 @@ class DashboardKandangController extends Controller
 
     public function tambah_perencanaan(Request $r)
     {
-        // $tgl = $r->tgl;
-        $tgl = date('Y-m-d');
+        $tgl = $r->tgl;
         $id_kandang = $r->id_kandang;
         $kg_pakan_box = $r->kg_pakan_box;
         $populasi = $r->populasi;
