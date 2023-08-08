@@ -160,19 +160,19 @@ class Penjualan_telurmartadahController extends Controller
         for ($x = 0; $x < count($r->id_produk); $x++) {
             $pcs_ikat = $ikat[$x] * 180;
             $total_pcs = $pcs_ikat + $pcs_pcs[$x] + $pcs_kg[$x];
-            $total_kg_kotor = $kg_pcs[$x] + $kg_ikat[$x] + $kg_kg[$x];
 
             $kg_bersih_ikat = $kg_ikat[$x] - $ikat[$x];
             $rk = $pcs_kg[$x] / 30;
             $rak_kali = round($rk  * 0.12, 1);
             $kg_bersih_kg = $kg_kg[$x] + $rak_kali;
+            $total_kg_kotor = $kg_pcs[$x] + $kg_ikat[$x] + $kg_bersih_kg;
 
-            $total_kg_bersih = $kg_bersih_ikat + $kg_bersih_kg;
+            $total_kg_bersih = $kg_bersih_ikat + $kg_kg[$x];
             $total_rp_satuan = $rp_pcs[$x] + $rp_ikat[$x] + $rp_kg[$x];
 
             $ttl_rp_pcs = $pcs_pcs[$x] * $rp_pcs[$x];
             $ttl_rp_ikat = $kg_bersih_ikat * $rp_ikat[$x];
-            $ttl_rp_kg = $kg_bersih_kg * $r->rp_kg[$x];
+            $ttl_rp_kg = $kg_kg[$x] * $r->rp_kg[$x];
 
             $total_rp = $ttl_rp_pcs + $ttl_rp_ikat + $ttl_rp_kg;
 
@@ -278,51 +278,51 @@ class Penjualan_telurmartadahController extends Controller
         $voucher = DB::table('tb_void')->where([['no_nota', $r->no_nota], ['voucher', $r->voucher], ['status', 'T']])->count();
         $voucherUpdate = $voucher > 0 || $r->tgl == date('Y-m-d') ? true : false;
         $no_nota = $r->no_nota;
-        if($voucherUpdate) {
+        if ($voucherUpdate) {
             DB::table('tb_void')->where([['no_nota', $no_nota], ['voucher', $r->voucher]])->update(['status' => 'Y']);
 
             DB::table('invoice_mtd')->where('no_nota', $no_nota)->delete();
             DB::table('invoice_telur')->where('no_nota', $no_nota)->delete();
             DB::table('stok_telur')->where('nota_transfer', $no_nota)->delete();
-    
+
             $pcs_pcs = $r->pcs_pcs;
             $kg_pcs = $r->kg_pcs;
             $rp_pcs = $r->rp_pcs;
-    
+
             $ikat = $r->ikat;
             $kg_ikat = $r->kg_ikat;
             $rp_ikat = $r->rp_ikat;
-    
+
             $pcs_kg = $r->pcs_kg;
             $kg_kg = $r->kg_kg;
             $rak_kg = $r->rak_kg;
             $rp_kg = $r->rp_kg;
-    
-    
+
+
             for ($x = 0; $x < count($r->id_produk); $x++) {
                 $pcs_ikat = $ikat[$x] * 180;
                 $total_pcs = $pcs_ikat + $pcs_pcs[$x] + $pcs_kg[$x];
-                $total_kg_kotor = $kg_pcs[$x] + $kg_ikat[$x] + $kg_kg[$x];
-    
+
                 $kg_bersih_ikat = $kg_ikat[$x] - $ikat[$x];
-                $rk = $pcs_kg[$x] / 15;
+                $rk = $pcs_kg[$x] / 30;
                 $rak_kali = round($rk  * 0.12, 1);
                 $kg_bersih_kg = $kg_kg[$x] + $rak_kali;
-    
-                $total_kg_bersih = $kg_bersih_ikat + $kg_bersih_kg;
+                $total_kg_kotor = $kg_pcs[$x] + $kg_ikat[$x] + $kg_bersih_kg;
+
+                $total_kg_bersih = $kg_bersih_ikat + $kg_kg[$x];
                 $total_rp_satuan = $rp_pcs[$x] + $rp_ikat[$x] + $rp_kg[$x];
-    
+
                 $ttl_rp_pcs = $pcs_pcs[$x] * $rp_pcs[$x];
                 $ttl_rp_ikat = $kg_bersih_ikat * $rp_ikat[$x];
-                $ttl_rp_kg = $kg_bersih_kg * $r->rp_kg[$x];
-    
+                $ttl_rp_kg = $kg_kg[$x] * $r->rp_kg[$x];
+
                 $total_rp = $ttl_rp_pcs + $ttl_rp_ikat + $ttl_rp_kg;
-    
-    
+
                 $data = [
                     'tgl' => $r->tgl,
                     'customer' => $r->customer,
                     'no_nota' => $no_nota,
+                    'id_produk' => $r->id_produk[$x],
                     'id_produk' => $r->id_produk[$x],
                     'pcs' => $total_pcs,
                     'kg' => $total_kg_kotor,
@@ -334,8 +334,7 @@ class Penjualan_telurmartadahController extends Controller
                     'urutan' => $nota_t,
                     'urutan_customer' => $urutan_cus,
                     'driver' => '',
-                    'lokasi' => 'mtd',
-                    'void' => 'T'
+                    'lokasi' => 'mtd'
                 ];
                 DB::table('invoice_telur')->insert($data);
                 $data = [
@@ -344,15 +343,15 @@ class Penjualan_telurmartadahController extends Controller
                     'no_hp' => $r->no_hp,
                     'no_nota' => $no_nota,
                     'id_produk' => $r->id_produk[$x],
-    
+
                     'pcs_pcs' => $pcs_pcs[$x],
                     'kg_pcs' => $kg_pcs[$x],
                     'rp_pcs' => $rp_pcs[$x],
-    
+
                     'ikat' => $ikat[$x],
                     'kg_ikat' => $kg_ikat[$x],
                     'rp_ikat' => $rp_ikat[$x],
-    
+
                     'pcs_kg' => $pcs_kg[$x],
                     'kg_kg' => $kg_kg[$x],
                     'rak_kg' =>  $rk,
@@ -360,8 +359,8 @@ class Penjualan_telurmartadahController extends Controller
                     'void' => 'T'
                 ];
                 DB::table('invoice_mtd')->insert($data);
-    
-    
+
+
                 DB::table('stok_telur')->insert([
                     'id_kandang' => 0,
                     'id_telur' => $r->id_produk[$x],
@@ -381,7 +380,7 @@ class Penjualan_telurmartadahController extends Controller
         } else {
             return redirect()->route('dashboard_kandang.edit_telur', ['no_nota' => $no_nota])->with('error', 'Voucher Update Salah!');
         }
-        
+
 
         return redirect()->route('dashboard_kandang.cek_penjualan_telur', ['no_nota' => $no_nota])->with('sukses', 'Data berhasil ditambahkan');
     }

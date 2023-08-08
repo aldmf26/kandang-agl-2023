@@ -82,7 +82,7 @@
                         $rp_pcs = $i->pcs_pcs * $i->rp_pcs;
                         $rp_ikat = ($i->kg_ikat - $i->ikat) * $i->rp_ikat;
                         $rak_kali = round($i->rak_kg * 0.12,1);
-                        $rp_kg = ($i->kg_kg - $rak_kali) * $i->rp_kg;
+                        $rp_kg = $i->kg_kg * $i->rp_kg;
                         $total_rp = $rp_pcs + $rp_ikat + $rp_kg;
 
                         @endphp
