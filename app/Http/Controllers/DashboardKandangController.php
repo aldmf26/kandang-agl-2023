@@ -418,11 +418,16 @@ class DashboardKandangController extends Controller
         WHERE a.tgl BETWEEN '$tgl1' AND '$tgl2'
         GROUP BY a.urutan
         ORDER BY a.id_penjualan DESC");
+        $ttlRp = 0;
+        foreach($penjualan as $p) {
+             $ttlRp += $p->total;
+        }
         $data = [
             'title' => 'Penjualan Umum',
             'penjualan' => $penjualan,
             'tgl1' => $tgl1,
             'tgl2' => $tgl2,
+            'ttlRp' => $ttlRp,
         ];
         return view('dashboard_kandang.penjualan_umum.penjualan_umum', $data);
     }

@@ -20,7 +20,7 @@
                         <th>Tanggal</th>
                         <th>Pelanggan</th>
                         <th width="20%" class="text-center">Total Produk</th>
-                        <th class="text-end">Total Rp</th>
+                        <th class="text-end">Total Rp ({{ number_format($ttlRp,0) }})</th>
                         <th width="20%" class="text-center">Aksi</th>
                     </tr>
                 </thead>

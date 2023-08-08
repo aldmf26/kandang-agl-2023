@@ -18,11 +18,12 @@
                         <th>Pelanggan</th>
                         <th width="20%" class="text-center">Total Produk</th>
                         <th>Di Terima</th>
-                        <th class="text-end">Total Rp</th>
+                        <th class="text-end">Total Rp (Rp. {{ number_format($ttlRp,0) }})</th>
                         <th width="25%" class="text-center">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
+                    
                     @foreach ($penjualan as $no => $d)
                         <tr>
                             <td>{{ $no + 1 }}</td>
