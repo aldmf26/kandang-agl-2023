@@ -944,7 +944,7 @@ class DashboardKandangController extends Controller
                         'total_rp' => 0,
                         'no_nota' => $no_nota,
                         'id_kandang' => $id_kandang,
-                        'pcs_kredit' => $r->dosis_obat_pakan[$i],
+                        'pcs_kredit' =>  (($total_kg_pakan / 1000) / $r->campuran_obat_pakan[$i]) * $r->dosis_obat_pakan[$i],
                         'admin' => auth()->user()->name
                     ];
                     DB::table('stok_produk_perencanaan')->insert($dataStok);
