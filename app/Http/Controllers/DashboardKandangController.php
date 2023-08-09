@@ -152,7 +152,7 @@ class DashboardKandangController extends Controller
             $jual += $r->jual[$x];
             $tgl = $r->tgl[$x];
         }
-        DB::table('stok_ayam')->where([['id_gudang', 1], ['tgl', $tgl], ['no_nota', '=', '']])->delete();
+        DB::table('stok_ayam')->where([['id_gudang', 1], ['tgl', $tgl], ['transfer',  'T']])->delete();
         DB::table('stok_ayam')->insert([
             'tgl' => $tgl,
             'debit' => $jual,
@@ -2105,7 +2105,8 @@ class DashboardKandangController extends Controller
             'kredit' => 0,
             'id_gudang' => '2',
             'admin' =>  auth()->user()->name,
-            'jenis' => 'ayam'
+            'jenis' => 'ayam',
+            'transfer' => 'Y'
         ];
         DB::table('stok_ayam')->insert($data);
 
@@ -2115,7 +2116,8 @@ class DashboardKandangController extends Controller
             'kredit' => $r->qty,
             'id_gudang' => '1',
             'admin' =>  auth()->user()->name,
-            'jenis' => 'ayam'
+            'jenis' => 'ayam',
+            'transfer' => 'Y'
         ];
         DB::table('stok_ayam')->insert($data);
 
@@ -2137,6 +2139,7 @@ class DashboardKandangController extends Controller
             'admin' =>  auth()->user()->name,
             'jenis' => 'ayam',
             'no_nota' => 'PA-' . $nota_t,
+            'transfer' => 'Y'
         ];
         DB::table('stok_ayam')->insert($data);
 
