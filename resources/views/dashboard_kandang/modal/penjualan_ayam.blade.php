@@ -16,8 +16,8 @@
             </div>
             <div class="col-lg-4">
                 <label for="">Ekor</label>
-                <input type="number" min="0" max="{{ $stok_ayam->saldo_kandang }}" class="form-control ekor"
-                    name="qty" value="0">
+                <input type="number" min="0" max="{{ $stok_ayam->saldo_kandang }}" class="form-control ekor" name="qty"
+                    value="0">
             </div>
             <div class="col-lg-4">
                 <label for="">Harga Satuan</label>
@@ -38,28 +38,28 @@
                 <thead>
                     <th>No</th>
                     <th>Tanggal</th>
-                    <th class="text-end">Debit</th>
-                    <th class="text-end">Kredit</th>
+                    <th class="text-end">Stok Masuk</th>
+                    <th class="text-end">Stok Keluar</th>
                     <th class="text-end">Saldo</th>
                     <th>Keterangan</th>
                 </thead>
                 <tbody>
                     @php
-                        $saldo = 0;
+                    $saldo = 0;
                     @endphp
                     @foreach ($history_ayam as $no => $h)
-                        @php
-                            $saldo += $h->debit - $h->kredit;
-                        @endphp
-                        <tr>
-                            <td>{{ $no + 1 }}</td>
-                            <td style="white-space: nowrap">{{ tanggal($h->tgl) }}</td>
-                            <td align="right">{{ $h->debit }}</td>
-                            <td align="right">{{ $h->kredit }}</td>
-                            <td align="right">{{ $saldo }}</td>
-                            <td>{{ $h->kredit == 0 ? 'Telur Masuk' : ($h->no_nota != '' ? 'Penjualan' : 'Transfer') }}
-                            </td>
-                        </tr>
+                    @php
+                    $saldo += $h->debit - $h->kredit;
+                    @endphp
+                    <tr>
+                        <td>{{ $no + 1 }}</td>
+                        <td style="white-space: nowrap">{{ tanggal($h->tgl) }}</td>
+                        <td align="right">{{ $h->debit }}</td>
+                        <td align="right">{{ $h->kredit }}</td>
+                        <td align="right">{{ $saldo }}</td>
+                        <td>{{ $h->kredit == 0 ? 'Ayam Masuk' : ($h->no_nota != '' ? 'Penjualan' : 'Transfer') }}
+                        </td>
+                    </tr>
                     @endforeach
                 </tbody>
             </table>
@@ -80,21 +80,21 @@
                 </thead>
                 <tbody>
                     @php
-                        $saldo = 0;
+                    $saldo = 0;
                     @endphp
                     @foreach ($history_karung as $no => $h)
-                        @php
-                            $saldo += $h->debit - $h->kredit;
-                        @endphp
-                        <tr>
-                            <td>{{ $no + 1 }}</td>
-                            <td style="white-space: nowrap">{{ tanggal($h->tgl) }}</td>
-                            <td align="right">{{ $h->debit }}</td>
-                            <td align="right">{{ $h->kredit }}</td>
-                            <td align="right">{{ $saldo }}</td>
-                            <td>{{ $h->kredit == 0 ? 'Karung Masuk' : ($h->no_nota != '' ? 'Penjualan' : 'Transfer') }}
-                            </td>
-                        </tr>
+                    @php
+                    $saldo += $h->debit - $h->kredit;
+                    @endphp
+                    <tr>
+                        <td>{{ $no + 1 }}</td>
+                        <td style="white-space: nowrap">{{ tanggal($h->tgl) }}</td>
+                        <td align="right">{{ $h->debit }}</td>
+                        <td align="right">{{ $h->kredit }}</td>
+                        <td align="right">{{ $saldo }}</td>
+                        <td>{{ $h->kredit == 0 ? 'Karung Masuk' : ($h->no_nota != '' ? 'Penjualan' : 'Transfer') }}
+                        </td>
+                    </tr>
                     @endforeach
                 </tbody>
             </table>
