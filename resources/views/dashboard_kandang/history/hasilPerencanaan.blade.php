@@ -136,7 +136,7 @@
                                 <?= $o->nm_produk ?>
                             </td>
                             <td style="">
-                                <?= number_format(($o->dosis * $ttl) / 1000, 2) ?>
+                                <?= number_format(($ttl / 1000) * $o->dosis, 2) ?>
                             </td>
                             <td style="">
                                 <?= $o->satuan ?>
