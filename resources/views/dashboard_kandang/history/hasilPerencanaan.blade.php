@@ -116,7 +116,7 @@
                                     <?= $p->nm_pakan ?>
                                 </td>
                                 <td style="">
-                                    <?= number_format(($p->persen / 100) * $pakan1->gr2, 2) ?>
+                                    <?= ($p->persen / 100) * $pakan1->gr2 ?>
                                 </td>
                                 <td style="">Kg</td>
                             </tr>
