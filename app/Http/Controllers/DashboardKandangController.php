@@ -87,10 +87,10 @@ class DashboardKandangController extends Controller
             $rak_kg = $r->rak_kg[$i];
 
             $pcs = $r->pcs[$i];
-            $ttl_kg_pcs = $r->ttl_kg_pcs[$i];
+            // $ttl_kg_pcs = $r->ttl_kg_pcs[$i];
 
             $ttlPcs = ($ikat * 180) + ($rak * 30) + $pcs;
-            $ttlKg = $ikat_kg + $rak_kg + $ttl_kg_pcs;
+            // $ttlKg = $ikat_kg + $rak_kg + $ttl_kg_pcs;
 
             $data = [
                 'id_kandang' => $r->id_kandang,
@@ -103,8 +103,8 @@ class DashboardKandangController extends Controller
                 'rak_kg' => $rak_kg,
                 'pcs' => $pcs,
                 'pcs_kg' => $r->pcs_kg[$i],
-                'potongan_pcs' => $r->potongan_pcs[$i],
-                'ttl_kg_pcs' => $ttl_kg_pcs,
+                // 'potongan_pcs' => $r->potongan_pcs[$i],
+                // 'ttl_kg_pcs' => $ttl_kg_pcs,
             ];
             DB::table('stok_telur_new')->insert($data);
 
