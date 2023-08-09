@@ -197,7 +197,7 @@
                         @foreach ($obat_pakan as $o)
                             <tr>
                                 <td style="">{{ $o->nm_produk }}</td>
-                                <td style="">{{ number_format($o->dosis * $ttl, 2) }} </td>
+                                <td style="">{{ number_format(($ttl / 1000) * $o->dosis, 2) }} </td>
                                 <td style="">{{ $o->satuan }}</td>
                             </tr>
                         @endforeach
