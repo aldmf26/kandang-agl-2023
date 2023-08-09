@@ -352,6 +352,7 @@ Route::middleware('auth')->group(function () {
             Route::get('/viewHistoryEditPerencanaan', 'viewHistoryEditPerencanaan')->name('viewHistoryEditPerencanaan');
             Route::post('/edit_perencanaan', 'edit_perencanaan')->name('edit_perencanaan');
             Route::get('/hasilLayer', 'hasilLayer')->name('hasilLayer');
+            Route::get('/hasilInputTelur', 'hasilInputTelur')->name('hasilInputTelur');
 
             // penjualan martadah
 

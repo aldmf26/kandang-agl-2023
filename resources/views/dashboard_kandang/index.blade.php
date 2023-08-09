@@ -104,6 +104,7 @@
             viewHistoryPerencanaan()
             viewEditPerencanaan()
             hasilLayer()
+            hasilInputTelur()
 
             function viewHistoryPerencanaan() {
                 $(document).on('click', '#btnPerencanaan', function() {
@@ -119,21 +120,6 @@
                         },
                         success: function(r) {
                             $("#hasilPerencanaan").html(r);
-                        }
-                    });
-                })
-            }
-
-            function hasilLayer() {
-                $(document).on('click', '#btnLayer', function() {
-                    var tgl = $("#tglLayer").val();
-
-                    $.ajax({
-                        type: "GET",
-                        url: "{{ route('dashboard_kandang.hasilLayer') }}?tgl=" + tgl,
-                        success: function(data) {
-                            $("#hasilLayer").html(data);
-                            $('.select2').select2()
                         }
                     });
                 })
@@ -158,6 +144,42 @@
                     });
                 })
             }
+
+            function hasilLayer() {
+                $(document).on('click', '#btnLayer', function() {
+                    var tgl = $("#tglLayer").val();
+
+                    $.ajax({
+                        type: "GET",
+                        url: "{{ route('dashboard_kandang.hasilLayer') }}?tgl=" + tgl,
+                        success: function(data) {
+                            $("#hasilLayer").html(data);
+                            $('.select2').select2()
+                        }
+                    });
+                })
+            }
+
+            function hasilInputTelur() {
+                $(document).on('click', '#btnInputTelur', function() {
+                    var id_kandang = $("#id_kandangInputTelur").val();
+                    var tgl = $("#tglDariInputTelur").val();
+                    $.ajax({
+                        type: "GET",
+                        url: "{{ route('dashboard_kandang.hasilInputTelur') }}",
+                        data: {
+                            id_kandang: id_kandang,
+                            tgl: tgl,
+                        },
+                        success: function(r) {
+                            $('#hasilInputTelur').html(r)
+                            $('.select2').select2()
+                        }
+                    });
+                })
+            }
+
+            
 
             // perencanaan -------------------------------------
             var count = 1

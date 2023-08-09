@@ -113,7 +113,7 @@ class DashboardKandangController extends Controller
                 'id_telur' => $r->id_telur[$i],
                 'tgl' => $r->tgl,
                 'pcs' => $ttlPcs,
-                'kg' => $ttlKg,
+                'kg' => $r->pcs_kg[$i],
                 'pcs_kredit' => 0,
                 'kg_kredit' => 0,
                 'admin' => auth()->user()->name,
@@ -847,7 +847,7 @@ class DashboardKandangController extends Controller
 
     public function tambah_perencanaan(Request $r)
     {
-        $tgl = date('Y-m-d');
+        $tgl = $r->tgl;
         $id_kandang = $r->id_kandang;
         $kg_pakan_box = $r->kg_pakan_box;
         $populasi = $r->populasi;
@@ -1303,6 +1303,18 @@ class DashboardKandangController extends Controller
             'tgl' => $r->tgl
         ];
         return view('dashboard_kandang.history.layer', $data);
+    }
+
+    public function hasilInputTelur(Request $r)
+    {
+        $data = [
+            'title' => 'Input Telur',
+            'telur' => DB::table('telur_produk as a')
+                ->get(),
+            'tgl' => $r->tgl,
+            'id_kandang' => $r->id_kandang,
+        ];
+        return view('dashboard_kandang.history.input_telur', $data);
     }
 
     public function getProdukObat($id_kandang, $jenis)

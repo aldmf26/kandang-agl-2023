@@ -22,10 +22,10 @@
     <div class="col-lg-12">
         <table class="table table-bordered text-center">
             <tr>
-                <th class="dhead" style="vertical-align: middle" rowspan="2">Produk</th>
+                <th class="dhead" width="20%" style="vertical-align: middle" rowspan="2">Produk</th>
                 <th class="dhead" colspan="2">Per Ikat</th>
                 <th class="dhead" colspan="2">Full Rak</th>
-                <th class="dhead" colspan="4">Per Pcs (Timbang dengan raknya)</th>
+                <th class="dhead" colspan="2">Per Pcs (Timbang dengan raknya)</th>
             </tr>
             <tr>
                 <th class="dhead" width="9%">Ikat</th>
@@ -34,9 +34,9 @@
                 <th class="dhead" width="9%">Kg</th>
                 <th class="dhead" width="9%">Pcs</th>
                 <th class="dhead" width="9%">Kg</th>
-                <th class="dhead" width="9%">Potongan</th>
+                {{-- <th class="dhead" width="9%">Potongan</th> --}}
 
-                <th class="dhead" width="15%">Total Kg</th>
+                {{-- <th class="dhead" width="15%">Total Kg</th> --}}
             </tr>
 
             @foreach ($telur as $i => $d)
@@ -50,27 +50,27 @@
                 <tr>
                     <td align="left">{{ ucwords($d->nm_telur) }}</td>
                     <td>
-                        <input value="{{ $cek->ikat ?? 0 }}" type="text" name="ikat[]" class="form-control "
+                        <input value="{{ $cek->ikat ?? 0 }}" type="text" name="ikat[]" class="form-control text-end"
                             count="{{ $i + 1 }}">
                     </td>
                     <td>
-                        <input value="{{ $cek->ikat_kg ?? 0 }}" type="text" name="ikat_kg[]" class="form-control">
+                        <input value="{{ $cek->ikat_kg ?? 0 }}" type="text" name="ikat_kg[]" class="form-control text-end">
                     </td>
                     <td>
-                        <input type="text" value="{{ $cek->rak ?? 0 }}" class="form-control" name="rak[]">
+                        <input type="text" value="{{ $cek->rak ?? 0 }}" class="form-control text-end" name="rak[]">
                     </td>
                     <td>
-                        <input type="text" name="rak_kg[]" value="{{ $cek->rak_kg ?? 0 }}" class="form-control ">
+                        <input type="text" name="rak_kg[]" value="{{ $cek->rak_kg ?? 0 }}" class="form-control text-end ">
                     </td>
                     <td>
                         <input type="text" name="pcs[]" value="{{ $cek->pcs ?? 0 }}"
-                            class="form-control pcs pcs{{ $i + 1 }}" count="{{ $i + 1 }}">
+                            class="form-control text-end pcs pcs{{ $i + 1 }}" count="{{ $i + 1 }}">
                     </td>
                     <td>
                         <input type="text" name="pcs_kg[]" value="{{ $cek->pcs_kg ?? 0 }}"
-                            class="form-control kgPcs kgPcs{{ $i + 1 }}" count="{{ $i + 1 }}">
+                            class="form-control text-end kgPcs kgPcs{{ $i + 1 }}" count="{{ $i + 1 }}">
                     </td>
-                    <td>
+                    {{-- <td>
                         <input type="text"
                             value="{{ !empty($cek) ? ($cek->pcs == 0 ? 0 : $cek->potongan_pcs ?? 0) : 0 }}" readonly
                             class="form-control potongan{{ $i + 1 }}" name="potongan_pcs[]">
@@ -79,7 +79,7 @@
                         <input type="text"
                             value="{{ !empty($cek) ? ($cek->pcs == 0 ? 0 : $cek->ttl_kg_pcs ?? 0) : 0 }}" readonly
                             class="form-control ttlKgPcs{{ $i + 1 }}" name="ttl_kg_pcs[]">
-                    </td>
+                    </td> --}}
                 </tr>
             @endforeach
         </table>
