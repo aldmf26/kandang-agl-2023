@@ -64,12 +64,16 @@ class PenjualanUmumController extends Controller
         LEFT JOIN customer as b ON a.id_customer = b.id_customer
         WHERE a.tgl BETWEEN '$tgl1' AND '$tgl2'
         GROUP BY a.urutan");
+        $ttlRp = 0;
+        foreach($penjualan as $p) {
+              $ttlRp += $p->total;
+        }
         $data = [
             'title' => 'Penjualan Umum',
             'penjualan' => $penjualan,
             'tgl1' => $tgl1,
             'tgl2' => $tgl2,
-
+            'ttlRp' => $ttlRp,
             'user' => User::where('posisi_id', 1)->get(),
             'halaman' => 17,
             'create' => SettingHal::btnHal(71, $id_user),

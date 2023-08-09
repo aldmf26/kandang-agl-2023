@@ -104,18 +104,19 @@
                     </thead>
                     @php
                         $ttl = 0;
+                        $ttlKarung = 0;
                     @endphp
                     <tbody>
                         @foreach ($pakan2 as $p)
                             @php
-                                $ttl += $p->gr_pakan;
+                                $ttlKarung += $p->gr_pakan;
                             @endphp
                             <tr>
                                 <td style="">
                                     <?= $p->nm_pakan ?>
                                 </td>
                                 <td style="">
-                                    <?= number_format(($p->persen / 100) * $pakan1->gr2, 2) ?>
+                                    <?= ($p->persen / 100) * $pakan1->gr2 ?>
                                 </td>
                                 <td style="">Kg</td>
                             </tr>
@@ -136,7 +137,7 @@
                                 <?= $o->nm_produk ?>
                             </td>
                             <td style="">
-                                <?= number_format($o->dosis * $ttl, 1) ?>
+                                <?= number_format($pakan1->gr2 * $o->dosis, 2) ?>
                             </td>
                             <td style="">
                                 <?= $o->satuan ?>
@@ -179,7 +180,7 @@
                                     <?= $p->nm_pakan ?>
                                 </td>
                                 <td style="">
-                                    <?= number_format($p->gr_pakan, 2) ?>
+                                    <?= number_format($p->gr_pakan / 1000, 2) ?>
                                 </td>
                                 <td style="">Kg</td>
                             </tr>
@@ -197,7 +198,7 @@
                         @foreach ($obat_pakan as $o)
                             <tr>
                                 <td style="">{{ $o->nm_produk }}</td>
-                                <td style="">{{ number_format($o->dosis * $ttl, 1) }} </td>
+                                <td style="">{{ number_format(($ttl / 1000) * $o->dosis, 2) }} </td>
                                 <td style="">{{ $o->satuan }}</td>
                             </tr>
                         @endforeach

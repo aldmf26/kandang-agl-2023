@@ -1,4 +1,7 @@
-<div class="collapse multi-collapse show" id="perencanaan">
+@php
+    $listKandang = DB::table('kandang')->get();
+@endphp
+<div class="collapse multi-collapse" id="perencanaan">
     <div class="row">
         <div class="col-lg-3">
             <label for="">Tanggal</label>
@@ -7,9 +10,15 @@
         </div>
         <div class="col-lg-3">
             <label for="">Kandang</label>
-            <input type="text" readonly value="{{ $kandang->nm_kandang }}" class="form-control">
-            <input type="hidden" id="id_kandangPerencanaan" readonly value="{{ $kandang->id_kandang }}"
-                class="form-control" name="id_kandangPerencanaan">
+
+            <select class="form-control" name="id_kandangPerencanaan" id="id_kandangPerencanaan">
+                @foreach ($listKandang as $d)
+                    <option value="{{ $d->id_kandang }}" {{ $kandang->nm_kandang == $d->nm_kandang ? 'selected' : '' }}>
+                        {{ $d->nm_kandang }}
+                    </option>
+                @endforeach
+            </select>
+
         </div>
         <div class="col-lg-2">
             <label for="">Aksi</label><br>
@@ -36,27 +45,29 @@
     <br>
 </div>
 
-<div class="collapse multi-collapse" id="pullet">
+<div class="collapse multi-collapse" id="inputTelur">
     <div class="row">
         <div class="col-lg-3">
-            <label for="">Kandang</label>
-            <input type="text" readonly value="{{ $kandang->nm_kandang }}" class="form-control"
-                name="id_kandangPullet">
-        </div>
-        <div class="col-lg-3">
             <label for="">Dari</label>
-            <input type="date" name="tglDariPullet" id="tglDariPullet" class="form-control">
+            <input type="date" value="{{ date('Y-m-d', strtotime(date('Y-m-d') . ' -1 day')) }}" name="tglDariInputTelur" id="tglDariInputTelur" class="form-control">
         </div>
         <div class="col-lg-3">
-            <label for="">Sampai</label>
-            <input type="date" name="tglSampaiPullet" id="tglSampaiPullet" class="form-control">
+            <label for="">Kandang</label>
+
+            <select class="form-control" name="id_kandangPerencanaan" id="id_kandangPerencanaan">
+                @foreach ($listKandang as $d)
+                    <option value="{{ $d->id_kandang }}" {{ $kandang->nm_kandang == $d->nm_kandang ? 'selected' : '' }}>
+                        {{ $d->nm_kandang }}
+                    </option>
+                @endforeach
+            </select>
         </div>
         <div class="col-lg-2">
             <label for="">Aksi</label><br>
-            <button type="button" class="btn btn-md btn-primary" id="btnPullet">View</button>
+            <button type="button" class="btn btn-md btn-primary" id="btnInputTelur">View</button>
         </div>
     </div>
-    <div id="hasilPullet" class="mt-3"></div>
+    <div id="hasilInputTelur" class="mt-3"></div>
     <br>
 </div>
 

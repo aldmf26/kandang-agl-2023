@@ -418,11 +418,16 @@ class DashboardKandangController extends Controller
         WHERE a.tgl BETWEEN '$tgl1' AND '$tgl2'
         GROUP BY a.urutan
         ORDER BY a.id_penjualan DESC");
+        $ttlRp = 0;
+        foreach ($penjualan as $p) {
+            $ttlRp += $p->total;
+        }
         $data = [
             'title' => 'Penjualan Umum',
             'penjualan' => $penjualan,
             'tgl1' => $tgl1,
             'tgl2' => $tgl2,
+            'ttlRp' => $ttlRp,
         ];
         return view('dashboard_kandang.penjualan_umum.penjualan_umum', $data);
     }
@@ -842,7 +847,7 @@ class DashboardKandangController extends Controller
 
     public function tambah_perencanaan(Request $r)
     {
-        $tgl = $r->tgl;
+        $tgl = date('Y-m-d');
         $id_kandang = $r->id_kandang;
         $kg_pakan_box = $r->kg_pakan_box;
         $populasi = $r->populasi;
@@ -939,7 +944,7 @@ class DashboardKandangController extends Controller
                         'total_rp' => 0,
                         'no_nota' => $no_nota,
                         'id_kandang' => $id_kandang,
-                        'pcs_kredit' => $r->dosis_obat_pakan[$i],
+                        'pcs_kredit' => (($total_kg_pakan / 1000) / $r->campuran_obat_pakan[$i]) * $r->dosis_obat_pakan[$i],
                         'admin' => auth()->user()->name
                     ];
                     DB::table('stok_produk_perencanaan')->insert($dataStok);
@@ -1141,7 +1146,7 @@ class DashboardKandangController extends Controller
         $gr_pakan_ekor = $r->gr_pakan_ekor;
         $kg_karung = $r->kg_karung;
         $kg_karung_sisa = $r->kg_karung_sisa;
-
+        $total_kg_pakan = 0;
         DB::table('stok_produk_perencanaan')->where('no_nota', $no_nota)->delete();
         DB::table('tb_karung_perencanaan')->where('no_nota', $no_nota)->delete();
         DB::table('tb_obat_perencanaan')->where('no_nota', $no_nota)->delete();
@@ -1170,10 +1175,11 @@ class DashboardKandangController extends Controller
                     'pcs' => 0,
                     'total_rp' => 0,
                     'no_nota' => $no_nota,
-                    'pcs_kredit' => ($r->gr_pakan[$i] / 1000) - $stok->stok,
+                    'pcs_kredit' => $r->gr_pakan[$i],
                     'admin' => auth()->user()->name
                 ];
                 DB::table('stok_produk_perencanaan')->insert($dataStok);
+                $total_kg_pakan += $r->gr_pakan[$i];
             }
         }
 
@@ -1213,9 +1219,10 @@ class DashboardKandangController extends Controller
                     'total_rp' => 0,
                     'no_nota' => $no_nota,
                     'id_kandang' => $id_kandang,
-                    'pcs_kredit' => ($r->dosis_obat_pakan[$i]  / 1000) - $stok->stok,
+                    'pcs_kredit' => (($total_kg_pakan / 1000) / $r->campuran_obat_pakan[$i]) * $r->dosis_obat_pakan[$i],
                     'admin' => auth()->user()->name
                 ];
+
                 DB::table('stok_produk_perencanaan')->insert($dataStok);
             }
         }
@@ -1247,7 +1254,7 @@ class DashboardKandangController extends Controller
                     'pcs' => 0,
                     'total_rp' => 0,
                     'no_nota' => $no_nota,
-                    'pcs_kredit' => ($r->dosis_obat_pakan[$i] / 1000) - $stok->stok,
+                    'pcs_kredit' => $r->dosis_obat_air[$i],
                     'admin' => auth()->user()->name
                 ];
                 DB::table('stok_produk_perencanaan')->insert($dataStok);
@@ -1276,7 +1283,7 @@ class DashboardKandangController extends Controller
                 'pcs' => 0,
                 'total_rp' => 0,
                 'no_nota' => $no_nota,
-                'pcs_kredit' => ($r->dosis_obat_ayam[$i] / 1000) - $stok->stok,
+                'pcs_kredit' => $r->dosis_obat_ayam[$i],
                 'admin' => auth()->user()->name
             ];
             DB::table('stok_produk_perencanaan')->insert($dataStok);

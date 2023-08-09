@@ -37,11 +37,11 @@
             </tr>
 
             <tr>
-                <th width="2%" class="dhead text-center">Minggu <br> (85) <i class="fas text-white fa-question-circle rumus"
-                    rumus="minggu" style="cursor: pointer"></i></th>
+                <th width="2%" class="dhead text-center">Minggu <br> (85) <i
+                        class="fas text-white fa-question-circle rumus" rumus="minggu" style="cursor: pointer"></i></th>
                 <th width="1%" class="dhead text-center">Pop </th>
-                <th width="6%" class="dhead text-center">Mati / Jual <i class="fas text-white fa-question-circle rumus"
-                    rumus="mati" style="cursor: pointer"></i></th>
+                <th width="6%" class="dhead text-center">Mati / Jual <i
+                        class="fas text-white fa-question-circle rumus" rumus="mati" style="cursor: pointer"></i></th>
                 @php
                     $telur = DB::table('telur_produk')->get();
                 @endphp
@@ -54,8 +54,8 @@
                 <th width="1%" class="dhead text-center">Ttl Kg <i class="fas text-white fa-question-circle rumus"
                         rumus="ttlKg" style="cursor: pointer"></i></th>
                 <th width="1%" class="dhead text-center">Kg</th>
-                <th width="3%" class="dhead text-center">Gr / Ekor <i class="fas text-white fa-question-circle rumus"
-                    rumus="grEkor" style="cursor: pointer"></i></th>
+                <th width="3%" class="dhead text-center">Gr / Ekor <i
+                        class="fas text-white fa-question-circle rumus" rumus="grEkor" style="cursor: pointer"></i></th>
 
             </tr>
         </thead>
@@ -93,11 +93,10 @@
                 WHERE a.id_kandang = '$d->id_kandang';");
                         
                         $pop = $popu->stok_awal - $popu->pop;
-                    $kelasPop = ($pop / $popu->stok_awal) * 100 <= 85 ? 'merah' : 'putih'; 
-                    @endphp 
-                    <td data-bs-toggle="modal" id_kandang="{{ $d->id_kandang }}"
-                        nm_kandang="{{ $d->nm_kandang }}" class="tambah_populasi putih"
-                        data-bs-target="#tambah_populasi">{{ $pop }} </td>
+                        $kelasPop = ($pop / $popu->stok_awal) * 100 <= 85 ? 'merah' : 'putih';
+                    @endphp
+                    <td data-bs-toggle="modal" id_kandang="{{ $d->id_kandang }}" nm_kandang="{{ $d->nm_kandang }}"
+                        class="tambah_populasi putih" data-bs-target="#tambah_populasi">{{ $pop }} </td>
 
                     {{-- mati dan jual --}}
                     <td data-bs-toggle="modal" id_kandang="{{ $d->id_kandang }}" nm_kandang="{{ $d->nm_kandang }}"
@@ -248,6 +247,7 @@
                 Perencanaan</a>
             <button data-bs-toggle="collapse" href="#layer" type="button" class="btn btn-sm btn-primary">History
                 Layer</button>
+            <a data-bs-toggle="collapse" href="#inputTelur" class="btn btn-sm btn-primary">Input Telur</a>
         </div>
     </div>
     <hr style="border: 1px solid #6777EF;">
