@@ -617,8 +617,11 @@ class DashboardKandangController extends Controller
 
         $data = [
             'title' => 'Perencanaan',
-            'pakan' => DB::table('tb_produk_perencanaan')->where('kategori', 'pakan')->get(),
-
+            'pakan' => DB::select("SELECT a.id_produk, a.nm_produk, b.stok FROM `tb_produk_perencanaan` as a
+            LEFT JOIN (
+                SELECT b.id_pakan, sum(b.pcs - b.pcs_kredit) as stok FROM stok_produk_perencanaan as b GROUP BY b.id_pakan
+            ) as b ON a.id_produk = b.id_pakan
+            WHERE a.kategori = 'pakan' AND b.stok > 0"),
         ];
         return view('dashboard_kandang.perencanaan.load_pakan_perencanaan', $data);
     }
