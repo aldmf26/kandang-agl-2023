@@ -104,11 +104,12 @@
                     </thead>
                     @php
                         $ttl = 0;
+                        $ttlKarung = 0;
                     @endphp
                     <tbody>
                         @foreach ($pakan2 as $p)
                             @php
-                                $ttl += $p->gr_pakan;
+                                $ttlKarung += $p->gr_pakan;
                             @endphp
                             <tr>
                                 <td style="">
@@ -136,7 +137,7 @@
                                 <?= $o->nm_produk ?>
                             </td>
                             <td style="">
-                                <?= number_format(($ttl / 1000) * $o->dosis, 2) ?>
+                                <?= number_format(($ttlKarung / 1000) * $o->dosis, 2) ?>
                             </td>
                             <td style="">
                                 <?= $o->satuan ?>
