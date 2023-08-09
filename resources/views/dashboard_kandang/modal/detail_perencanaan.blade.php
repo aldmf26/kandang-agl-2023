@@ -7,9 +7,17 @@
         </div>
         <div class="col-lg-3">
             <label for="">Kandang</label>
-            <input type="text" readonly value="{{ $kandang->nm_kandang }}" class="form-control">
-            <input type="hidden" id="id_kandangPerencanaan" readonly value="{{ $kandang->id_kandang }}"
-                class="form-control" name="id_kandangPerencanaan">
+            @php
+                $listKandang = DB::table('kandang')->get();
+            @endphp
+            <select class="form-control" name="id_kandangPerencanaan" id="id_kandangPerencanaan">
+                @foreach ($listKandang as $d)
+                    <option value="{{ $d->id_kandang }}" {{ $kandang->nm_kandang == $d->nm_kandang ? 'selected' : '' }}>
+                        {{ $d->nm_kandang }}
+                    </option>
+                @endforeach
+            </select>
+
         </div>
         <div class="col-lg-2">
             <label for="">Aksi</label><br>
