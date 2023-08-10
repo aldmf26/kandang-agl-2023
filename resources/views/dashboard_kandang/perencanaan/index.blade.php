@@ -1,12 +1,12 @@
 <div class="row">
     <div class="col-lg-3">
         <label for="">Tanggal</label>
-        <input value="{{ \Carbon\Carbon::tomorrow()->format('Y-m-d') }}" readonly required type="date" name="tgl" id="tglPerencanaan"
+        <input value="{{ date('Y-m-d') }}" required type="date" name="tgl" id="tglPerencanaan"
             class="form-control">
     </div>
     <div class="col-lg-2">
         <label for="">Kandang</label>
-        <input type="hidden" name="id_kandang" value="{{ $kandang->id_kandang }}">
+        <input id="id_kandang" type="hidden" name="id_kandang" value="{{ $kandang->id_kandang }}">
         <input readonly type="text" class="form-control" value="{{ $kandang->nm_kandang }}">
 
     </div>

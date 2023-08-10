@@ -7,7 +7,7 @@
             </tr>
             <tr>
                 <td>
-                    <input type="date" readonly value="{{ date('Y-m-d') }}" name="tgl" class="form-control">
+                    <input type="date" value="{{ date('Y-m-d') }}" name="tgl" class="form-control">
                 </td>
                 <td>
                     <input type="hidden" value="{{ $kandang->id_kandang }}" name="id_kandang"

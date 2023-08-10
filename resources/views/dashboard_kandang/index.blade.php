@@ -184,6 +184,7 @@
             // perencanaan -------------------------------------
             var count = 1
 
+
             function toast(pesan) {
                 Toastify({
                     text: pesan,
@@ -198,7 +199,23 @@
             }
             editPerencanaan('tambah_perencanaan', 'id_kandang', 'dashboard_kandang/load_perencanaan', 'load_perencanaan')
             var countPakan = 1;
-
+            $(document).on('change','#tglPerencanaan', function(){
+                var tgl = $(this).val()
+                var id_kandang = $("#id_kandang").val()
+                $.ajax({
+                    type: "GET",
+                    url: "{{route('dashboard_kandang.get_populasi')}}",
+                    data: {
+                        tgl:tgl,
+                        id_kandang,id_kandang
+                    },
+                    dataType: "json",
+                    success: function (r) {
+                        $("#getPopulasi").val(r.stok_awal - r.pop)
+                    }
+                });
+                $("#getPopulasi").val(isi);
+            })
             function editPerencanaan(kelas, attr, link, load) {
                 $(document).on('click', `.${kelas}`, function() {
                     countPakan = 1

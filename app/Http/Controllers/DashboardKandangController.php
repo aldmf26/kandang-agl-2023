@@ -95,7 +95,7 @@ class DashboardKandangController extends Controller
             $data = [
                 'id_kandang' => $r->id_kandang,
                 'id_telur' => $r->id_telur[$i],
-                'tgl' => '2023-08-09',
+                'tgl' => $r->tgl,
                 'admin' => auth()->user()->name,
                 'ikat' => $ikat,
                 'ikat_kg' => $ikat_kg,
@@ -111,7 +111,7 @@ class DashboardKandangController extends Controller
             $dataStok = [
                 'id_kandang' => $r->id_kandang,
                 'id_telur' => $r->id_telur[$i],
-                'tgl' => '2023-08-09',
+                'tgl' => $r->tgl,
                 'pcs' => $ttlPcs,
                 'kg' => $r->pcs_kg[$i],
                 'pcs_kredit' => 0,
@@ -610,6 +610,15 @@ class DashboardKandangController extends Controller
             'pop' => $pop
         ];
         return view('dashboard_kandang.perencanaan.index', $data);
+    }
+
+    public function get_populasi(Request $r)
+    {
+        $pop = DB::selectOne("SELECT sum(a.mati + a.jual) as pop,b.stok_awal FROM populasi as a
+        LEFT JOIN kandang as b ON a.id_kandang = b.id_kandang
+        WHERE a.id_kandang = '$r->id_kandang' AND a.tgl BETWEEN '2022-01-01' AND '$r->tgl'");
+
+        return json_encode($pop);
     }
 
     public function load_pakan_perencanaan()
