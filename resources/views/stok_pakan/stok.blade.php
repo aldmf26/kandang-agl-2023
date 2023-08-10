@@ -18,14 +18,16 @@
         <table class="table table-bordered table-hover" id="tablePakan">
             <thead>
                 <tr>
+                    <th>#</th>
                     <th class="dhead">Nama Pakan</th>
                     <th class="dhead" style="text-align: right">Stok</th>
                     <th class="dhead" style="text-align: center">Satuan</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach ($pakan as $p)
+                @foreach ($pakan as $no => $p)
                 <tr>
+                    <td>{{ $no+1 }}</td>
                     <td><a href="#" onclick="event.preventDefault();" class="history_stok"
                             id_pakan="{{ $p->id_pakan }}">{{ ucwords(strtolower($p->nm_produk)) }}
                         </a>
@@ -62,14 +64,16 @@
         <table class="table table-bordered table-hover" id="tableVitamin">
             <thead>
                 <tr>
+                    <th class="dhead">#</th>
                     <th class="dhead">Nama Vitamin</th>
                     <th class="dhead" style="text-align: right">Stok</th>
                     <th class="dhead" style="text-align: center">Satuan</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach ($vitamin as $p)
+                @foreach ($vitamin as $no => $p)
                 <tr>
+                    <td>{{ $no+1 }}</td>
                     <td><a href="#" onclick="event.preventDefault();" class="history_stok"
                             id_pakan="{{ $p->id_pakan }}">{{ $p->nm_produk }}</a></td>
                     <td style="text-align: right">{{ number_format($p->pcs_debit - $p->pcs_kredit, 0) }}</td>

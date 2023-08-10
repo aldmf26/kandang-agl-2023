@@ -345,6 +345,7 @@ Route::middleware('auth')->group(function () {
             Route::get('/load_obat_ayam', 'load_obat_ayam')->name('load_obat_ayam');
             Route::get('/save_tambah_obat_ayam', 'save_tambah_obat_ayam')->name('save_tambah_obat_ayam');
             Route::get('/get_stok_obat_ayam', 'get_stok_obat_ayam')->name('get_stok_obat_ayam');
+            Route::get('/get_populasi', 'get_populasi')->name('get_populasi');
 
             // history perencanaan
             Route::get('/load_detail_perencanaan/{id_kandang}', 'load_detail_perencanaan')->name('load_detail_perencanaan');
@@ -352,6 +353,7 @@ Route::middleware('auth')->group(function () {
             Route::get('/viewHistoryEditPerencanaan', 'viewHistoryEditPerencanaan')->name('viewHistoryEditPerencanaan');
             Route::post('/edit_perencanaan', 'edit_perencanaan')->name('edit_perencanaan');
             Route::get('/hasilLayer', 'hasilLayer')->name('hasilLayer');
+            Route::get('/hasilInputTelur', 'hasilInputTelur')->name('hasilInputTelur');
 
             // penjualan martadah
 

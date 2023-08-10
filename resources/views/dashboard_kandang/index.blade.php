@@ -104,6 +104,7 @@
             viewHistoryPerencanaan()
             viewEditPerencanaan()
             hasilLayer()
+            hasilInputTelur()
 
             function viewHistoryPerencanaan() {
                 $(document).on('click', '#btnPerencanaan', function() {
@@ -119,21 +120,6 @@
                         },
                         success: function(r) {
                             $("#hasilPerencanaan").html(r);
-                        }
-                    });
-                })
-            }
-
-            function hasilLayer() {
-                $(document).on('click', '#btnLayer', function() {
-                    var tgl = $("#tglLayer").val();
-
-                    $.ajax({
-                        type: "GET",
-                        url: "{{ route('dashboard_kandang.hasilLayer') }}?tgl=" + tgl,
-                        success: function(data) {
-                            $("#hasilLayer").html(data);
-                            $('.select2').select2()
                         }
                     });
                 })
@@ -159,8 +145,45 @@
                 })
             }
 
+            function hasilLayer() {
+                $(document).on('click', '#btnLayer', function() {
+                    var tgl = $("#tglLayer").val();
+
+                    $.ajax({
+                        type: "GET",
+                        url: "{{ route('dashboard_kandang.hasilLayer') }}?tgl=" + tgl,
+                        success: function(data) {
+                            $("#hasilLayer").html(data);
+                            $('.select2').select2()
+                        }
+                    });
+                })
+            }
+
+            function hasilInputTelur() {
+                $(document).on('click', '#btnInputTelur', function() {
+                    var id_kandang = $("#id_kandangInputTelur").val();
+                    var tgl = $("#tglDariInputTelur").val();
+                    $.ajax({
+                        type: "GET",
+                        url: "{{ route('dashboard_kandang.hasilInputTelur') }}",
+                        data: {
+                            id_kandang: id_kandang,
+                            tgl: tgl,
+                        },
+                        success: function(r) {
+                            $('#hasilInputTelur').html(r)
+                            $('.select2').select2()
+                        }
+                    });
+                })
+            }
+
+            
+
             // perencanaan -------------------------------------
             var count = 1
+
 
             function toast(pesan) {
                 Toastify({
@@ -176,7 +199,23 @@
             }
             editPerencanaan('tambah_perencanaan', 'id_kandang', 'dashboard_kandang/load_perencanaan', 'load_perencanaan')
             var countPakan = 1;
-
+            $(document).on('change','#tglPerencanaan', function(){
+                var tgl = $(this).val()
+                var id_kandang = $("#id_kandang").val()
+                $.ajax({
+                    type: "GET",
+                    url: "{{route('dashboard_kandang.get_populasi')}}",
+                    data: {
+                        tgl:tgl,
+                        id_kandang,id_kandang
+                    },
+                    dataType: "json",
+                    success: function (r) {
+                        $("#getPopulasi").val(r.stok_awal - r.pop)
+                    }
+                });
+                $("#getPopulasi").val(isi);
+            })
             function editPerencanaan(kelas, attr, link, load) {
                 $(document).on('click', `.${kelas}`, function() {
                     countPakan = 1

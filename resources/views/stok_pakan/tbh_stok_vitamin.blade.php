@@ -30,8 +30,8 @@
                     </td>
                     <td><input type="text" name="pcs[]" class="form-control"></td>
                     <td class="satuan_vitamin1"></td>
-                    <td><input type="text" name="ttl_rp[]" class="form-control"></td>
-                    <td><input type="text" name="biaya_dll[]" class="form-control"></td>
+                    <td><input type="text" value="0" name="ttl_rp[]" class="form-control"></td>
+                    <td><input type="text" value="0" name="biaya_dll[]" class="form-control"></td>
                     <td>
                         <button type="button" class="btn rounded-pill remove_baris" count="1"><i
                                 class="fas fa-trash text-danger"></i>
