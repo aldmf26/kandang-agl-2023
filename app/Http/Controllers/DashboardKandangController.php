@@ -90,7 +90,7 @@ class DashboardKandangController extends Controller
             // $ttl_kg_pcs = $r->ttl_kg_pcs[$i];
 
             $ttlPcs = ($ikat * 180) + ($rak * 30) + $pcs;
-            // $ttlKg = $ikat_kg + $rak_kg + $ttl_kg_pcs;
+            $ttlKg = $ikat_kg + $rak_kg + $r->pcs_kg[$i];
 
             $data = [
                 'id_kandang' => $r->id_kandang,
@@ -113,7 +113,7 @@ class DashboardKandangController extends Controller
                 'id_telur' => $r->id_telur[$i],
                 'tgl' => $r->tgl,
                 'pcs' => $ttlPcs,
-                'kg' => $r->pcs_kg[$i],
+                'kg' => $ttlKg,
                 'pcs_kredit' => 0,
                 'kg_kredit' => 0,
                 'admin' => auth()->user()->name,
