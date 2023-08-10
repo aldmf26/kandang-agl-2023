@@ -95,7 +95,7 @@ class DashboardKandangController extends Controller
             $data = [
                 'id_kandang' => $r->id_kandang,
                 'id_telur' => $r->id_telur[$i],
-                'tgl' => $r->tgl,
+                'tgl' => '2023-08-09',
                 'admin' => auth()->user()->name,
                 'ikat' => $ikat,
                 'ikat_kg' => $ikat_kg,
@@ -111,7 +111,7 @@ class DashboardKandangController extends Controller
             $dataStok = [
                 'id_kandang' => $r->id_kandang,
                 'id_telur' => $r->id_telur[$i],
-                'tgl' => $r->tgl,
+                'tgl' => '2023-08-09',
                 'pcs' => $ttlPcs,
                 'kg' => $r->pcs_kg[$i],
                 'pcs_kredit' => 0,
