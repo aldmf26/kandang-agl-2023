@@ -72,7 +72,7 @@
                     <td align="center" class="detail_perencanaan" id_kandang="{{ $d->id_kandang }}"
                         data-bs-toggle="modal" data-bs-target="#detail_perencanaan">
                         {{ $d->nm_kandang }}</td>
-                    @php,
+                    @php
                         $populasi = DB::table('populasi')
                             ->where([['id_kandang', $d->id_kandang], ['tgl', date('Y-m-d')]])
                             ->first();

@@ -23,7 +23,7 @@
                         <th>Tanggal</th>
                         <th>Nota</th>
                         <th>Customer</th>
-                        <th style="text-align: right">Total Rp</th>
+                        <th style="text-align: right">Total Rp ({{number_format($ttl_rp,0)}})</th>
                         <th>Diterima</th>
                         <th>Aksi</th>
                     </tr>

@@ -53,12 +53,16 @@ class Penjualan_telurmartadahController extends Controller
         GROUP by a.no_nota
         order by a.no_nota DESC
         ");
-
+        $ttl = 0;
+        foreach($transfer as $d) {
+            $ttl += $d->ttl_rp;
+        }
         $data = [
             'title' => 'Penjualan Telur Martadah',
             'tgl1' => $tgl1,
             'tgl2' => $tgl2,
-            'penjualan' => $transfer
+            'penjualan' => $transfer,
+            'ttl_rp' => $ttl
         ];
         return view('dashboard_kandang.penjualan_telur.penjualan_telur', $data);
     }
