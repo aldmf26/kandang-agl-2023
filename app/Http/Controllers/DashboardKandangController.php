@@ -879,19 +879,20 @@ class DashboardKandangController extends Controller
             $tbl = [
                 'stok_produk_perencanaan', 'tb_karung_perencanaan', 'tb_obat_perencanaan', 'tb_pakan_perencanaan', 'tb_vaksin_perencanaan'
             ];
-            foreach($tbl as $d){
+
+            foreach ($tbl as $d) {
                 DB::table($d)->where([['tgl', $tgl], ['id_kandang', $r->id_kandang]])->delete();
             }
-            
+
             if (!empty($r->id_pakan)) {
                 $total_kg_pakan = 0;
                 for ($i = 0; $i < count($r->id_pakan); $i++) {
-    
+
                     // if ($r->stok[$i] < $r->gr_pakan[$i]) {
                     //     $error = 'error';
                     //     $pesan = 'STOK KURANG!! PERENCANAAN GAGAL DITAMBAH';
                     // } else {
-    
+
                     // }
                     $dataPakan = [
                         'id_kandang' => $id_kandang,
@@ -926,7 +927,7 @@ class DashboardKandangController extends Controller
                     'jenis' => 'pupuk'
                 ];
                 DB::table('stok_ayam')->insert($data);
-    
+
                 if (!empty($kg_pakan_box)) {
                     $dataKarung = [
                         'tgl' => $tgl,
@@ -937,7 +938,7 @@ class DashboardKandangController extends Controller
                         'no_nota' => $no_nota,
                     ];
                     DB::table('tb_karung_perencanaan')->insert($dataKarung);
-    
+
                     $data = [
                         'tgl' => $tgl,
                         'debit' => 0,
@@ -948,7 +949,7 @@ class DashboardKandangController extends Controller
                     ];
                     DB::table('stok_ayam')->insert($data);
                 }
-    
+
                 if (!empty($r->id_obat_pakan[0])) {
                     for ($i = 0; $i < count($r->id_obat_pakan); $i++) {
                         $data1 = [
@@ -961,7 +962,7 @@ class DashboardKandangController extends Controller
                             'id_kandang' => $id_kandang,
                             'admin' => auth()->user()->name,
                         ];
-    
+
                         DB::table('tb_obat_perencanaan')->insert($data1);
                         $id_obat_pakan = $r->id_obat_pakan[$i];
                         $dataStok = [
@@ -978,7 +979,7 @@ class DashboardKandangController extends Controller
                         DB::table('stok_produk_perencanaan')->insert($dataStok);
                     }
                 }
-    
+
                 if (!empty($r->id_obat_air[0])) {
                     for ($i = 0; $i < count($r->id_obat_air); $i++) {
                         $data1 = [
@@ -995,7 +996,7 @@ class DashboardKandangController extends Controller
                             'admin' => auth()->user()->name,
                         ];
                         DB::table('tb_obat_perencanaan')->insert($data1);
-    
+
                         $id_obat_air = $r->id_obat_air[$i];
                         $dataStok = [
                             'id_kandang' => $id_kandang,
@@ -1010,7 +1011,7 @@ class DashboardKandangController extends Controller
                         DB::table('stok_produk_perencanaan')->insert($dataStok);
                     }
                 }
-    
+
                 if (!empty($r->id_obat_ayam[0])) {
                     $data1 = [
                         'id_kandang' => $id_kandang,
@@ -1023,7 +1024,7 @@ class DashboardKandangController extends Controller
                         'admin' => auth()->user()->name,
                     ];
                     DB::table('tb_obat_perencanaan')->insert($data1);
-    
+
                     $id_obat_ayam = $r->id_obat_ayam;
                     $dataStok = [
                         'id_kandang' => $id_kandang,
@@ -1037,11 +1038,10 @@ class DashboardKandangController extends Controller
                     ];
                     DB::table('stok_produk_perencanaan')->insert($dataStok);
                 }
-    
+
                 return redirect()->route('dashboard_kandang.index')->with($error ?? 'sukses', $pesan ?? 'Data Perencanaan Berhasil ditambahkan');
             }
         }
-
     }
 
     public function load_detail_perencanaan($id_kandang)
