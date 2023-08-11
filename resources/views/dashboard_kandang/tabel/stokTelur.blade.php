@@ -80,8 +80,8 @@
             <tr>
                 <td align="left">
                     Transfer Alpa
-                    <a href="{{ route('opnamemtd',['id_gudang' => '2']) }}"
-                        class="badge float-end me-2 bg-primary text-sm">Opname</a>
+                    {{-- <a href="{{ route('opnamemtd',['id_gudang' => '2']) }}"
+                        class="badge float-end me-2 bg-primary text-sm">Opname</a> --}}
                     <a data-bs-toggle="tooltip" data-bs-placement="top" title="Tambah Transfer Alpa"
                         href="{{ route('dashboard_kandang.add_transfer_stok', ['id_gudang' => 1]) }}"
                         class="badge float-end me-2 bg-primary text-sm"><i class="fas fa-plus"></i></a>
