@@ -45,6 +45,10 @@
             style="text-align: right;font-size: 12px;" value="0">
     </td>
     <td align="right">
+        <input type="text" class="form-control" count="{{$count}}" style="text-align: right;font-size: 12px;" value="0"
+            name="kg_kg_kotor[]">
+    </td>
+    <td align="right">
         <input type="text" class="form-control kg_kg kg_kg{{$count}}" count="{{$count}}"
             style="text-align: right;font-size: 12px;" value="0" name="kg_kg[]">
     </td>
