@@ -58,7 +58,7 @@
                                 <th class="dhead" width="10%" rowspan="2">Produk </th>
                                 <th style="text-align: center" class="dhead abu" colspan="3">Penjualan per pcs</th>
                                 <th style="text-align: center" class="dhead putih" colspan="3">Penjualan per ikat</th>
-                                <th style="text-align: center" class="dhead abuGelap" colspan="3">Penjualan per rak</th>
+                                <th style="text-align: center" class="dhead abuGelap" colspan="4">Penjualan per rak</th>
                                 <th rowspan="2" class="dhead" width="10%"
                                     style="text-align: center; white-space: nowrap;">Total
                                     Rp
@@ -76,7 +76,9 @@
                                 <th class="dhead putih" width="10%" style="text-align: center;">Rp Ikat</th>
 
                                 <th class="dhead abuGelap" width="7%" style="text-align: center;">Pcs</th>
-                                <th class="dhead abuGelap" width="7%" style="text-align: center;">Kg</th>
+                                <th class="dhead abuGelap" width="7%" style="text-align: center;">Kg kotor</th>
+                                <th class="dhead abuGelap" width="7%" style="text-align: center;">Kg bersih <br> potong
+                                    rak</th>
                                 {{-- <th class="dhead" width="7%" style="text-align: center;">Rak</th> --}}
                                 <th class="dhead abuGelap" width="10%" style="text-align: center;">Rp Rak</th>
 
@@ -104,6 +106,7 @@
                                 <!-- Jual Ikat -->
                                 <!-- Jual Kg -->
                                 <td align="right">{{$i->pcs_kg}}</td>
+                                <td align="right">{{$i->kg_kg_kotor}}</td>
                                 <td align="right">{{$i->kg_kg}}</td>
                                 {{-- <td align="right">{{$i->rak_kg}}</td> --}}
                                 <td align="right">Rp. {{number_format($i->rp_kg,0)}}</td>
@@ -127,7 +130,7 @@
                             @php
                             $total_semua += $total_rp;
                             $ttl_pcs += $i->pcs_pcs + ($i->ikat * 180) + $i->pcs_kg;
-                            $ttl_kg_kotor += $i->kg_pcs + $i->kg_ikat + $kg_rak_kotor;
+                            $ttl_kg_kotor += $i->kg_pcs + $i->kg_ikat + $i->kg_kg_kotor;
                             $ttl_kg_bersih += $ikat_kg_bersih + $i->kg_kg;
                             @endphp
                             @endforeach

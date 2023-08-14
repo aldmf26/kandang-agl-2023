@@ -77,6 +77,7 @@
                                 <th class="dhead putih" width="10%" style="text-align: center;">Rp Ikat</th>
 
                                 <th class="dhead abuGelap" width="7%" style="text-align: center;">Pcs</th>
+                                <th class="dhead abuGelap" width="7%" style="text-align: center;">Kg Kotor</th>
                                 <th class="dhead abuGelap" width="7%" style="text-align: center;">Kg Bersih <br> potong
                                     rak
                                 </th>
@@ -146,6 +147,11 @@
                                 <td align="right">
                                     <input type="text" class="form-control" name="pcs_kg[]" count="{{$no+1}}"
                                         style="text-align: right;font-size: 12px;" value="{{$i->pcs_kg}}">
+                                </td>
+                                <td align="right">
+                                    <input type="text" class="form-control " count="{{$no+1}}"
+                                        style="text-align: right;font-size: 12px;" value="{{$i->kg_kg_kotor}}"
+                                        name="kg_kg_kotor[]">
                                 </td>
                                 <td align="right">
                                     <input type="text" class="form-control kg_kg kg_kg{{$no+1}}" count="{{$no+1}}"

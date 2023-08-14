@@ -48,7 +48,7 @@
                                 <th class="dhead" width="10%" rowspan="2">Produk </th>
                                 <th style="text-align: center" class="dhead abu" colspan="3">Penjualan per pcs</th>
                                 <th style="text-align: center" class="dhead putih" colspan="3">Penjualan per ikat</th>
-                                <th style="text-align: center" class="dhead abuGelap" colspan="3">Penjualan per rak</th>
+                                <th style="text-align: center" class="dhead abuGelap" colspan="4">Penjualan per rak</th>
                                 <th rowspan="2" class="dhead" width="10%"
                                     style="text-align: center; white-space: nowrap;">Total
                                     Rp
@@ -66,6 +66,7 @@
                                 <th class="dhead putih" width="10%" style="text-align: center;">Rp Ikat</th>
 
                                 <th class="dhead abuGelap" width="7%" style="text-align: center;">Pcs</th>
+                                <th class="dhead abuGelap" width="7%" style="text-align: center;">Kg Kotor</th>
                                 <th class="dhead abuGelap" width="7%" style="text-align: center;">Kg Bersih <br> potong
                                     rak
                                 </th>
@@ -126,6 +127,10 @@
                                         style="text-align: right;font-size: 12px;" value="0">
                                 </td>
                                 <td align="right">
+                                    <input type="text" class="form-control" count="1"
+                                        style="text-align: right;font-size: 12px;" value="0" name="kg_kg_kotor[]">
+                                </td>
+                                <td align="right">
                                     <input type="text" class="form-control kg_kg kg_kg1" count="1"
                                         style="text-align: right;font-size: 12px;" value="0" name="kg_kg[]">
                                 </td>
@@ -156,7 +161,7 @@
                         </tbody>
                         <tfoot>
                             <tr>
-                                <th colspan="12">
+                                <th colspan="13">
                                     <button type="button" class="btn btn-block btn-lg tbh_baris_mtd"
                                         style="background-color: #435EBE; color: white; font-size: 14px; padding: 13px;">
                                         <i class="fas fa-plus"></i> Tambah Baris Baru
@@ -165,7 +170,7 @@
                                 </th>
                             </tr>
                             <tr>
-                                <th colspan="11"></th>
+                                <th colspan="12"></th>
                                 <th><button type="submit" class="btn btn-primary ">Simpan</button></th>
                             </tr>
                         </tfoot>
