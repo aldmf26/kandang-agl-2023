@@ -7,6 +7,8 @@
             <div class="col-lg-6">
                 <x-theme.button modal="T" href="{{ route('dashboard_kandang.add_penjualan_telur') }}" icon="fa-plus"
                     addClass="float-end" teks="Buat Nota" />
+                <x-theme.button modal="T" href="{{ route('dashboard_kandang.add_penjualan_telur', ['tgl1' => $tgl1, 'tgl2' => $tgl2]) }}" icon="fa-print"
+                    addClass="float-end" teks="Export" />
                 <x-theme.btn_dashboard route="dashboard_kandang.index" />
 
                 <x-theme.btn_filter />
@@ -19,7 +21,6 @@
                 <thead>
                     <tr>
                         <th width="5">#</th>
-
                         <th>Tanggal</th>
                         <th>Nota</th>
                         <th>Customer</th>

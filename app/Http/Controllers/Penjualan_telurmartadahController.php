@@ -421,4 +421,6 @@ class Penjualan_telurmartadahController extends Controller
         ];
         return view('dashboard_kandang.penjualan_telur.cek', $data);
     }
+
+    
 }
