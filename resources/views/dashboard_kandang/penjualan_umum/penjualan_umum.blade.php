@@ -3,7 +3,8 @@
         <h6 class="float-start">{{ $title }}</h6>
 
         <x-theme.btn_dashboard route="dashboard_kandang.index" />
-
+        <x-theme.button href="{{ route('dashboard_kandang.penjualan_umum_export', [$tgl1, $tgl2]) }}" icon="fa-print"
+        addClass="float-end" teks="Export" />
         <x-theme.btn_filter />
     </x-slot>
 

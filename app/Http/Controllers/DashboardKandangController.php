@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\PenjualanUmumExport;
+use App\Exports\TransferStokExport;
 use App\Models\Gudang;
 use App\Models\Produk;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 
@@ -198,6 +201,22 @@ class DashboardKandangController extends Controller
             'transfer' => $transfer
         ];
         return view('dashboard_kandang.history.transfer_stok', $data);
+    }
+
+    public function transfer_stok_export($tgl1, $tgl2)
+    {
+        $tbl = DB::select("SELECT 
+        b.nm_telur, sum(a.pcs_pcs + (a.ikat * 180) + a.pcs_kg) as pcs, a.* ,
+        sum(a.pcs_kg + a.kg_ikat + (((a.pcs_kg / 15) * 0.12) + a.kg_kg)) as kg
+        FROM `invoice_mtd` as a
+        LEFT JOIN telur_produk as b ON a.id_produk = b.id_produk_telur
+        WHERE a.jenis = 'tf'
+        GROUP BY a.no_nota
+        ORDER BY a.id_invoice_mtd DESC;");
+
+        $totalrow = count($tbl) + 1;
+
+        return Excel::download(new TransferStokExport($tbl, $totalrow), 'Export Transfer Stok Mtd.xlsx');
     }
 
     public function add_transfer_stok(Request $r)
@@ -437,6 +456,29 @@ class DashboardKandangController extends Controller
         return view('dashboard_kandang.penjualan_umum.penjualan_umum', $data);
     }
 
+    public function penjualan_umum_export($tgl1, $tgl2)
+    {
+        $tbl = DB::select("SELECT 
+        *, 
+        sum(a.total_rp) as total, 
+        count(*) as ttl_produk 
+      FROM 
+        `penjualan_agl` as a 
+        LEFT JOIN tb_produk as b on a.id_produk = b.id_produk
+      WHERE 
+        a.tgl BETWEEN '$tgl1' 
+        AND '$tgl2' 
+      GROUP BY 
+        a.urutan 
+      ORDER BY 
+        a.id_penjualan DESC;
+      ");
+
+        $totalrow = count($tbl) + 1;
+
+        return Excel::download(new PenjualanUmumExport($tbl, $totalrow), 'Export Penjualan Umum Mtd.xlsx');
+    }
+
     public function add_penjualan_umum()
     {
         $kd_produk = Produk::latest('kd_produk')->first();
@@ -594,6 +636,7 @@ class DashboardKandangController extends Controller
             ->where('a.id_produk', $id_produk)
             ->whereIn('a.urutan', $urutan)
             ->get();
+
         $data = [
             'title' => 'Detail Penjaulan Umum',
             'produk' => $produk

@@ -8,6 +8,8 @@
                 <x-theme.button modal="T"
                     href="{{ route('dashboard_kandang.add_transfer_stok', ['id_gudang' => 1]) }}" icon="fa-exchange-alt"
                     addClass="float-end" teks="Transfer Stok" />
+                    <x-theme.button href="{{ route('dashboard_kandang.transfer_stok_export', [$tgl1, $tgl2]) }}" icon="fa-print"
+        addClass="float-end" teks="Export" />
                 <x-theme.btn_dashboard route="dashboard_kandang.index" />
 
                 <x-theme.btn_filter />

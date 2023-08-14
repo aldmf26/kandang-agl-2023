@@ -360,6 +360,7 @@ Route::middleware('auth')->group(function () {
 
             // transfer stok
             Route::get('/transfer_stok', 'transfer_stok')->name('transfer_stok');
+            Route::get('/transfer_stok_export/{tgl1}/{tgl2}', 'transfer_stok_export')->name('transfer_stok_export');
             Route::get('/add_transfer_stok', 'add_transfer_stok')->name('add_transfer_stok');
             Route::get('/edit_transfer_stok', 'edit_transfer_stok')->name('edit_transfer_stok');
             Route::get('/tbh_baris_transfer_mtd', 'tbh_baris_transfer_mtd')->name('tbh_baris_transfer_mtd');
@@ -372,6 +373,7 @@ Route::middleware('auth')->group(function () {
 
             // penjualan umum
             Route::get('/penjualan_umum', 'penjualan_umum')->name('penjualan_umum');
+            Route::get('/penjualan_umum_export/{tgl1}/{tgl2}', 'penjualan_umum_export')->name('penjualan_umum_export');
             Route::get('/tbh_add', 'tbh_add')->name('tbh_add');
             Route::get('/get_stok', 'get_stok')->name('get_stok');
             Route::get('/void_penjualan_umum', 'void_penjualan_umum')->name('void_penjualan_umum');
