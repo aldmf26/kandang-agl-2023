@@ -3,11 +3,12 @@
 'size' => '',
 'title' => '',
 'btnSave' => 'Y',
+'scroll' => '',
 ])
 
 <div {{ $attributes->merge(['id' => $idModal]) }} class="modal" role="dialog" aria-labelledby="myModalLabel"
     aria-hidden="true">
-    <div class="modal-dialog {{ $size }}" role="document">
+    <div class="modal-dialog  {{empty($scroll) ? '' : 'modal-dialog-scrollable' }}  {{ $size }}" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title" {{ $attributes->merge(['id' => $idModal]) }}>
