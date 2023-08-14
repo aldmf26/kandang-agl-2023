@@ -73,7 +73,7 @@
                     <!-- Jual Ikat -->
                     <!-- Jual Kg -->
                     <td align="right">{{$i->pcs_kg}}</td>
-                    <td align="right">{{$i->kg_kg_kotor}}</td>
+                    <td align="right">{{$i->kg_kg_kotor ?? 0}}</td>
                     <td align="right">{{$i->kg_kg}}</td>
                     {{-- <td align="right">{{$i->rak_kg}}</td> --}}
                     <td align="right">Rp. {{number_format($i->rp_kg,0)}}</td>

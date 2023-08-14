@@ -7,7 +7,7 @@
             <div class="col-lg-6">
                 <x-theme.button modal="T" href="{{ route('dashboard_kandang.add_penjualan_telur') }}" icon="fa-plus"
                     addClass="float-end" teks="Buat Nota" />
-                <x-theme.button modal="T" href="{{ route('dashboard_kandang.add_penjualan_telur', ['tgl1' => $tgl1, 'tgl2' => $tgl2]) }}" icon="fa-print"
+                <x-theme.button modal="T" href="{{ route('dashboard_kandang.penjualan_telur_export', [$tgl1, $tgl2]) }}" icon="fa-print"
                     addClass="float-end" teks="Export" />
                 <x-theme.btn_dashboard route="dashboard_kandang.index" />
 
@@ -104,7 +104,8 @@
                     var no_nota = $(this).attr('no_nota');
                     $('.no_nota').val(no_nota);
                 });
-                $(document).on('click', '.detail', function() {
+                $(document).on('click', '.detail', function(e) {
+                    e.preventDefault()
                     var no_nota = $(this).attr('no_nota');
 
                     $.ajax({
@@ -117,7 +118,9 @@
                     });
                 });
                 $('.hide_bayar').hide();
-                $(document).on("click", ".detail_bayar", function() {
+                $(document).on("click", ".detail_bayar", function(e) {
+                    e.preventDefault();
+                    
                     var no_nota = $(this).attr('no_nota');
                     var clickedElement = $(this); // Simpan elemen yang diklik dalam variabel
 

@@ -72,7 +72,7 @@
 
     </x-theme.modal>
 </form>
-<x-theme.modal title="History Stok" btnSave='T' size="modal-lg" idModal="history_stok">
+<x-theme.modal scroll="Y" title="History Stok" btnSave='T' size="modal-lg" idModal="history_stok">
     <div class="row">
         <div class="col-lg-12">
             <div id="history_stk"></div>

@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\PenjualanTelurMtdExport;
 use App\Models\Gudang;
 use App\Models\Produk;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 
 class Penjualan_telurmartadahController extends Controller
 {
@@ -426,5 +428,65 @@ class Penjualan_telurmartadahController extends Controller
         return view('dashboard_kandang.penjualan_telur.cek', $data);
     }
 
-    
+    public function penjualan_telur_export($tgl1, $tgl2)
+    {
+
+        $tbl = DB::select("SELECT 
+        a.void, 
+        a.cek, 
+        a.tgl, 
+        a.no_nota, 
+        a.customer, 
+        b.nm_telur, 
+        sum(a.total_rp) as ttl_rp, 
+        a.admin, 
+        a.admin_cek, 
+        c.pcs_pcs, 
+        c.kg_pcs as pcs_kg, 
+        c.rp_pcs, 
+        c.ikat as ikat_ikat, 
+        c.kg_ikat as ikat_kg, 
+        c.rp_ikat as rp_ikat, 
+        c.pcs_kg as rak_pcs, 
+        c.kg_kg as rak_kg_kotor, 
+        c.rak_kg as rak_kg_bersih, 
+        c.rp_kg  as rp_rak
+      FROM 
+        invoice_telur as a 
+        left join telur_produk as b on b.id_produk_telur = a.id_produk 
+        LEFT JOIN (
+          SELECT 
+            no_nota, 
+            sum(pcs_pcs) as pcs_pcs, 
+            SUM(kg_pcs) as kg_pcs, 
+            sum(rp_pcs) as rp_pcs, 
+            sum(ikat) as ikat, 
+            sum(kg_ikat) as kg_ikat, 
+            sum(rp_ikat) as rp_ikat, 
+            sum(pcs_kg) as pcs_kg, 
+            sum(kg_kg) as kg_kg, 
+            sum(rak_kg) as rak_kg, 
+            sum(rp_kg) as rp_kg 
+          FROM 
+            `invoice_mtd` 
+          WHERE 
+            tgl BETWEEN '$tgl1' 
+            AND '$tgl2' 
+          GROUP BY 
+            no_nota
+        ) as c ON c.no_nota = a.no_nota 
+      WHERE 
+        a.lokasi = 'mtd' 
+        and a.tgl between '$tgl1' 
+        and '$tgl2' 
+      GROUP by 
+        a.no_nota 
+      order by 
+        a.no_nota DESC;
+        ");
+
+        $totalrow = count($tbl) + 1;
+
+        return Excel::download(new PenjualanTelurMtdExport($tbl, $totalrow), 'Export Penjualan Telur Mtd.xlsx');
+    }
 }
