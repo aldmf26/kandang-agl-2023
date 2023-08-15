@@ -41,7 +41,7 @@ class ObatPakanController extends Controller
             'stok' => DB::select("SELECT a.tgl, b.nm_produk, a.pcs, a.pcs_kredit, a.admin, a.h_opname
             FROM stok_produk_perencanaan as a 
             left join tb_produk_perencanaan as b on b.id_produk = a.id_pakan
-            where a.tgl BETWEEN '$tgl1' and '$tgl2' and a.id_pakan = '$r->id_pakan' AND a.opname = 'Y'
+            where a.tgl BETWEEN '$tgl1' and '$tgl2' and a.id_pakan = '$r->id_pakan'
             GROUP by a.id_stok_telur;"),
             'tgl1' => $tgl1,
             'tgl2' => $tgl2,
