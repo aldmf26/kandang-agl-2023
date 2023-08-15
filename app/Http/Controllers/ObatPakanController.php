@@ -88,8 +88,7 @@ class ObatPakanController extends Controller
         } else {
             $no_nota = $max->nomor_nota + 1;
         }
-        // DB::table('notas')->insert(['nomor_nota' => $no_nota, 'id_buku' => '4']);
-        // $no_nota = strtoupper(str()->random(5));
+
         for ($x = 0; $x < count($r->id_pakan); $x++) {
             $id_pakan = $r->id_pakan[$x];
             $hrga = DB::selectOne("SELECT sum((a.total_rp + a.biaya_dll)/a.pcs) as rata_rata
@@ -100,28 +99,7 @@ class ObatPakanController extends Controller
             $selisih = $r->stk_program[$x] - $r->stk_aktual[$x];
             if ($selisih < 0) {
                 $qty_selisih = $selisih * -1;
-                // $data = [
-                //     'id_akun' => '522',
-                //     'id_buku' => '4',
-                //     'ket' => 'Penyesuian stok pakan',
-                //     'debit' => empty($hrga->rata_rata) ? '0' : $qty_selisih * $hrga->rata_rata,
-                //     'kredit' => '0',
-                //     'tgl' => $r->tgl,
-                //     'no_nota' => 'JPP-' . $no_nota,
-                //     'admin' => auth()->user()->name,
-                // ];
-                // DB::table('jurnal')->insert($data);
-                // $data = [
-                //     'id_akun' => '521',
-                //     'id_buku' => '4',
-                //     'ket' => 'Penyesuian stok pakan',
-                //     'debit' => 0,
-                //     'kredit' => empty($hrga->rata_rata) ? '0' : $qty_selisih * $hrga->rata_rata,
-                //     'tgl' => $r->tgl,
-                //     'no_nota' => 'JPP-' . $no_nota,
-                //     'admin' => auth()->user()->name,
-                // ];
-                // DB::table('jurnal')->insert($data);
+
                 $datas = [
                     'pcs' => $r->stk_aktual[$x],
                     'id_pakan' => $r->id_pakan[$x],
@@ -137,28 +115,6 @@ class ObatPakanController extends Controller
                 DB::table('stok_produk_perencanaan')->insert($datas);
             } else {
                 $qty_selisih = $selisih;
-                // $data = [
-                //     'id_akun' => '521',
-                //     'id_buku' => '4',
-                //     'ket' => 'Penyesuian stok pakan',
-                //     'debit' => $qty_selisih * $hrga->rata_rata,
-                //     'kredit' => '0',
-                //     'tgl' => $r->tgl,
-                //     'no_nota' => 'JPP-' . $no_nota,
-                //     'admin' => auth()->user()->name,
-                // ];
-                // DB::table('jurnal')->insert($data);
-                // $data = [
-                //     'id_akun' => '522',
-                //     'id_buku' => '4',
-                //     'ket' => 'Penyesuian stok pakan',
-                //     'debit' => 0,
-                //     'kredit' => $qty_selisih * $hrga->rata_rata,
-                //     'tgl' => $r->tgl,
-                //     'no_nota' => 'JPP-' . $no_nota,
-                //     'admin' => auth()->user()->name,
-                // ];
-                // DB::table('jurnal')->insert($data);
 
                 $datas = [
                     'pcs' => $r->stk_aktual[$x],
