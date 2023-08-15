@@ -34,15 +34,23 @@ class ObatPakanController extends Controller
 
     public function history_stok(Request $r)
     {
+        // $hisLama = DB::select("SELECT a.tgl, b.nm_produk, a.pcs, a.pcs_kredit, a.admin, a.h_opname
+        // FROM stok_produk_perencanaan as a 
+        // left join tb_produk_perencanaan as b on b.id_produk = a.id_pakan
+        // where  and a.id_pakan = '$r->id_pakan'
+        // GROUP by a.id_stok_telur;");
         $tgl1 = $r->tgl1 ?? date('Y-m-01');
         $tgl2 = $r->tgl2 ?? date('Y-m-t');
 
+        $history = DB::select("SELECT a.id_pakan, b.nm_produk, sum(a.pcs) as pcs_debit, sum(a.pcs_kredit) as pcs_kredit, c.nm_satuan
+        FROM stok_produk_perencanaan as a 
+        left join tb_produk_perencanaan as b on b.id_produk = a.id_pakan
+        left join tb_satuan as c on c.id_satuan = b.dosis_satuan
+        where b.kategori in('obat_pakan','obat_air') and a.id_pakan = '$r->id_pakan'
+        group by a.id_stok_telur;");
+
         $data = [
-            'stok' => DB::select("SELECT a.tgl, b.nm_produk, a.pcs, a.pcs_kredit, a.admin, a.h_opname
-            FROM stok_produk_perencanaan as a 
-            left join tb_produk_perencanaan as b on b.id_produk = a.id_pakan
-            where a.tgl BETWEEN '$tgl1' and '$tgl2' and a.id_pakan = '$r->id_pakan'
-            GROUP by a.id_stok_telur;"),
+            'stok' => $history,
             'tgl1' => $tgl1,
             'tgl2' => $tgl2,
             'id_pakan' => $r->id_pakan

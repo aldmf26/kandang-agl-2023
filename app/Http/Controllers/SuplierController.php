@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Suplier;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\DB;
 use Nonaktif;
 
 class SuplierController extends Controller
@@ -98,8 +99,9 @@ class SuplierController extends Controller
                     'dokumen' => $fileName,
                     'admin' => auth()->user()->name,
                 ];
+                DB::table('tb_suplier')->where('id_suplier', $r->id_suplier)->update($data);
 
-                Nonaktif::edit('tb_suplier', 'id_suplier', $r->id_suplier, $data);
+                // Nonaktif::edit('tb_suplier', 'id_suplier', $r->id_suplier, $data);
 
 
                 return redirect()->route('suplier.index')->with('sukses', 'Data Berhasil Diedit');
