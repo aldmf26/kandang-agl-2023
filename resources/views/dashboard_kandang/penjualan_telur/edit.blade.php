@@ -60,7 +60,7 @@
                                 <th class="dhead" width="10%" rowspan="2">Produk </th>
                                 <th style="text-align: center" class="dhead abu" colspan="3">Penjualan per pcs</th>
                                 <th style="text-align: center" class="dhead putih" colspan="3">Penjualan per ikat</th>
-                                <th style="text-align: center" class="dhead abuGelap" colspan="3">Penjualan per rak</th>
+                                <th style="text-align: center" class="dhead abuGelap" colspan="4">Penjualan per rak</th>
                                 <th rowspan="2" class="dhead" width="10%"
                                     style="text-align: center; white-space: nowrap;">Total
                                     Rp
