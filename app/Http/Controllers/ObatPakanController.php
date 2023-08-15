@@ -96,7 +96,7 @@ class ObatPakanController extends Controller
         } else {
             $no_nota = $max->nomor_nota + 1;
         }
-        
+            
         for ($x = 0; $x < count($r->id_pakan); $x++) {
             DB::table('stok_produk_perencanaan')->where(['id_pakan' => $r->id_pakan[$x], 'opname' => 'T'])->update(['opname' => 'Y', 'no_nota' => $no_nota]);
             $id_pakan = $r->id_pakan[$x];

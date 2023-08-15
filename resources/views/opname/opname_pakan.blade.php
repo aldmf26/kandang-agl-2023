@@ -3,8 +3,12 @@
         <label for="">Tanggal</label>
         <input type="date" class="form-control tgl_opname" name="tgl" value="{{$tgl}}">
     </div>
+    <div class="col-lg-4 mb-2">
+        <label for="">Pencarian</label>
+        <input id="pencarianOpname" placeholder="Pencarian" type="text" class="form-control">
+    </div>
 </div>
-<table class="table table-bordered">
+<table class="table table-bordered" id="tblOpname">
     <thead>
         <tr>
             <td class="dhead">Nama Pakan</td>

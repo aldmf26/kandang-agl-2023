@@ -677,8 +677,9 @@
                     type: "get",
                     url: "dashboard_kandang/opname_pakan",
                     success: function(r) {
-                        $("#opname_stk_pkn").html(r);
-                        $("#opname_pakan").modal("show");
+                        $("#opname_stk_pkn").html(r)
+                        $("#opname_pakan").modal("show")
+                        pencarian('pencarianOpname', 'tblOpname')
                     },
                 });
             });
@@ -699,6 +700,8 @@
                     success: function(r) {
                         $("#opname_stk_vtmn").html(r);
                         $("#opname_vitamin").modal("show");
+                        pencarian('pencarianOpname', 'tblOpname')
+
                     },
                 });
             });
