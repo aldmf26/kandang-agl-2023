@@ -17,11 +17,21 @@ class OpnamemtdController extends Controller
         } else {
             $nota_t = $max->urutan + 1;
         }
+
+        $urutan_opname = DB::selectOne("SELECT count(a.nota_transfer) as urutan
+        FROM (SELECT a.nota_transfer
+              FROM stok_telur as a where a.jenis = 'Opname' group by a.nota_transfer) as a;");
+        if (empty($urutan_opname) || $urutan_opname->urutan == '0') {
+            $urutan = '1001';
+        } else {
+            $urutan = '1001' + $urutan_opname->urutan;
+        }
         $data = [
             'title' => 'Opname Telur',
             'nota' => $nota_t,
             'produk' => DB::table('telur_produk')->get(),
-            'id_gudang' => $r->id_gudang
+            'id_gudang' => $r->id_gudang,
+            'urutan' => $urutan
 
         ];
         return view('opname_telur_mtd.index', $data);

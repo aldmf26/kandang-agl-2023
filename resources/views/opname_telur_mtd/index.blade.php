@@ -21,6 +21,10 @@
                     <label for="">Tanggal</label>
                     <input type="date" class="form-control tgl_nota" name="tgl" value="{{date('Y-m-d')}}">
                 </div>
+                <div class="col-lg-2 col-6">
+                    <label for="">Nota Opname</label>
+                    <input type="text" class="form-control tgl_nota" name="tgl" value="Opname-{{$urutan}}">
+                </div>
                 <div class="col-lg-12">
                     <hr style="border: 1px solid black">
                 </div>
