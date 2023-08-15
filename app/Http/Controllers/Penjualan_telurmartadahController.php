@@ -269,6 +269,7 @@ class Penjualan_telurmartadahController extends Controller
 
     public function save_edit_telur(Request $r)
     {
+        dd(1);
         $max = DB::table('invoice_telur')->latest('urutan')->where('lokasi', 'mtd')->first();
 
         if (empty($max)) {
@@ -285,10 +286,10 @@ class Penjualan_telurmartadahController extends Controller
             $urutan_cus = $max_customer->urutan_customer + 1;
         }
         $voucher = DB::table('tb_void')->where([['no_nota', $r->no_nota], ['voucher', $r->voucher], ['status', 'T']])->count();
-        // $voucherUpdate = $voucher > 0 || $r->tgl == date('Y-m-d') ? true : false;
+        $voucherUpdate = $voucher > 0 || $r->tgl == date('Y-m-d') ? true : false;
         $no_nota = $r->no_nota;
-        // if ($voucherUpdate) {
-        // DB::table('tb_void')->where([['no_nota', $no_nota], ['voucher', $r->voucher]])->update(['status' => 'Y']);
+        if ($voucherUpdate) {
+        DB::table('tb_void')->where([['no_nota', $no_nota], ['voucher', $r->voucher]])->update(['status' => 'Y']);
 
         DB::table('invoice_mtd')->where('no_nota', $no_nota)->delete();
         DB::table('invoice_telur')->where('no_nota', $no_nota)->delete();
@@ -388,9 +389,9 @@ class Penjualan_telurmartadahController extends Controller
                 'check' => 'Y'
             ]);
         }
-        // } else {
-        //     return redirect()->route('dashboard_kandang.edit_telur', ['no_nota' => $no_nota])->with('error', 'Voucher Update Salah!');
-        // }
+        } else {
+            return redirect()->route('dashboard_kandang.edit_telur', ['no_nota' => $no_nota])->with('error', 'Voucher Update Salah!');
+        }
 
 
         return redirect()->route('dashboard_kandang.cek_penjualan_telur', ['no_nota' => $no_nota])->with('sukses', 'Data berhasil ditambahkan');

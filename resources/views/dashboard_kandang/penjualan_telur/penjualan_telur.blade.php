@@ -7,7 +7,8 @@
             <div class="col-lg-6">
                 <x-theme.button modal="T" href="{{ route('dashboard_kandang.add_penjualan_telur') }}" icon="fa-plus"
                     addClass="float-end" teks="Buat Nota" />
-                <x-theme.button modal="T" href="{{ route('dashboard_kandang.penjualan_telur_export', [$tgl1, $tgl2]) }}" icon="fa-print"
+                <x-theme.button modal="T"
+                    href="{{ route('dashboard_kandang.penjualan_telur_export', [$tgl1, $tgl2]) }}" icon="fa-print"
                     addClass="float-end" teks="Export" />
                 <x-theme.btn_dashboard route="dashboard_kandang.index" />
 
@@ -24,62 +25,63 @@
                         <th>Tanggal</th>
                         <th>Nota</th>
                         <th>Customer</th>
-                        <th style="text-align: right">Total Rp ({{number_format($ttl_rp,0)}})</th>
+                        <th style="text-align: right">Total Rp ({{ number_format($ttl_rp, 0) }})</th>
                         <th>Diterima</th>
                         <th>Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach ($penjualan as $no => $s)
-                    <tr class="induk_detail{{ $s->no_nota }}">
-                        <td>{{ $no + 1 }}</td>
-                        <td>{{ tanggal($s->tgl) }}</td>
-                        <td>{{ $s->no_nota }}</td>
-                        <td>{{ $s->customer }}</td>
-                        <td align="right">{{ number_format($s->ttl_rp, 0) }} </td>
-                        <td><span class="btn btn-sm btn-success">{{ ucwords($s->admin_cek) ?? '' }}</span></td>
-                        <td align="center">
-                            <a class="btn btn-primary btn-sm detail" no_nota="{{ $s->no_nota }}" href="#"><i
-                                    class="me-2 fas fa-eye"></i>Detail</a>
-                            @php
-                            $void = DB::table('tb_void')
-                            ->where('no_nota', $s->no_nota)
-                            ->where('status', 'T')
-                            ->first();
-                            @endphp
-                            @if (auth()->user()->posisi_id == 1)
-                            @if (!empty($void))
-                            <button type="button" onclick="copyToClipboard('{{ $void->voucher }}')"
-                                class="btn btn-sm btn-danger">Salin Voucher : {{ $void->voucher }}</button>
-                            @else
-                            <a class="btn btn-danger btn-sm "
-                                href="{{ route('dashboard_kandang.void_penjualan_mtd', ['no_nota' => $s->no_nota, 'tgl1' => $tgl1, 'tgl2' => $tgl2]) }}"><i
-                                    class="me-2 fas fa-newspaper"></i>Voucher Edit</a>
-                            @endif
-                            @else
-                            @if ($s->void == 'Y' || $s->tgl == date('Y-m-d'))
-                            <div class="btn-group" role="group">
-                                <span class="btn btn-sm" data-bs-toggle="dropdown">
-                                    <i class="fas fa-ellipsis-v text-primary"></i>
-                                </span>
-                                <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1">
-                                    <li><a class="dropdown-item text-primary "
-                                            href="{{ route('dashboard_kandang.edit_telur', ['no_nota' => $s->no_nota]) }}"><i
-                                                class="me-2 fas fa-pen"></i>Edit</a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item text-danger delete_nota" no_nota="{{ $s->no_nota }}"
-                                            href="#" data-bs-toggle="modal" data-bs-target="#delete"><i
-                                                class="me-2 fas fa-trash"></i>Delete
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                            @endif
-                            @endif
-                        </td>
+                        <tr class="induk_detail{{ $s->no_nota }}">
+                            <td>{{ $no + 1 }}</td>
+                            <td>{{ tanggal($s->tgl) }}</td>
+                            <td>{{ $s->no_nota }}</td>
+                            <td>{{ $s->customer }}</td>
+                            <td align="right">{{ number_format($s->ttl_rp, 0) }} </td>
+                            <td><span class="btn btn-sm btn-success">{{ ucwords($s->admin_cek) ?? '' }}</span></td>
+                            <td align="center">
+                                <a class="btn btn-primary btn-sm detail" no_nota="{{ $s->no_nota }}"
+                                    href="#"><i class="me-2 fas fa-eye"></i>Detail</a>
+                                @php
+                                    $void = DB::table('tb_void')
+                                        ->where('no_nota', $s->no_nota)
+                                        ->where('status', 'T')
+                                        ->first();
+                                @endphp
+                                @if (auth()->user()->posisi_id == 1)
+                                    @if (!empty($void))
+                                        <button type="button" onclick="copyToClipboard('{{ $void->voucher }}')"
+                                            class="btn btn-sm btn-danger">Salin Voucher : {{ $void->voucher }}</button>
+                                    @else
+                                        <a class="btn btn-danger btn-sm "
+                                            href="{{ route('dashboard_kandang.void_penjualan_mtd', ['no_nota' => $s->no_nota, 'tgl1' => $tgl1, 'tgl2' => $tgl2]) }}"><i
+                                                class="me-2 fas fa-newspaper"></i>Voucher Edit</a>
+                                    @endif
+                                @else
+                                    @if ($s->void == 'Y' || $s->tgl == date('Y-m-d'))
+                                        <div class="btn-group" role="group">
+                                            <span class="btn btn-sm" data-bs-toggle="dropdown">
+                                                <i class="fas fa-ellipsis-v text-primary"></i>
+                                            </span>
+                                            <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                                                <li><a class="dropdown-item text-primary "
+                                                        href="{{ route('dashboard_kandang.edit_telur', ['no_nota' => $s->no_nota]) }}"><i
+                                                            class="me-2 fas fa-pen"></i>Edit</a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item text-danger delete_nota"
+                                                        no_nota="{{ $s->no_nota }}" href="#"
+                                                        data-bs-toggle="modal" data-bs-target="#delete"><i
+                                                            class="me-2 fas fa-trash"></i>Delete
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    @endif
+                                @endif
+                            </td>
 
-                    </tr>
+                        </tr>
                     @endforeach
 
                 </tbody>
@@ -96,10 +98,10 @@
         </section>
     </x-slot>
     @section('js')
-    <script src="{{ asset('js/salin_voucher.js') }}"></script>
+        <script src="{{ asset('js/salin_voucher.js') }}"></script>
 
-    <script>
-        $(document).ready(function() {
+        <script>
+            $(document).ready(function() {
                 $(document).on('click', '.delete_nota', function() {
                     var no_nota = $(this).attr('no_nota');
                     $('.no_nota').val(no_nota);
@@ -120,7 +122,7 @@
                 $('.hide_bayar').hide();
                 $(document).on("click", ".detail_bayar", function(e) {
                     e.preventDefault();
-                    
+
                     var no_nota = $(this).attr('no_nota');
                     var clickedElement = $(this); // Simpan elemen yang diklik dalam variabel
 
@@ -155,6 +157,6 @@
 
                 });
             });
-    </script>
+        </script>
     @endsection
 </x-theme.app>
