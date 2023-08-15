@@ -38,7 +38,7 @@
         <tr>
             <td>{{tanggal($s->tgl)}}</td>
             <td>{{$s->nm_produk}}</td>
-            <td align="right">{{number_format($s->pcs - $s->pcs_kredit,0)}}</td>
+            <td align="right">{{number_format($s->pcs,0)}}</td>
             <td align="right">{{number_format($s->pcs_kredit,0)}}</td>
             <td align="right">{{number_format($saldo,0)}}</td>
             <td align="center">

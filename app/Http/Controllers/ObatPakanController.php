@@ -42,11 +42,11 @@ class ObatPakanController extends Controller
         $tgl1 = $r->tgl1 ?? date('Y-m-01');
         $tgl2 = $r->tgl2 ?? date('Y-m-t');
 
-        $history = DB::select("SELECT a.id_pakan, b.nm_produk, sum(a.pcs) as pcs_debit, sum(a.pcs_kredit) as pcs_kredit, c.nm_satuan
+        $history = DB::select("SELECT a.h_opname,a.admin,a.tgl,a.id_pakan, b.nm_produk, sum(a.pcs) as pcs, sum(a.pcs_kredit) as pcs_kredit, c.nm_satuan
         FROM stok_produk_perencanaan as a 
         left join tb_produk_perencanaan as b on b.id_produk = a.id_pakan
         left join tb_satuan as c on c.id_satuan = b.dosis_satuan
-        where b.kategori in('obat_pakan','obat_air') and a.id_pakan = '$r->id_pakan'
+        where b.kategori in('obat_pakan','obat_air') and a.id_pakan = '$r->id_pakan' AND a.opname = 'T'
         group by a.id_stok_telur;");
 
         $data = [
@@ -96,8 +96,9 @@ class ObatPakanController extends Controller
         } else {
             $no_nota = $max->nomor_nota + 1;
         }
-
+        
         for ($x = 0; $x < count($r->id_pakan); $x++) {
+            DB::table('stok_produk_perencanaan')->where(['id_pakan' => $r->id_pakan[$x], 'opname' => 'T'])->update(['opname' => 'Y', 'no_nota' => $no_nota]);
             $id_pakan = $r->id_pakan[$x];
             $hrga = DB::selectOne("SELECT sum((a.total_rp + a.biaya_dll)/a.pcs) as rata_rata
             FROM stok_produk_perencanaan as a 
@@ -139,7 +140,6 @@ class ObatPakanController extends Controller
                 DB::table('stok_produk_perencanaan')->insert($datas);
             }
 
-            DB::table('stok_produk_perencanaan')->where(['id_pakan' => $r->id_pakan[$x], 'opname' => 'T'])->update(['opname' => 'Y', 'no_nota' => $no_nota]);
         }
         return redirect()->route('dashboard_kandang.index')->with('sukses', 'Data berhasil di simpan');
     }
