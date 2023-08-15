@@ -91,9 +91,9 @@
                                     </td>
                                     <td align="right">
                                         <input type="text" class="form-control kg_pcs kg_pcs1"
-                                            value="{{ $d->kg_pcs }}" count="1"
+                                            value="{{ $d->kg_pcs }}" name="kg_pcs[]" count="1"
                                             style="text-align: right; font-size: 12px;">
-                                        <input type="hidden" class="form-control  kg_pcs_biasa1" name="kg_pcs[]"
+                                        <input type="text" class="form-control  kg_pcs_biasa1"
                                             value="{{ $d->kg_pcs }}">
                                     </td>
 
