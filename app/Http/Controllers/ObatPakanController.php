@@ -46,7 +46,7 @@ class ObatPakanController extends Controller
         FROM stok_produk_perencanaan as a 
         left join tb_produk_perencanaan as b on b.id_produk = a.id_pakan
         left join tb_satuan as c on c.id_satuan = b.dosis_satuan
-        where b.kategori in('obat_pakan','obat_air') and a.id_pakan = '$r->id_pakan'
+        where b.kategori in('obat_pakan','obat_air') AND a.tgl BETWEEN '$tgl1' AND '$tgl2' and a.id_pakan = '$r->id_pakan'
         group by a.id_stok_telur;");
 
         $data = [
