@@ -9,19 +9,21 @@ class ObatPakanController extends Controller
 {
     public function load_stok_pakan(Request $r)
     {
+        $tgl1 = "2023-08-10";
+        $tgl2 = date('Y-m-t');
         $data = [
             'pakan' => DB::select("SELECT a.id_pakan, b.nm_produk, sum(a.pcs) as pcs_debit, sum(a.pcs_kredit) as pcs_kredit, c.nm_satuan
             FROM stok_produk_perencanaan as a 
             left join tb_produk_perencanaan as b on b.id_produk = a.id_pakan
             left join tb_satuan as c on c.id_satuan = b.dosis_satuan
-            where b.kategori ='pakan'
+            where b.kategori ='pakan' AND a.tgl BETWEEN '$tgl1' and '$tgl2' 
             group by a.id_pakan;"),
 
             'vitamin' => DB::select("SELECT a.id_pakan, b.nm_produk, sum(a.pcs) as pcs_debit, sum(a.pcs_kredit) as pcs_kredit, c.nm_satuan
             FROM stok_produk_perencanaan as a 
             left join tb_produk_perencanaan as b on b.id_produk = a.id_pakan
             left join tb_satuan as c on c.id_satuan = b.dosis_satuan
-            where b.kategori in('obat_pakan','obat_air')
+            where b.kategori in('obat_pakan','obat_air') AND a.tgl BETWEEN '$tgl1' and '$tgl2' 
             group by a.id_pakan;"),
 
             'vaksin' => DB::table('tb_vaksin_perencanaan as a')->join('kandang as b', 'a.id_kandang', 'b.id_kandang')->get(),
@@ -32,7 +34,7 @@ class ObatPakanController extends Controller
 
     public function history_stok(Request $r)
     {
-        $tgl1 = $r->tgl1 ?? '2022-01-01';
+        $tgl1 = $r->tgl1 ?? date('Y-m-01');
         $tgl2 = $r->tgl2 ?? date('Y-m-t');
 
         $data = [
