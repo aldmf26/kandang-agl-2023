@@ -14,7 +14,7 @@ class SuplierController extends Controller
     {
         $data = [
             'title' => 'Data Suplier',
-            'suplier' => Suplier::where('nonaktif', 'T')->get()
+            'suplier' => Suplier::get()
         ];
         return view('suplier.suplier', $data);
     }
