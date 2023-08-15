@@ -54,7 +54,7 @@
 
                                 <th class="dhead abuGelap" width="7%" style="text-align: center;">Pcs</th>
                                 <th class="dhead abuGelap" width="7%" style="text-align: center;">Kg</th>
-                                <th class="dhead abuGelap" width="7%" style="text-align: center;">Rak</th>
+                                <th class="dhead abuGelap" width="7%" style="text-align: center;">Rak per pcs</th>
                                 {{-- <th class="dhead" width="10%" style="text-align: center;">Rp Rak</th> --}}
                                 {{-- <th class="dhead" width="5%">Aksi</th> --}}
                             </tr>

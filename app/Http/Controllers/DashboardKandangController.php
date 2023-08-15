@@ -419,7 +419,7 @@ class DashboardKandangController extends Controller
 
     public function void_transfer(Request $r)
     {
-        void($r->no_nota, 'transfer martadah');
+        void($r->no_nota, 'transfer martadah'); 
 
         return redirect()->route('dashboard_kandang.transfer_stok', ['id_gudan' => 1])->with('sukses', 'Berhasil void');
     }
