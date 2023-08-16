@@ -5,8 +5,7 @@
             href="{{ route('dashboard_kandang.add_penjualan_umum') }}" class="badge mb-2 float-end me-2 bg-primary text-sm"><i
                 class="fas fa-plus"></i></a>
         <a data-bs-toggle="tooltip" data-bs-placement="top" title="History Penjualan Umum"
-            href="{{ route('dashboard_kandang.penjualan_umum') }}" class="badge mb-2 float-end me-2 bg-primary text-sm"><i
-                class="fas fa-history"></i></a>
+            href="{{ route('dashboard_kandang.penjualan_umum') }}" class="badge mb-2 float-end me-2 bg-primary text-sm">History</a>
         <a data-bs-toggle="tooltip" data-bs-placement="top" title="Data Produk"
             href="{{ route('barang_dagangan.index') }}" class="badge mb-2 float-end me-2 bg-primary text-sm"><i class="fas fa-list"></i>
             Produk</a>
