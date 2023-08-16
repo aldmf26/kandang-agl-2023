@@ -50,8 +50,8 @@
                                 @endphp
                                 @if (auth()->user()->posisi_id == 1)
                                     @if (!empty($void))
-                                        <button type="button" onclick="copyToClipboard('{{ $void->voucher }}')"
-                                            class="btn btn-sm btn-danger">Salin Voucher : {{ $void->voucher }}</button>
+                                        <a href="#" onclick="copyToClipboard('{{ $void->voucher }}')"
+                                            class="btn btn-sm btn-danger">Salin Voucher : {{ $void->voucher }}</a>
                                     @else
                                         <a class="btn btn-danger btn-sm "
                                             href="{{ route('dashboard_kandang.void_penjualan_mtd', ['no_nota' => $s->no_nota, 'tgl1' => $tgl1, 'tgl2' => $tgl2]) }}"><i
