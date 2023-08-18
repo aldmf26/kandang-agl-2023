@@ -214,7 +214,7 @@
 {{-- tambah telur --}}
 <form action="{{ route('dashboard_kandang.tambah_telur') }}" method="post">
     @csrf
-    <x-theme.modal title="Tambah Telur" size="modal-lg" idModal="tambah_telur">
+    <x-theme.modal title="Tambah Telur" size="modal-md" idModal="tambah_telur">
         <div id="load_telur"></div>
     </x-theme.modal>
 </form>

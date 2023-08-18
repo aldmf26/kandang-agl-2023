@@ -65,7 +65,7 @@
                         class="badge float-end me-2 bg-primary text-sm"><i class="fas fa-plus"></i></a>
                     <a data-bs-toggle="tooltip" data-bs-placement="top" title="History Penjualan Martadah"
                         href="{{ route('dashboard_kandang.penjualan_telur', ['id_gudang' => 1]) }}"
-                        class="badge float-end me-2 bg-primary text-sm"><i class="fas fa-history"></i>
+                        class="badge float-end me-2 bg-primary text-sm">History</i>
                     </a>
                 </td>
                 @foreach ($telur as $d)
@@ -89,7 +89,7 @@
                         class="badge float-end me-2 bg-primary text-sm"><i class="fas fa-plus"></i></a>
                     <a data-bs-toggle="tooltip" data-bs-placement="top" title="History Transfer Alpa"
                         href="{{ route('dashboard_kandang.transfer_stok', ['id_gudang' => 1]) }}"
-                        class="badge float-end me-2 bg-primary text-sm"><i class="fas fa-history"></i>
+                        class="badge float-end me-2 bg-primary text-sm">History
                     </a>
 
 
