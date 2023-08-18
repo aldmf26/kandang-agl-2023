@@ -87,40 +87,40 @@ class DashboardKandangController extends Controller
             DB::table('stok_telur_new')->where([['id_kandang', $r->id_kandang], ['tgl', $r->tgl]])->delete();
 
             for ($i = 0; $i < count($r->id_telur); $i++) {
-                $ikat = $r->ikat[$i];
-                $ikat_kg = $r->ikat_kg[$i];
+                // $ikat = $r->ikat[$i];
+                // $ikat_kg = $r->ikat_kg[$i];
 
-                $rak = $r->rak[$i];
-                $rak_kg = $r->rak_kg[$i];
+                // $rak = $r->rak[$i];
+                // $rak_kg = $r->rak_kg[$i];
 
-                $pcs = $r->pcs[$i];
-                // $ttl_kg_pcs = $r->ttl_kg_pcs[$i];
+                // $pcs = $r->pcs[$i];
+                // // $ttl_kg_pcs = $r->ttl_kg_pcs[$i];
 
-                $ttlPcs = ($ikat * 180) + ($rak * 30) + $pcs;
-                $ttlKg = $ikat_kg + $rak_kg + $r->pcs_kg[$i];
+                // $ttlPcs = ($ikat * 180) + ($rak * 30) + $pcs;
+                // $ttlKg = $ikat_kg + $rak_kg + $r->pcs_kg[$i];
 
-                $data = [
-                    'id_kandang' => $r->id_kandang,
-                    'id_telur' => $r->id_telur[$i],
-                    'tgl' => $r->tgl,
-                    'admin' => auth()->user()->name,
-                    'ikat' => $ikat,
-                    'ikat_kg' => $ikat_kg,
-                    'rak' => $rak,
-                    'rak_kg' => $rak_kg,
-                    'pcs' => $pcs,
-                    'pcs_kg' => $r->pcs_kg[$i],
-                    // 'potongan_pcs' => $r->potongan_pcs[$i],
-                    // 'ttl_kg_pcs' => $ttl_kg_pcs,
-                ];
-                DB::table('stok_telur_new')->insert($data);
+                // $data = [
+                //     'id_kandang' => $r->id_kandang,
+                //     'id_telur' => $r->id_telur[$i],
+                //     'tgl' => $r->tgl,
+                //     'admin' => auth()->user()->name,
+                //     'ikat' => $ikat,
+                //     'ikat_kg' => $ikat_kg,
+                //     'rak' => $rak,
+                //     'rak_kg' => $rak_kg,
+                //     'pcs' => $pcs,
+                //     'pcs_kg' => $r->pcs_kg[$i],
+                //     // 'potongan_pcs' => $r->potongan_pcs[$i],
+                //     // 'ttl_kg_pcs' => $ttl_kg_pcs,
+                // ];
+                // DB::table('stok_telur_new')->insert($data);
 
                 $dataStok = [
                     'id_kandang' => $r->id_kandang,
                     'id_telur' => $r->id_telur[$i],
                     'tgl' => $r->tgl,
-                    'pcs' => $ttlPcs,
-                    'kg' => $ttlKg,
+                    'pcs' => $r->pcs,
+                    'kg' => $r->kg,
                     'pcs_kredit' => 0,
                     'kg_kredit' => 0,
                     'admin' => auth()->user()->name,
@@ -419,7 +419,7 @@ class DashboardKandangController extends Controller
 
     public function void_transfer(Request $r)
     {
-        void($r->no_nota, 'transfer martadah'); 
+        void($r->no_nota, 'transfer martadah');
 
         return redirect()->route('dashboard_kandang.transfer_stok', ['id_gudan' => 1])->with('sukses', 'Berhasil void');
     }
