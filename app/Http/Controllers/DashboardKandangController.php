@@ -85,7 +85,6 @@ class DashboardKandangController extends Controller
         } else {
             DB::table('stok_telur')->where([['id_kandang', $r->id_kandang], ['tgl', $r->tgl]])->delete();
             DB::table('stok_telur_new')->where([['id_kandang', $r->id_kandang], ['tgl', $r->tgl]])->delete();
-
             for ($i = 0; $i < count($r->id_telur); $i++) {
                 // $ikat = $r->ikat[$i];
                 // $ikat_kg = $r->ikat_kg[$i];
@@ -119,8 +118,8 @@ class DashboardKandangController extends Controller
                     'id_kandang' => $r->id_kandang,
                     'id_telur' => $r->id_telur[$i],
                     'tgl' => $r->tgl,
-                    'pcs' => $r->pcs,
-                    'kg' => $r->kg,
+                    'pcs' => $r->pcs[$i],
+                    'kg' => $r->kg[$i],
                     'pcs_kredit' => 0,
                     'kg_kredit' => 0,
                     'admin' => auth()->user()->name,
@@ -443,8 +442,13 @@ class DashboardKandangController extends Controller
         GROUP BY a.urutan
         ORDER BY a.id_penjualan DESC");
         $ttlRp = 0;
+        $ttlRpBelum = 0;
         foreach ($penjualan as $p) {
             $ttlRp += $p->total;
+            if(empty($p->admin_cek)) {
+                $ttlRpBelum += $p->total;
+
+            }
         }
         $data = [
             'title' => 'Penjualan Umum',
@@ -452,6 +456,7 @@ class DashboardKandangController extends Controller
             'tgl1' => $tgl1,
             'tgl2' => $tgl2,
             'ttlRp' => $ttlRp,
+            'ttlRpBelum' => $ttlRpBelum,
         ];
         return view('dashboard_kandang.penjualan_umum.penjualan_umum', $data);
     }

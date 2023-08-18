@@ -17,10 +17,14 @@
                         <th>Nota</th>
                         <th>Tanggal</th>
                         <th>Pelanggan</th>
-                        <th width="20%" class="text-center">Total Produk</th>
-                        <th>Di Terima</th>
-                        <th class="text-end">Total Rp (Rp. {{ number_format($ttlRp,0) }})</th>
-                        <th width="25%" class="text-center">Aksi</th>
+                        <th width="15%" class="text-center">Qty Produk</th>
+                        <th width="19%" class="text-end">
+                            Total Rp <br> 
+                            Semua : (Rp. {{ number_format($ttlRp,0) }}) <br>
+                            Belum dicek : (Rp. {{ number_format($ttlRpBelum,0) }}) 
+                        </th>
+                        <th class="text-center">Di Terima</th>
+                        <th width="20%" class="text-end">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -33,9 +37,9 @@
                             <td>{{ tanggal($d->tgl) }}</td>
                             <td>{{ $d->id_customer }}</td>
                             <td align="center">{{ $d->ttl_produk }}</td>
-                            <td><span class="btn btn-sm btn-success">{{ ucwords($d->admin_cek) ?? '' }}</span></td>
                             <td align="right">Rp. {{ number_format($d->total, 2) }}</td>
-                            <td align="center">
+                            <td align="center"><span class="btn btn-sm btn-success">{{ ucwords($d->admin_cek) ?? '' }}</span></td>
+                            <td align="right">
                                 <a class="btn btn-primary btn-sm detail_nota" no_nota="{{ $d->urutan }}" href="#" data-bs-toggle="modal"
                                     data-bs-target="#detail" href="#"><i
                                         class="me-2 fas fa-eye"></i>Detail</a>

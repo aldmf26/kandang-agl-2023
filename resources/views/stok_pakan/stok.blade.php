@@ -2,7 +2,15 @@
     <div class="col-lg-4">
         <div class="row mb-2">
             <div class="col-lg-3">
-                <h6>Stok Pakan</h6>
+                @php
+                    $ttlPakan = 0;
+                    foreach($pakan as $d) {
+                        $pakanD = ($d->pcs_debit - $d->pcs_kredit);
+                        $ttlPakan += $pakanD;
+                    }
+                    $ttlPakan = $ttlPakan / ($total_populasi * 100);
+                @endphp
+                <h6>Stok Pakan ({{ number_format($ttlPakan,0) }} Hari)</h6>
             </div>
             <div class="col-lg-5">
                 <input id="pencarianPakan" placeholder="Pencarian" type="text" class="form-control">

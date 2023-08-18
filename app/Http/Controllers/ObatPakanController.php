@@ -9,6 +9,16 @@ class ObatPakanController extends Controller
 {
     public function load_stok_pakan(Request $r)
     {
+        $c = DB::table('kandang')->get();
+        $pop = 0;
+        foreach($c as $d) 
+        {
+            $popu = DB::selectOne("SELECT sum(a.mati + a.jual) as pop,b.stok_awal FROM populasi as a
+                LEFT JOIN kandang as b ON a.id_kandang = b.id_kandang
+                WHERE a.id_kandang = '$d->id_kandang';");
+
+                $pop += $popu->stok_awal - $popu->pop;
+        }
         $tgl1 = "2023-08-10";
         $tgl2 = date('Y-m-t');
         $data = [
@@ -25,6 +35,8 @@ class ObatPakanController extends Controller
             left join tb_satuan as c on c.id_satuan = b.dosis_satuan
             where b.kategori in('obat_pakan','obat_air')
             group by a.id_pakan;"),
+
+            'total_populasi' => $pop,
 
             'vaksin' => DB::table('tb_vaksin_perencanaan as a')->join('kandang as b', 'a.id_kandang', 'b.id_kandang')->get(),
 
