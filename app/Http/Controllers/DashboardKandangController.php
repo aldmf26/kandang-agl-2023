@@ -77,7 +77,45 @@ class DashboardKandangController extends Controller
         return redirect()->route('dashboard_kandang.index')->with('sukses', 'Kandang Berhasil Di selesaikan');
     }
 
+    public function load_telur($id_kandang)
+    {
+        $data = [
+            'telur' => DB::table('telur_produk')->get(),
+            'kandang' => DB::table('kandang')->where('id_kandang', $id_kandang)->first()
+        ];
+        return view('dashboard_kandang.modal.load_telur', $data);
+    }
+
     public function tambah_telur(Request $r)
+    {
+        $cek = DB::table('stok_telur')->where([['id_kandang', $r->id_kandang], ['tgl', $r->tgl], ['check', 'Y']])->count();
+        if ($cek > 0) {
+            return redirect()->route('dashboard_kandang.index')->with('error', 'Data SUDAH DICEK!!!!');
+        } else {
+            DB::table('stok_telur')->where([['id_kandang', $r->id_kandang], ['tgl', $r->tgl]])->delete();
+
+            for ($i = 0; $i < count($r->id_telur); $i++) {
+                $dataStok = [
+                    'id_kandang' => $r->id_kandang,
+                    'id_telur' => $r->id_telur[$i],
+                    'tgl' => $r->tgl,
+                    'pcs' => $r->pcs[$i],
+                    'kg' => $r->kg[$i],
+                    'pcs_kredit' => 0,
+                    'kg_kredit' => 0,
+                    'admin' => auth()->user()->name,
+                    'id_gudang' => 1,
+                    'nota_transfer' => '',
+                    'ket' => '',
+                ];
+                DB::table('stok_telur')->insert($dataStok);
+            }
+
+            return redirect()->route('dashboard_kandang.index')->with('sukses', 'Data Berhasil Ditambahkan');
+        }
+    }
+
+    public function tambah_telur_bahari_sebelum_fadilah_beganti(Request $r)
     {
         $cek = DB::table('stok_telur')->where([['id_kandang', $r->id_kandang], ['tgl', $r->tgl], ['check', 'Y']])->count();
         if ($cek > 0) {
@@ -94,7 +132,6 @@ class DashboardKandangController extends Controller
                 $rak_kg = $r->rak_kg[$i];
 
                 $pcs = $r->pcs[$i];
-                // $ttl_kg_pcs = $r->ttl_kg_pcs[$i];
 
                 $ttlPcs = ($ikat * 180) + ($rak * 30) + $pcs;
                 $ttlKg = $ikat_kg + $rak_kg + $r->pcs_kg[$i];
@@ -110,8 +147,6 @@ class DashboardKandangController extends Controller
                     'rak_kg' => $rak_kg,
                     'pcs' => $pcs,
                     'pcs_kg' => $r->pcs_kg[$i],
-                    // 'potongan_pcs' => $r->potongan_pcs[$i],
-                    // 'ttl_kg_pcs' => $ttl_kg_pcs,
                 ];
                 DB::table('stok_telur_new')->insert($data);
 
@@ -133,15 +168,6 @@ class DashboardKandangController extends Controller
 
             return redirect()->route('dashboard_kandang.index')->with('sukses', 'Data Berhasil Ditambahkan');
         }
-    }
-
-    public function load_telur($id_kandang)
-    {
-        $data = [
-            'telur' => DB::table('telur_produk')->get(),
-            'kandang' => DB::table('kandang')->where('id_kandang', $id_kandang)->first()
-        ];
-        return view('dashboard_kandang.modal.load_telur', $data);
     }
 
     public function tambah_populasi(Request $r)
