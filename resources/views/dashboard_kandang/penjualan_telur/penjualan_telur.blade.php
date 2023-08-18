@@ -25,7 +25,11 @@
                         <th>Tanggal</th>
                         <th>Nota</th>
                         <th>Customer</th>
-                        <th style="text-align: right">Total Rp ({{ number_format($ttl_rp, 0) }})</th>
+                        <th width="19%" style="text-align: right">
+                            Total Rp <br> 
+                            Semua : ({{ number_format($ttl_rp,0) }}) <br> 
+                            Belum dicek : ({{ number_format($ttlBelumDicek,0) }})
+                        </th>
                         <th>Diterima</th>
                         <th>Aksi</th>
                     </tr>

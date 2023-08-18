@@ -56,15 +56,20 @@ class Penjualan_telurmartadahController extends Controller
         order by a.no_nota DESC
         ");
         $ttl = 0;
+        $ttlBelumDicek = 0;
         foreach ($transfer as $d) {
             $ttl += $d->ttl_rp;
+            if (empty($d->admin_cek)) {
+                $ttlBelumDicek += $d->ttl_rp;
+            }
         }
         $data = [
             'title' => 'Penjualan Telur Martadah',
             'tgl1' => $tgl1,
             'tgl2' => $tgl2,
             'penjualan' => $transfer,
-            'ttl_rp' => $ttl
+            'ttl_rp' => $ttl,
+            'ttlBelumDicek' => $ttlBelumDicek,
         ];
         return view('dashboard_kandang.penjualan_telur.penjualan_telur', $data);
     }
@@ -88,6 +93,7 @@ class Penjualan_telurmartadahController extends Controller
         } else {
             $nota_t = $max->urutan + 1;
         }
+
         $data = [
             'title' => 'Buat Invoice',
             'produk' => DB::table('telur_produk')->get(),
@@ -288,106 +294,110 @@ class Penjualan_telurmartadahController extends Controller
         $voucherUpdate = $voucher > 0 || $r->tgl == date('Y-m-d') ? true : false;
         $no_nota = $r->no_nota;
         if ($voucherUpdate) {
-        DB::table('tb_void')->where([['no_nota', $no_nota], ['voucher', $r->voucher]])->update(['status' => 'Y']);
+            $cekAdmin = DB::table('invoice_telur')->where('no_nota', $no_nota)->first();
+            if (!empty($cekAdmin->admin_cek)) {
+                return redirect()->route('dashboard_kandang.edit_telur', ['no_nota' => $no_nota])->with('error', "Nota INI Tidak bisa di edit karena sudah di cek : " . strtoupper($cekAdmin->admin_cek));
+            }
+            DB::table('tb_void')->where([['no_nota', $no_nota], ['voucher', $r->voucher]])->update(['status' => 'Y']);
 
-        DB::table('invoice_mtd')->where('no_nota', $no_nota)->delete();
-        DB::table('invoice_telur')->where('no_nota', $no_nota)->delete();
-        DB::table('stok_telur')->where('nota_transfer', $no_nota)->delete();
+            DB::table('invoice_mtd')->where('no_nota', $no_nota)->delete();
+            DB::table('invoice_telur')->where('no_nota', $no_nota)->delete();
+            DB::table('stok_telur')->where('nota_transfer', $no_nota)->delete();
 
-        $pcs_pcs = $r->pcs_pcs;
-        $kg_pcs = $r->kg_pcs;
-        $rp_pcs = $r->rp_pcs;
+            $pcs_pcs = $r->pcs_pcs;
+            $kg_pcs = $r->kg_pcs;
+            $rp_pcs = $r->rp_pcs;
 
-        $ikat = $r->ikat;
-        $kg_ikat = $r->kg_ikat;
-        $rp_ikat = $r->rp_ikat;
+            $ikat = $r->ikat;
+            $kg_ikat = $r->kg_ikat;
+            $rp_ikat = $r->rp_ikat;
 
-        $pcs_kg = $r->pcs_kg;
-        $kg_kg = $r->kg_kg;
-        $kg_kg_kotor = $r->kg_kg_kotor;
-        $rak_kg = $r->rak_kg;
-        $rp_kg = $r->rp_kg;
-
-
-        for ($x = 0; $x < count($r->id_produk); $x++) {
-            $pcs_ikat = $ikat[$x] * 180;
-            $total_pcs = $pcs_ikat + $pcs_pcs[$x] + $pcs_kg[$x];
-
-            $kg_bersih_ikat = $kg_ikat[$x] - $ikat[$x];
-            $rk = $pcs_kg[$x] / 30;
-            $rak_kali = round($rk  * 0.12, 1);
-            $kg_bersih_kg = $kg_kg[$x] + $rak_kali;
-            $total_kg_kotor = $kg_pcs[$x] + $kg_ikat[$x] + $kg_kg_kotor[$x];
-
-            $total_kg_bersih = $kg_bersih_ikat + $kg_kg[$x];
-            $total_rp_satuan = $rp_pcs[$x] + $rp_ikat[$x] + $rp_kg[$x];
-
-            $ttl_rp_pcs = $pcs_pcs[$x] * $rp_pcs[$x];
-            $ttl_rp_ikat = $kg_bersih_ikat * $rp_ikat[$x];
-            $ttl_rp_kg = $kg_kg[$x] * $r->rp_kg[$x];
-
-            $total_rp = $ttl_rp_pcs + $ttl_rp_ikat + $ttl_rp_kg;
-
-            $data = [
-                'tgl' => $r->tgl,
-                'customer' => $r->customer,
-                'no_nota' => $no_nota,
-                'id_produk' => $r->id_produk[$x],
-                'id_produk' => $r->id_produk[$x],
-                'pcs' => $total_pcs,
-                'kg' => $total_kg_kotor,
-                'kg_jual' => $total_kg_bersih,
-                'ikat' => $ikat[$x],
-                'rp_satuan' => $total_rp_satuan,
-                'total_rp' => $total_rp,
-                'admin' => auth()->user()->name,
-                'urutan' => $r->urutan,
-                'urutan_customer' => $urutan_cus,
-                'driver' => '',
-                'lokasi' => 'mtd'
-            ];
-            DB::table('invoice_telur')->insert($data);
-            $data = [
-                'tgl' => $r->tgl,
-                'customer' => $r->customer,
-                'no_hp' => $r->no_hp,
-                'no_nota' => $no_nota,
-                'id_produk' => $r->id_produk[$x],
-
-                'pcs_pcs' => $pcs_pcs[$x],
-                'kg_pcs' => $kg_pcs[$x],
-                'rp_pcs' => $rp_pcs[$x],
-
-                'ikat' => $ikat[$x],
-                'kg_ikat' => $kg_ikat[$x],
-                'rp_ikat' => $rp_ikat[$x],
-
-                'pcs_kg' => $pcs_kg[$x],
-                'kg_kg' => $kg_kg[$x],
-                'kg_kg_kotor' => $kg_kg_kotor[$x],
-                'rak_kg' =>  $rk,
-                'rp_kg' => $rp_kg[$x],
-                'void' => 'T'
-            ];
-            DB::table('invoice_mtd')->insert($data);
+            $pcs_kg = $r->pcs_kg;
+            $kg_kg = $r->kg_kg;
+            $kg_kg_kotor = $r->kg_kg_kotor;
+            $rak_kg = $r->rak_kg;
+            $rp_kg = $r->rp_kg;
 
 
-            DB::table('stok_telur')->insert([
-                'id_kandang' => 0,
-                'id_telur' => $r->id_produk[$x],
-                'tgl' => $r->tgl,
-                'pcs_kredit' => $total_pcs,
-                'kg_kredit' => $total_kg_kotor,
-                'pcs' => 0,
-                'kg' => 0,
-                'admin' => auth()->user()->name,
-                'id_gudang' => 1,
-                'nota_transfer' => $no_nota,
-                'ket' => '',
-                'jenis' => 'penjualan',
-                'check' => 'Y'
-            ]);
-        }
+            for ($x = 0; $x < count($r->id_produk); $x++) {
+                $pcs_ikat = $ikat[$x] * 180;
+                $total_pcs = $pcs_ikat + $pcs_pcs[$x] + $pcs_kg[$x];
+
+                $kg_bersih_ikat = $kg_ikat[$x] - $ikat[$x];
+                $rk = $pcs_kg[$x] / 30;
+                $rak_kali = round($rk  * 0.12, 1);
+                $kg_bersih_kg = $kg_kg[$x] + $rak_kali;
+                $total_kg_kotor = $kg_pcs[$x] + $kg_ikat[$x] + $kg_kg_kotor[$x];
+
+                $total_kg_bersih = $kg_bersih_ikat + $kg_kg[$x];
+                $total_rp_satuan = $rp_pcs[$x] + $rp_ikat[$x] + $rp_kg[$x];
+
+                $ttl_rp_pcs = $pcs_pcs[$x] * $rp_pcs[$x];
+                $ttl_rp_ikat = $kg_bersih_ikat * $rp_ikat[$x];
+                $ttl_rp_kg = $kg_kg[$x] * $r->rp_kg[$x];
+
+                $total_rp = $ttl_rp_pcs + $ttl_rp_ikat + $ttl_rp_kg;
+
+                $data = [
+                    'tgl' => $r->tgl,
+                    'customer' => $r->customer,
+                    'no_nota' => $no_nota,
+                    'id_produk' => $r->id_produk[$x],
+                    'id_produk' => $r->id_produk[$x],
+                    'pcs' => $total_pcs,
+                    'kg' => $total_kg_kotor,
+                    'kg_jual' => $total_kg_bersih,
+                    'ikat' => $ikat[$x],
+                    'rp_satuan' => $total_rp_satuan,
+                    'total_rp' => $total_rp,
+                    'admin' => auth()->user()->name,
+                    'urutan' => $r->urutan,
+                    'urutan_customer' => $urutan_cus,
+                    'driver' => '',
+                    'lokasi' => 'mtd'
+                ];
+                DB::table('invoice_telur')->insert($data);
+                $data = [
+                    'tgl' => $r->tgl,
+                    'customer' => $r->customer,
+                    'no_hp' => $r->no_hp,
+                    'no_nota' => $no_nota,
+                    'id_produk' => $r->id_produk[$x],
+
+                    'pcs_pcs' => $pcs_pcs[$x],
+                    'kg_pcs' => $kg_pcs[$x],
+                    'rp_pcs' => $rp_pcs[$x],
+
+                    'ikat' => $ikat[$x],
+                    'kg_ikat' => $kg_ikat[$x],
+                    'rp_ikat' => $rp_ikat[$x],
+
+                    'pcs_kg' => $pcs_kg[$x],
+                    'kg_kg' => $kg_kg[$x],
+                    'kg_kg_kotor' => $kg_kg_kotor[$x],
+                    'rak_kg' =>  $rk,
+                    'rp_kg' => $rp_kg[$x],
+                    'void' => 'T'
+                ];
+                DB::table('invoice_mtd')->insert($data);
+
+
+                DB::table('stok_telur')->insert([
+                    'id_kandang' => 0,
+                    'id_telur' => $r->id_produk[$x],
+                    'tgl' => $r->tgl,
+                    'pcs_kredit' => $total_pcs,
+                    'kg_kredit' => $total_kg_kotor,
+                    'pcs' => 0,
+                    'kg' => 0,
+                    'admin' => auth()->user()->name,
+                    'id_gudang' => 1,
+                    'nota_transfer' => $no_nota,
+                    'ket' => '',
+                    'jenis' => 'penjualan',
+                    'check' => 'Y'
+                ]);
+            }
         } else {
             return redirect()->route('dashboard_kandang.edit_telur', ['no_nota' => $no_nota])->with('error', 'Voucher Update Salah!');
         }
