@@ -33,9 +33,10 @@
                         </a>
                     </td>
                     <td style=" text-align: right">
-                        {{ number_format($p->pcs_debit - $p->pcs_kredit, 0) }}
+                        {{ number_format($p->pcs_debit - $p->pcs_kredit, 0) }} <br> {{ number_format(($p->pcs_debit -
+                        $p->pcs_kredit) / 50000, 0) }}
                     </td>
-                    <td style="text-align: center">{{ $p->nm_satuan }}</td>
+                    <td style="text-align: center">{{ $p->nm_satuan }} <br> Sak</td>
                 </tr>
                 @endforeach
             </tbody>

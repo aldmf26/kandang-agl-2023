@@ -36,7 +36,9 @@
             </tr>
             <tr>
                 <th style="text-align: center; height: 60px;">
-                    <h6>{{empty($stok_pupuk->saldo_pupuk) ? '0' : number_format($stok_pupuk->saldo_pupuk,1)}} Kg</h6>
+                    <h6>{{empty($stok_pupuk->saldo_pupuk) ? '0' : number_format($stok_pupuk->saldo_pupuk / 50,0)}}
+                        Karung
+                    </h6>
                 </th>
             </tr>
             {{-- <tr>
