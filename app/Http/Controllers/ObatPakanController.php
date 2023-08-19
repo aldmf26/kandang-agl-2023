@@ -105,62 +105,66 @@ class ObatPakanController extends Controller
             ->groupBy('a.no_nota')
             ->first();
         $no_nota = empty($notaTerakhir) ? 1000 : str()->remove("PAKVITOPN-", $notaTerakhir->no_nota) + 1;
-
         for ($x = 0; $x < count($r->id_pakan); $x++) {
             DB::table('stok_produk_perencanaan')->where(['id_pakan' => $r->id_pakan[$x], 'opname' => 'T'])->update(['opname' => 'Y']);
             $id_pakan = $r->id_pakan[$x];
-            $hrga = DB::selectOne("SELECT sum((a.total_rp + a.biaya_dll)/a.pcs) as rata_rata
-            FROM stok_produk_perencanaan as a 
-            where a.id_pakan = '$id_pakan' and a.pcs != '0' and a.h_opname ='T'
-            group by a.id_pakan;");
-
+            
             $selisih = $r->stk_program[$x] - $r->stk_aktual[$x];
-            if ($selisih < 0) {
-                $qty_selisih = $selisih * -1;
-
-                $datas = [
-                    'pcs' => $r->stk_aktual[$x],
-                    'id_pakan' => $r->id_pakan[$x],
-                    'opname' => 'T',
-                    'tgl' => $r->tgl,
-                    'admin' => auth()->user()->name,
-                    'no_nota' => "PAKVITOPN-" . $no_nota,
-                    'h_opname' => 'Y',
-                    'pcs' => $qty_selisih,
-                    'pcs_kredit' => 0,
-                    'total_rp' => empty($hrga->rata_rata) ? '0' : $qty_selisih * $hrga->rata_rata
-                ];
-                DB::table('stok_produk_perencanaan')->insert($datas);
+            if($r->selisih[$x] != 0) {
+                if ($selisih < 0) {
+                    $qty_selisih = $selisih * -1;
+    
+                    $datas = [
+                        'pcs' => $r->stk_aktual[$x],
+                        'id_pakan' => $r->id_pakan[$x],
+                        'opname' => 'T',
+                        'tgl' => $r->tgl,
+                        'admin' => auth()->user()->name,
+                        'no_nota' => "PAKVITOPN-" . $no_nota,
+                        'h_opname' => 'Y',
+                        'pcs' => $qty_selisih,
+                        'pcs_kredit' => 0,
+                        'total_rp' => 0
+                    ];
+                    DB::table('stok_produk_perencanaan')->insert($datas);
+                } else {
+                    $qty_selisih = $selisih;
+    
+                    $datas = [
+                        'pcs' => $r->stk_aktual[$x],
+                        'id_pakan' => $r->id_pakan[$x],
+                        'opname' => 'T',
+                        'tgl' => $r->tgl,
+                        'admin' => auth()->user()->name,
+                        'no_nota' => "PAKVITOPN-" . $no_nota,
+                        'h_opname' => 'Y',
+                        'pcs' => 0,
+                        'pcs_kredit' => $qty_selisih,
+                        'total_rp' => 0
+                    ];
+                    DB::table('stok_produk_perencanaan')->insert($datas);
+                }
+                return redirect()->route('dashboard_kandang.print_opname', "PAKVITOPN-".$no_nota)->with('sukses', 'Data berhasil di simpan');
             } else {
-                $qty_selisih = $selisih;
-
-                $datas = [
-                    'pcs' => $r->stk_aktual[$x],
-                    'id_pakan' => $r->id_pakan[$x],
-                    'opname' => 'T',
-                    'tgl' => $r->tgl,
-                    'admin' => auth()->user()->name,
-                    'no_nota' => "PAKVITOPN-" . $no_nota,
-                    'h_opname' => 'Y',
-                    'pcs' => 0,
-                    'pcs_kredit' => $qty_selisih,
-                    'total_rp' => empty($hrga->rata_rata) ? '0' : $qty_selisih * $hrga->rata_rata
-                ];
-                DB::table('stok_produk_perencanaan')->insert($datas);
+                return redirect()->route('dashboard_kandang.index')->with('error', 'GAGAL OPNAME KARENA DATA SELISIH KOSONG!');
             }
         }
-        return redirect()->route('dashboard_kandang.print_opname', "PAKVITOPN-".$no_nota)->with('sukses', 'Data berhasil di simpan');
     }
 
     public function print_opname($no_nota)
     {
-        $history = DB::select("SELECT a.admin,a.tgl,a.id_pakan,b.nm_produk,a.pcs,a.pcs_kredit,a.total_rp,a.biaya_dll,c.stok FROM `stok_produk_perencanaan` as a 
+        $history = DB::select("SELECT a.admin,a.tgl,a.id_pakan,b.nm_produk,a.pcs,a.pcs_kredit,a.total_rp,a.biaya_dll,c.stok,d.sum_ttl_rp,d.pcs_sum_ttl_rp FROM `stok_produk_perencanaan` as a 
         LEFT JOIN tb_produk_perencanaan as b ON a.id_pakan = b.id_produk
         LEFT JOIN (
             SELECT a.id_pakan, (sum(a.pcs) - sum(a.pcs_kredit)) as stok
                     FROM stok_produk_perencanaan as a 
                     group by a.id_pakan
         ) as c ON a.id_pakan = c.id_pakan
+        LEFT JOIN (
+            SELECT a.id_pakan,sum(a.total_rp + a.biaya_dll) as sum_ttl_rp, sum(pcs) as pcs_sum_ttl_rp FROM stok_produk_perencanaan as a
+                    WHERE a.h_opname = 'T' AND a.pcs != 0 
+                    GROUP BY a.id_pakan
+        ) as d on a.id_pakan = d.id_pakan
         WHERE a.no_nota = '$no_nota' ORDER BY a.pcs DESC;");
         $data = [
             'title' => 'Nota Opname Pakan dan Vitamin',

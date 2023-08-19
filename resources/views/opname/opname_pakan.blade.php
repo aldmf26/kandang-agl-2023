@@ -34,6 +34,7 @@
                     class="form-control aktual aktual{{$no+1}}" count="{{$no+1}}"
                     value="{{round($p->pcs_debit - $p->pcs_kredit,0)}}">
             </td>
+            <input type="hidden" name="selisih[]" class="selisih_pakanInput{{$no+1}}" value="0">
             <td style="text-align: right" class="selisih_pakan{{$no+1}}">0</td>
         </tr>
         @endforeach

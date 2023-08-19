@@ -778,6 +778,7 @@
                 var selisih = parseFloat(stk_program) - parseFloat(aktual);
 
                 $(".selisih_pakan" + count).text(selisih);
+                $(".selisih_pakanInput" + count).val(selisih);
             });
             $(document).on("click", ".history_stok", function() {
                 var id_pakan = $(this).attr("id_pakan");

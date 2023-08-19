@@ -56,13 +56,24 @@
                                 <th style="text-align: right" class="dhead">Stok Program</th>
                                 <th style="text-align: right" class="dhead" width="15%">Stok Aktual</th>
                                 <th style="text-align: right" class="dhead" width="15%">Stok Selisih</th>
+                                <th style="text-align: right" class="dhead" width="15%">Harga Satuan</th>
                                 <th style="text-align: right" class="dhead" width="15%">Rupiah</th>
                             </tr>
                         </thead>
                         <tbody>
+                            @php
+                                $ttlRp = 0;
+                            @endphp
                             @foreach ($history as $no => $d)
                             @php
-                                $stokProgram = $d->stok - $d->pcs + $d->pcs_kredit
+                                $stokProgram = $d->stok - $d->pcs + $d->pcs_kredit;
+                                $selisih = $stokProgram - $d->stok;
+                                if(!empty($d->sum_ttl_rp)) {
+                                    $hargaSatuan = $d->sum_ttl_rp / $d->pcs_sum_ttl_rp;
+                                    $selisihRupiah = $hargaSatuan * ($selisih < 0 ? $selisih * -1 : $selisih);
+                                }
+                                $ttlRp += $selisihRupiah ?? 0;
+
                             @endphp
                                 <tr>
                                     <td>{{ $no+1 }}</td>
@@ -70,14 +81,15 @@
                                     <td align="right">{{ number_format($stokProgram,0) }}</td>
                                     <td align="right">{{ number_format($d->stok,0) }}</td>
                                     <td align="right">{{ number_format($stokProgram - $d->stok,0) }}</td>
-                                    <td align="right">3</td>
+                                    <td align="right">{{ number_format($hargaSatuan ?? 0,0) }}</td>
+                                    <td align="right">{{ number_format($selisihRupiah ?? 0,0) }}</td>
                                 </tr>
                             @endforeach
                         </tbody>
                         <tfoot>
                             <tr>
-                                <th class="text-center" colspan="5">Total</th>
-                                <th class="text-end">Rp. 200,000</th>
+                                <th class="text-center" colspan="6">Total</th>
+                                <th class="text-end">{{ number_format($ttlRp, 0) }}</th>
                             </tr>
                         </tfoot>
                     </table>
