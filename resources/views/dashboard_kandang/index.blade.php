@@ -45,9 +45,9 @@
         @include('dashboard_kandang.tabel.stokTelur')
         <section class="row">
             @if (session()->has('error'))
-            <div class="col-lg-12">
-                <x-theme.alert pesan="kontak dr anto kalo ada yg merah" />
-            </div>
+                <div class="col-lg-12">
+                    <x-theme.alert pesan="kontak dr anto kalo ada yg merah" />
+                </div>
             @endif
 
             @include('dashboard_kandang.tabel.penjualanUmum')
@@ -62,11 +62,12 @@
             @include('dashboard_kandang.modal.tambah_obat_ayam')
             @include('dashboard_kandang.modal.transfer_ayam')
             @include('dashboard_kandang.modal.penjualan_ayam')
+            @include('dashboard_kandang.modal.history_pakvit')
         </section>
     </x-slot>
     @section('js')
-    <script>
-        $(document).on('click', '.rumus', function() {
+        <script>
+            $(document).on('click', '.rumus', function() {
                 var rumus = $(this).attr('rumus');
                 $.ajax({
                     type: "get",
@@ -179,7 +180,7 @@
                 })
             }
 
-            
+
 
             // perencanaan -------------------------------------
             var count = 1
@@ -199,23 +200,25 @@
             }
             editPerencanaan('tambah_perencanaan', 'id_kandang', 'dashboard_kandang/load_perencanaan', 'load_perencanaan')
             var countPakan = 1;
-            $(document).on('change','#tglPerencanaan', function(){
+            $(document).on('change', '#tglPerencanaan', function() {
                 var tgl = $(this).val()
                 var id_kandang = $("#id_kandang").val()
                 $.ajax({
                     type: "GET",
-                    url: "{{route('dashboard_kandang.get_populasi')}}",
+                    url: "{{ route('dashboard_kandang.get_populasi') }}",
                     data: {
-                        tgl:tgl,
-                        id_kandang,id_kandang
+                        tgl: tgl,
+                        id_kandang,
+                        id_kandang
                     },
                     dataType: "json",
-                    success: function (r) {
+                    success: function(r) {
                         $("#getPopulasi").val(r.stok_awal - r.pop)
                     }
                 });
                 $("#getPopulasi").val(isi);
             })
+
             function editPerencanaan(kelas, attr, link, load) {
                 $(document).on('click', `.${kelas}`, function() {
                     countPakan = 1
@@ -651,13 +654,65 @@
                     }
                 });
             });
+            
+
+            $(document).on('click', '.history_pakvit', function(e) {
+                e.preventDefault()
+                var jenis = $(this).attr('jenis')
+                $.ajax({
+                    type: "GET",
+                    url: "{{ route('dashboard_kandang.history_pakvit') }}",
+                    data: {
+                        jenis:jenis
+                    },
+                    success: function(r) {
+                        $('#load_history_pakvit').html(r);
+                        $("#history_pakvit").modal('show')
+                        $('#tablePakvit').DataTable({
+                            "paging": true,
+                            "pageLength": 10,
+                            "lengthChange": true,
+                            "stateSave": true,
+                            "searching": true,
+                        });
+
+                    }
+                });
+            })
+
+            $(document).on('submit', '#search_history_pakvit', function(e) {
+                e.preventDefault();
+                var tgl1 = $("#tgl1").val();
+                var tgl2 = $("#tgl2").val();
+                var jenis = $("#jenis").val();
+                $.ajax({
+                    type: "get",
+                    url: "{{route('dashboard_kandang.search_history_pakvit')}}",
+                    data: {
+                        tgl1:tgl1,
+                        tgl2:tgl2,
+                        jenis:jenis,
+                    },
+                    success: function(r) {
+                        $('#load_history_pakvit').html(r);
+                        $('#tablePakvit').DataTable({
+                            "paging": true,
+                            "pageLength": 10,
+                            "lengthChange": true,
+                            "stateSave": true,
+                            "searching": true,
+                        });
+
+                    }
+                });
+            });
 
 
             // pakan
-    </script>
+        </script>
 
-    <script>
-        function load_stok_pakan() {
+        <script>
+            function load_stok_pakan() {
                 $.ajax({
                     type: "GET",
                     url: "{{ route('dashboard_kandang.load_stok_pakan') }}",
@@ -839,6 +894,6 @@
                 $('.ttl_rp').val(ttl_rp);
 
             });
-    </script>
+        </script>
     @endsection
 </x-theme.app>

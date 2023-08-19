@@ -216,4 +216,6 @@ class OpnamemtdController extends Controller
         ];
         return view('opname_telur_mtd.history', $data);
     }
+
+    
 }

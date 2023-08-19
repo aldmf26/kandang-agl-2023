@@ -11,13 +11,12 @@ class ObatPakanController extends Controller
     {
         $c = DB::table('kandang')->get();
         $pop = 0;
-        foreach($c as $d) 
-        {
+        foreach ($c as $d) {
             $popu = DB::selectOne("SELECT sum(a.mati + a.jual) as pop,b.stok_awal FROM populasi as a
                 LEFT JOIN kandang as b ON a.id_kandang = b.id_kandang
                 WHERE a.id_kandang = '$d->id_kandang';");
 
-                $pop += $popu->stok_awal - $popu->pop;
+            $pop += $popu->stok_awal - $popu->pop;
         }
         $tgl1 = "2023-08-10";
         $tgl2 = date('Y-m-t');
@@ -46,11 +45,6 @@ class ObatPakanController extends Controller
 
     public function history_stok(Request $r)
     {
-        // $hisLama = DB::select("SELECT a.tgl, b.nm_produk, a.pcs, a.pcs_kredit, a.admin, a.h_opname
-        // FROM stok_produk_perencanaan as a 
-        // left join tb_produk_perencanaan as b on b.id_produk = a.id_pakan
-        // where  and a.id_pakan = '$r->id_pakan'
-        // GROUP by a.id_stok_telur;");
         $tgl1 = $r->tgl1 ?? date('Y-m-01');
         $tgl2 = $r->tgl2 ?? date('Y-m-t');
 
@@ -58,7 +52,7 @@ class ObatPakanController extends Controller
         FROM stok_produk_perencanaan as a 
         left join tb_produk_perencanaan as b on b.id_produk = a.id_pakan
         left join tb_satuan as c on c.id_satuan = b.dosis_satuan
-        where b.kategori in('obat_pakan','obat_air') AND a.tgl BETWEEN '$tgl1' AND '$tgl2' and a.id_pakan = '$r->id_pakan'
+        where a.tgl BETWEEN '$tgl1' AND '$tgl2' and a.id_pakan = '$r->id_pakan'
         group by a.id_stok_telur;");
 
         $data = [
@@ -102,15 +96,18 @@ class ObatPakanController extends Controller
 
     public function save_opname_pakan(Request $r)
     {
-        $max = DB::table('notas')->latest('nomor_nota')->where('id_buku', '4')->first();
-        if (empty($max)) {
-            $no_nota = '1000';
-        } else {
-            $no_nota = $max->nomor_nota + 1;
-        }
-            
+        $notaTerakhir = DB::table('stok_produk_perencanaan as a')
+            ->join('tb_produk_perencanaan as b', 'a.id_pakan', 'b.id_produk')
+            ->where([
+                ['a.no_nota', 'LIKE', "%PAKVITOPN-%"]
+            ])
+            ->orderBy('id_stok_telur', 'DESC')
+            ->groupBy('a.no_nota')
+            ->first();
+        $no_nota = empty($notaTerakhir) ? 1000 : str()->remove("PAKVITOPN-", $notaTerakhir->no_nota) + 1;
+
         for ($x = 0; $x < count($r->id_pakan); $x++) {
-            DB::table('stok_produk_perencanaan')->where(['id_pakan' => $r->id_pakan[$x], 'opname' => 'T'])->update(['opname' => 'Y', 'no_nota' => $no_nota]);
+            DB::table('stok_produk_perencanaan')->where(['id_pakan' => $r->id_pakan[$x], 'opname' => 'T'])->update(['opname' => 'Y']);
             $id_pakan = $r->id_pakan[$x];
             $hrga = DB::selectOne("SELECT sum((a.total_rp + a.biaya_dll)/a.pcs) as rata_rata
             FROM stok_produk_perencanaan as a 
@@ -127,7 +124,7 @@ class ObatPakanController extends Controller
                     'opname' => 'T',
                     'tgl' => $r->tgl,
                     'admin' => auth()->user()->name,
-                    'no_nota' => $no_nota,
+                    'no_nota' => "PAKVITOPN-" . $no_nota,
                     'h_opname' => 'Y',
                     'pcs' => $qty_selisih,
                     'pcs_kredit' => 0,
@@ -143,7 +140,7 @@ class ObatPakanController extends Controller
                     'opname' => 'T',
                     'tgl' => $r->tgl,
                     'admin' => auth()->user()->name,
-                    'no_nota' => $no_nota,
+                    'no_nota' => "PAKVITOPN-" . $no_nota,
                     'h_opname' => 'Y',
                     'pcs' => 0,
                     'pcs_kredit' => $qty_selisih,
@@ -151,9 +148,26 @@ class ObatPakanController extends Controller
                 ];
                 DB::table('stok_produk_perencanaan')->insert($datas);
             }
-
         }
-        return redirect()->route('dashboard_kandang.index')->with('sukses', 'Data berhasil di simpan');
+        return redirect()->route('dashboard_kandang.print_opname', "PAKVITOPN-".$no_nota)->with('sukses', 'Data berhasil di simpan');
+    }
+
+    public function print_opname($no_nota)
+    {
+        $history = DB::select("SELECT a.admin,a.tgl,a.id_pakan,b.nm_produk,a.pcs,a.pcs_kredit,a.total_rp,a.biaya_dll,c.stok FROM `stok_produk_perencanaan` as a 
+        LEFT JOIN tb_produk_perencanaan as b ON a.id_pakan = b.id_produk
+        LEFT JOIN (
+            SELECT a.id_pakan, (sum(a.pcs) - sum(a.pcs_kredit)) as stok
+                    FROM stok_produk_perencanaan as a 
+                    group by a.id_pakan
+        ) as c ON a.id_pakan = c.id_pakan
+        WHERE a.no_nota = '$no_nota' ORDER BY a.pcs DESC;");
+        $data = [
+            'title' => 'Nota Opname Pakan dan Vitamin',
+            'no_nota' => $no_nota,
+            'history' => $history
+        ];
+        return view('stok_pakan.cek',$data);
     }
 
     public function tambah_pakan_stok(Request $r)
@@ -184,6 +198,19 @@ class ObatPakanController extends Controller
 
     public function save_tambah_pakan(Request $r)
     {
+        $jenis = $r->kategori == 'pakan' ? "PKNMSK" : "VITMSK";
+
+        $notaTerakhir = DB::table('stok_produk_perencanaan as a')
+            ->join('tb_produk_perencanaan as b', 'a.id_pakan', 'b.id_produk')
+            ->where([
+                ['b.kategori', $r->kategori != 'pakan' ? '!= pakan' : 'pakan'],
+                ['a.no_nota', 'LIKE', "%$jenis%"]
+            ])
+            ->orderBy('id_stok_telur', 'DESC')
+            ->groupBy('a.no_nota')
+            ->first();
+        $no_nota = empty($notaTerakhir) ? 1000 : str()->remove("$jenis-", $notaTerakhir->no_nota) + 1;
+
         for ($x = 0; $x < count($r->id_pakan); $x++) {
             if ($r->kategori == 'pakan') {
                 $data = [
@@ -192,7 +219,8 @@ class ObatPakanController extends Controller
                     'total_rp' => $r->ttl_rp[$x],
                     'biaya_dll' => $r->biaya_dll[$x],
                     'admin' => auth()->user()->name,
-                    'tgl' => $r->tgl
+                    'tgl' => $r->tgl,
+                    'no_nota' => "$jenis-" . $no_nota
                 ];
                 DB::table('stok_produk_perencanaan')->insert($data);
                 $data = [
@@ -211,7 +239,8 @@ class ObatPakanController extends Controller
                     'total_rp' => $r->ttl_rp[$x],
                     'biaya_dll' => $r->biaya_dll[$x],
                     'admin' => auth()->user()->name,
-                    'tgl' => $r->tgl
+                    'tgl' => $r->tgl,
+                    'no_nota' => $jenis . '-' . $no_nota
                 ];
                 DB::table('stok_produk_perencanaan')->insert($data);
             }
@@ -253,5 +282,26 @@ class ObatPakanController extends Controller
         ]);
 
         return redirect()->route('dashboard_kandang.index')->with('sukses', 'Data berhasil di simpan');
+    }
+
+    public function history_pakvit(Request $r)
+    {
+        $jenis = $r->jenis;
+        $tgl1 = $r->tgl1 ?? date('Y-m-01');
+        $tgl2 = $r->tgl2 ?? date('Y-m-d');
+        $jenisQ = $jenis != 'pakan' ? "'obat_air', 'obat_pakan'" : "'pakan'";
+        $history = DB::select("SELECT a.no_nota,a.h_opname,a.admin,a.tgl,a.id_pakan, b.nm_produk, a.pcs, a.pcs_kredit, c.nm_satuan, a.total_rp
+        FROM stok_produk_perencanaan as a 
+        left join tb_produk_perencanaan as b on b.id_produk = a.id_pakan
+        left join tb_satuan as c on c.id_satuan = b.dosis_satuan
+        where b.kategori in($jenisQ) AND a.tgl BETWEEN '$tgl1' AND '$tgl2';");
+
+        $data = [
+            'history' => $history,
+            'tgl1' => $tgl1,
+            'tgl2' => $tgl2,
+            'jenis' => $jenis
+        ];
+        return view('stok_pakan.history_opname', $data);
     }
 }
