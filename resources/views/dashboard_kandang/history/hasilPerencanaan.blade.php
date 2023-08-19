@@ -54,7 +54,7 @@
                                 <tr>
                                     <td style="">{{ $p->nm_pakan }} <br></td>
                                     <td style="">
-                                        {{ number_format(($p->persen / 100) * $pakan1->karung, 2) }} </td>
+                                        {{ number_format(($p->persen / 100) * $pakan1->karung, 1) }} </td>
                                     <td style="">Kg</td>
                                 </tr>
                             @endforeach
@@ -71,7 +71,7 @@
                                 <tr>
                                     <td style="">{{ $o->nm_produk }} <br></td>
                                     <td style="">
-                                        {{ number_format(($o->dosis * $pakan1->karung) / $o->campuran, 2) }}
+                                        {{ number_format(($o->dosis * $pakan1->karung) / $o->campuran, 1) }}
                                     </td>
                                     <td style="">Kg</td>
                                 </tr>
@@ -87,7 +87,7 @@
             <div class="card-header">
                 @if (!empty($pakan1->gr2))
                 <h4 style="color: #787878;">1 Karung
-                    {{$pakan1->gr2}} Kg
+                    {{number_format($pakan1->gr2,1)}} Kg
                 </h4>
                 @endif
             
@@ -116,7 +116,7 @@
                                     <?= $p->nm_pakan ?>
                                 </td>
                                 <td style="">
-                                    <?= ($p->persen / 100) * $pakan1->gr2 ?>
+                                    <?= number_format(($p->persen / 100) * $pakan1->gr2,1) ?>
                                 </td>
                                 <td style="">Kg</td>
                             </tr>
@@ -137,7 +137,7 @@
                                 <?= $o->nm_produk ?>
                             </td>
                             <td style="">
-                                <?= number_format($pakan1->gr2 * $o->dosis, 2) ?>
+                                <?= number_format($pakan1->gr2 * $o->dosis, 1) ?>
                             </td>
                             <td style="">
                                 <?= $o->satuan ?>
@@ -180,7 +180,7 @@
                                     <?= $p->nm_pakan ?>
                                 </td>
                                 <td style="">
-                                    <?= number_format($p->gr_pakan / 1000, 2) ?>
+                                    <?= number_format($p->gr_pakan / 1000, 1) ?>
                                 </td>
                                 <td style="">Kg</td>
                             </tr>
@@ -198,7 +198,7 @@
                         @foreach ($obat_pakan as $o)
                             <tr>
                                 <td style="">{{ $o->nm_produk }}</td>
-                                <td style="">{{ number_format(($ttl / 1000) * $o->dosis, 2) }} </td>
+                                <td style="">{{ number_format(($ttl / 1000) * $o->dosis, 1) }} </td>
                                 <td style="">{{ $o->satuan }}</td>
                             </tr>
                         @endforeach
@@ -275,7 +275,7 @@
                         @foreach ($obat_ayam as $o)
                             <tr>
                                 <td style="">{{ $o->nm_produk }}</td>
-                                <td style="">{{ number_format($o->dosis, 0) }}</td>
+                                <td style="">{{ number_format($o->dosis, 1) }}</td>
                                 <td style="">{{ $o->satuan }}</td>
                             </tr>
                         @endforeach
