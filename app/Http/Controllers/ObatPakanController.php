@@ -293,6 +293,7 @@ class ObatPakanController extends Controller
         $jenis = $r->jenis;
         $tgl1 = $r->tgl1 ?? date('Y-m-01');
         $tgl2 = $r->tgl2 ?? date('Y-m-d');
+        
         $jenisQ = $jenis != 'pakan' ? "'obat_air', 'obat_pakan'" : "'pakan'";
         $history = DB::select("SELECT a.no_nota,a.h_opname,a.admin,a.tgl,a.id_pakan, b.nm_produk, a.pcs, a.pcs_kredit, c.nm_satuan, a.total_rp
         FROM stok_produk_perencanaan as a 

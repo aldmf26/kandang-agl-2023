@@ -20,8 +20,9 @@ class DataKandangController extends Controller
     {
         DB::table('kandang')->insert([
             'chick_in' => $r->tgl,
+            'tgl_masuk' => $r->tgl,
             'nm_kandang' => $r->nm_kandang,
-            'strain' => $r->strain,
+            'id_strain' => $r->strain,
             'stok_awal' => $r->ayam_awal,
             'admin' => auth()->user()->name
         ]);

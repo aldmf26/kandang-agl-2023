@@ -87,10 +87,10 @@
                         <select name="strain" class="form-control select2" id="">
                             <option value="">- Pilih Strain -</option>
                             @php
-                                $strain = ['isa', 'lohman', 'hisex', 'hyline', 'hovogen'];
+                                $strain = DB::table('strain')->get();
                             @endphp
                             @foreach ($strain as $d)
-                                <option value="{{ ucwords($d) }}">{{ ucwords($d) }} Brown</option>
+                                <option value="{{ $d->id_strain }}">{{ ucwords($d->nm_strain) }} Brown</option>
                             @endforeach
                         </select>
                     </div>
