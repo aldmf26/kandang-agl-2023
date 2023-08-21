@@ -88,7 +88,7 @@
                         </tbody>
                         <tfoot>
                             <tr>
-                                <th class="text-center" colspan="6">Total {{$hargaSatuan}}</th>
+                                <th class="text-center" colspan="6">Total {{ $hargaSatuan }}</th>
                                 <th class="text-end">{{ number_format($ttlRp, 0) }}</th>
                             </tr>
                         </tfoot>
