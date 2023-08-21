@@ -31,7 +31,7 @@
                             <td>{{ $no + 1 }}</td>
                             <td>{{ tanggal($a->chick_in) }}</td>
                             <td>{{ ucwords($a->nm_kandang) }}</td>
-                            <td>{{ ucwords($a->strain) }}</td>
+                            <td>{{ ucwords($a->nm_strain) }}</td>
                             <td>
                                 {{ $a->stok_awal }}
                             </td>

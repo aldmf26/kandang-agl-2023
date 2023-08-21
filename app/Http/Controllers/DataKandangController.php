@@ -11,7 +11,7 @@ class DataKandangController extends Controller
     {
         $data = [
             'title' => 'Data Kandang',
-            'kandang' => DB::table('kandang')->get()
+            'kandang' => DB::table('kandang as a')->join('strain as b', 'a.id_strain', 'b.id_strain')->get()
         ];
         return view('data_kandang.data_kandang',$data);
     }
