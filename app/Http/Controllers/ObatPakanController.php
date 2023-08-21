@@ -146,7 +146,7 @@ class ObatPakanController extends Controller
                 }
                 return redirect()->route('dashboard_kandang.print_opname', "PAKVITOPN-".$no_nota)->with('sukses', 'Data berhasil di simpan');
             } else {
-                return redirect()->route('dashboard_kandang.index')->with('error', 'GAGAL OPNAME KARENA DATA SELISIH KOSONG!');
+                continue;
             }
         }
     }
