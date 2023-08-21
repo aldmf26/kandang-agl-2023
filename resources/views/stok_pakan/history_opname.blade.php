@@ -37,7 +37,11 @@
         @endphp
             <tr>
                 <td>{{ tanggal($d->tgl) }}</td>
+                @if ($d->h_opname == 'Y')
+                <td><a href="dashboard_kandang/print_opname/{{ $d->no_nota }}/print" target="_blank">{{ $d->no_nota }}</a></td>
+                @else
                 <td align="center">{{ $d->no_nota }}</td>
+                @endif
                 <td>{{ ucwords($d->nm_produk) }}</td>
                 <td align="right">{{ number_format($d->pcs,1) }}</td>
                 <td align="right">{{ number_format($d->pcs_kredit,1) }}</td>

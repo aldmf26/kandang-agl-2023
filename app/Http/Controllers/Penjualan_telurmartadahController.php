@@ -295,14 +295,16 @@ class Penjualan_telurmartadahController extends Controller
         $no_nota = $r->no_nota;
         if ($voucherUpdate) {
             $cekAdmin = DB::table('invoice_telur')->where('no_nota', $no_nota)->first();
-            if (!empty($cekAdmin->admin_cek)) {
-                return redirect()->route('dashboard_kandang.edit_telur', ['no_nota' => $no_nota])->with('error', "Nota INI Tidak bisa di edit karena sudah di cek : " . strtoupper($cekAdmin->admin_cek));
+            
+            $cekTransfer = DB::table('stok_telur')->where([['tgl','>', $r->tgl], ['jenis', 'Opname']])->first();
+            if(empty($cekTransfer)){
+                DB::table('stok_telur')->where('nota_transfer', $no_nota)->delete();
             }
             DB::table('tb_void')->where([['no_nota', $no_nota], ['voucher', $r->voucher]])->update(['status' => 'Y']);
 
             DB::table('invoice_mtd')->where('no_nota', $no_nota)->delete();
             DB::table('invoice_telur')->where('no_nota', $no_nota)->delete();
-            DB::table('stok_telur')->where('nota_transfer', $no_nota)->delete();
+
 
             $pcs_pcs = $r->pcs_pcs;
             $kg_pcs = $r->kg_pcs;
@@ -380,22 +382,23 @@ class Penjualan_telurmartadahController extends Controller
                 ];
                 DB::table('invoice_mtd')->insert($data);
 
-
-                DB::table('stok_telur')->insert([
-                    'id_kandang' => 0,
-                    'id_telur' => $r->id_produk[$x],
-                    'tgl' => $r->tgl,
-                    'pcs_kredit' => $total_pcs,
-                    'kg_kredit' => $total_kg_kotor,
-                    'pcs' => 0,
-                    'kg' => 0,
-                    'admin' => auth()->user()->name,
-                    'id_gudang' => 1,
-                    'nota_transfer' => $no_nota,
-                    'ket' => '',
-                    'jenis' => 'penjualan',
-                    'check' => 'Y'
-                ]);
+                if(empty($cekTransfer)){
+                    DB::table('stok_telur')->insert([
+                        'id_kandang' => 0,
+                        'id_telur' => $r->id_produk[$x],
+                        'tgl' => $r->tgl,
+                        'pcs_kredit' => $total_pcs,
+                        'kg_kredit' => $total_kg_kotor,
+                        'pcs' => 0,
+                        'kg' => 0,
+                        'admin' => auth()->user()->name,
+                        'id_gudang' => 1,
+                        'nota_transfer' => $no_nota,
+                        'ket' => '',
+                        'jenis' => 'penjualan',
+                        'check' => 'Y'
+                    ]);
+                }
             }
         } else {
             return redirect()->route('dashboard_kandang.edit_telur', ['no_nota' => $no_nota])->with('error', 'Voucher Update Salah!');

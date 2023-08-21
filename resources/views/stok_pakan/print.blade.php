@@ -25,7 +25,7 @@
 </head>
 
 <body>
-    <div class="py-3 px-3">
+    <div class="py-5 px-5 container">
         <div class="row tbl1">
             <div class="col-lg-3">
                 <img src="https://agrilaras.putrirembulan.com/assets/img/logo.png" alt="Logo" width="150px">

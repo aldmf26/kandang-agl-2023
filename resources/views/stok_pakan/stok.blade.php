@@ -12,18 +12,34 @@
                 @endphp
                 <h6>Stok Pakan ({{ number_format($ttlPakan, 0) }} Hari)</h6>
             </div>
-            <div class="col-lg-3">
+            <div class="col-lg-6">
                 <input id="pencarianPakan" placeholder="Pencarian" type="text" class="form-control">
             </div>
-            <div class="col-lg-6">
-                <button type="button" data-bs-toggle="tooltip" data-bs-placement="top" title="Opname"
-                    class="btn btn-primary btn-sm float-end opnme_pakan me-2">Opname</i>
-                </button>
-                <a href="#" onclick="event.preventDefault();" data-bs-toggle="modal" data-bs-target="#tbh_pakan"
-                    class="btn btn-sm btn-primary float-end me-2 tbh_pakan"><i class="fas fa-plus"></i></a>
-                <a href="#" onclick="event.preventDefault();" data-bs-toggle="modal"
-                    data-bs-target="#history_pakvit" class="btn btn-sm btn-primary float-end me-2 history_pakvit"
-                    jenis="pakan">History</a>
+            <div class="col-lg-3">
+                <div class="btn-group dropup me-1 mb-2 float-end">
+                    <button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-bs-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                        <i class="fas fa-ellipsis-v"></i> Aksi
+                    </button>
+                    <div class="dropdown-menu bg-primary" style="">
+                        <h6 class="dropdown-header text-white">Data Aksi</h6>
+
+                        <a data-bs-toggle="modal" data-bs-target="#tbh_pakan"
+                            class="text-white tbh_pakan dropdown-item hoverbtn" href="#"> Tambah Pakan</a>
+
+                        <a onclick="event.preventDefault();" class="text-white opnme_pakan dropdown-item hoverbtn"
+                            href="#">Opname</a>
+                        <a onclick="event.preventDefault();" data-bs-toggle="modal" data-bs-target="#history_pakvit"
+                            class="text-white history_pakvit dropdown-item hoverbtn" href="#" jenis="pakan">History Stok
+                            Masuk</a>
+                        <a onclick="event.preventDefault();" data-bs-toggle="modal" data-bs-target="#history_pakvit"
+                            class="text-white history_pakvit dropdown-item hoverbtn" href="#"
+                            jenis="pakan">History Opname</a>
+
+
+                    </div>
+
+                </div>
             </div>
         </div>
         <table class="table table-bordered table-hover" id="tablePakan">
@@ -61,18 +77,30 @@
             <div class="col-lg-3">
                 <h6>Stok Vitamin</h6>
             </div>
-            <div class="col-lg-3">
+            <div class="col-lg-6">
                 <input id="pencarianVitamin" placeholder="Pencarian" type="text" class="form-control">
             </div>
-            <div class="col-lg-6">
-                <button data-bs-toggle="tooltip" data-bs-placement="top" title="Opname" type="button"
-                    class="btn btn-primary btn-sm float-end opnme_vitamin">Opname
-                </button>
-                <a href="#" onclick="event.preventDefault();" data-bs-toggle="modal" data-bs-target="#tbh_pakan"
-                    class="btn btn-sm btn-primary float-end me-2 tbh_vitamin"><i class="fas fa-plus"></i></a>
-                <a href="#" onclick="event.preventDefault();" data-bs-toggle="modal"
-                    data-bs-target="#history_pakvit" class="btn btn-sm btn-primary float-end me-2 history_pakvit"
-                    jenis="vitamin">History</a>
+            <div class="col-lg-3">
+                <div class="btn-group dropup me-1 mb-2 float-end">
+                    <button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-bs-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                        <i class="fas fa-ellipsis-v"></i> Aksi
+                    </button>
+                    <div class="dropdown-menu bg-primary" style="">
+                        <h6 class="dropdown-header text-white">Data Aksi</h6>
+
+                        <a data-bs-toggle="modal" data-bs-target="#tbh_pakan"
+                            class="text-white tbh_vitamin dropdown-item hoverbtn" href="#"> Tambah Pakan</a>
+                        <a onclick="event.preventDefault();" class="text-white opnme_vitamin dropdown-item hoverbtn"
+                            href="#">Opname</a>
+                        <a onclick="event.preventDefault();" data-bs-toggle="modal" data-bs-target="#history_pakvit"
+                            class="text-white history_pakvit dropdown-item hoverbtn" href="#"
+                            jenis="vitamin">History Stok Masuk</a>
+                        <a onclick="event.preventDefault();" data-bs-toggle="modal" data-bs-target="#history_pakvit"
+                            class="text-white history_pakvit dropdown-item hoverbtn" href="#"
+                            jenis="vitamin">History Opname</a>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -98,42 +126,5 @@
             </tbody>
         </table>
     </div>
-    {{-- <div class="col-lg-4">
-        <div class="row mb-2">
 
-            <div class="col-lg-3">
-                <h6>Stok Vaksin</h6>
-            </div>
-            <div class="col-lg-5 float-end">
-                <input id="pencarianVaksin" placeholder="Pencarian" type="text" class="form-control">
-            </div>
-            <div class="col-lg-4">
-                <a href="#" onclick="event.preventDefault();" data-bs-toggle="modal" data-bs-target="#tbh_vaksin"
-                    class="btn btn-sm btn-primary float-end me-2"><i class="fas fa-plus"></i></a>
-            </div>
-        </div>
-
-        <table class="table table-bordered table-hover" id="tableVaksin">
-            <thead>
-                <tr>
-                    <th class="dhead">Tgl</th>
-                    <th class="dhead">Kdg</th>
-                    <th class="dhead">Nama Vaksin</th>
-                    <th class="dhead" style="text-align: right">Stok</th>
-                    <th class="dhead" style="text-align: center">Total Rp</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($vaksin as $d)
-                <tr>
-                    <td>{{ tanggal($d->tgl) }}</td>
-                    <td>{{ $d->nm_kandang }}</td>
-                    <td>{{ $d->nm_vaksin }}</td>
-                    <td>{{ $d->qty }}</td>
-                    <td>{{ number_format($d->ttl_rp, 0) }}</td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
-    </div> --}}
 </div>
