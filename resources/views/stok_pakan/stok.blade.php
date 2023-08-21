@@ -21,8 +21,9 @@
                 </button>
                 <a href="#" onclick="event.preventDefault();" data-bs-toggle="modal" data-bs-target="#tbh_pakan"
                     class="btn btn-sm btn-primary float-end me-2 tbh_pakan"><i class="fas fa-plus"></i></a>
-                <a href="#" onclick="event.preventDefault();" data-bs-toggle="modal" data-bs-target="#history_pakvit"
-                    class="btn btn-sm btn-primary float-end me-2 history_pakvit" jenis="pakan">History</a>
+                <a href="#" onclick="event.preventDefault();" data-bs-toggle="modal"
+                    data-bs-target="#history_pakvit" class="btn btn-sm btn-primary float-end me-2 history_pakvit"
+                    jenis="pakan">History</a>
             </div>
         </div>
         <table class="table table-bordered table-hover" id="tablePakan">
@@ -69,8 +70,9 @@
                 </button>
                 <a href="#" onclick="event.preventDefault();" data-bs-toggle="modal" data-bs-target="#tbh_pakan"
                     class="btn btn-sm btn-primary float-end me-2 tbh_vitamin"><i class="fas fa-plus"></i></a>
-                <a href="#" onclick="event.preventDefault();" data-bs-toggle="modal" data-bs-target="#history_pakvit"
-                    class="btn btn-sm btn-primary float-end me-2 history_pakvit" jenis="vitamin">History</a>
+                <a href="#" onclick="event.preventDefault();" data-bs-toggle="modal"
+                    data-bs-target="#history_pakvit" class="btn btn-sm btn-primary float-end me-2 history_pakvit"
+                    jenis="vitamin">History</a>
             </div>
         </div>
 

@@ -72,8 +72,7 @@
                                     $hargaSatuan = $d->sum_ttl_rp / $d->pcs_sum_ttl_rp;
                                     
                                     $selisihRupiah = $hargaSatuan * $selisih;
-                                    $ttlRp += $selisihRupiah ?? 0;
-                                    
+                                    $ttlRp += $selisih < 0 ? $selisihRupiah * -1 : $selisihRupiah;
                                 @endphp
                                 <tr>
                                     <td>{{ $no + 1 }}</td>
@@ -81,14 +80,16 @@
                                     <td align="right">{{ number_format($stokProgram, 0) }}</td>
                                     <td align="right">{{ number_format($d->stok, 0) }}</td>
                                     <td align="right">{{ number_format($d->stok - $stokProgram, 0) }}</td>
-                                    <td align="right">{{ number_format($hargaSatuan, 0) }}</td>
-                                    <td align="right">{{ number_format($selisihRupiah ?? 0, 0) }}</td>
+                                    <td align="right">{{ number_format($hargaSatuan, 1) }}</td>
+                                    <td align="right">
+                                        {{ number_format($selisih < 0 ? $selisihRupiah * -1 : $selisihRupiah, 0) }}
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>
                         <tfoot>
                             <tr>
-                                <th class="text-center" colspan="6">Total {{$hargaSatuan}}</th>
+                                <th class="text-center" colspan="6">Total </th>
                                 <th class="text-end">{{ number_format($ttlRp, 0) }}</th>
                             </tr>
                         </tfoot>

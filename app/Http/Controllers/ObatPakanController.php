@@ -108,12 +108,12 @@ class ObatPakanController extends Controller
         for ($x = 0; $x < count($r->id_pakan); $x++) {
             DB::table('stok_produk_perencanaan')->where(['id_pakan' => $r->id_pakan[$x], 'opname' => 'T'])->update(['opname' => 'Y']);
             $id_pakan = $r->id_pakan[$x];
-            
+
             $selisih = $r->stk_program[$x] - $r->stk_aktual[$x];
-            if($r->selisih[$x] != 0) {
+            if ($r->selisih[$x] != 0) {
                 if ($selisih < 0) {
                     $qty_selisih = $selisih * -1;
-    
+
                     $datas = [
                         'pcs' => $r->stk_aktual[$x],
                         'id_pakan' => $r->id_pakan[$x],
@@ -129,7 +129,7 @@ class ObatPakanController extends Controller
                     DB::table('stok_produk_perencanaan')->insert($datas);
                 } else {
                     $qty_selisih = $selisih;
-    
+
                     $datas = [
                         'pcs' => $r->stk_aktual[$x],
                         'id_pakan' => $r->id_pakan[$x],
@@ -144,7 +144,7 @@ class ObatPakanController extends Controller
                     ];
                     DB::table('stok_produk_perencanaan')->insert($datas);
                 }
-                return redirect()->route('dashboard_kandang.print_opname', "PAKVITOPN-".$no_nota)->with('sukses', 'Data berhasil di simpan');
+                return redirect()->route('dashboard_kandang.print_opname', "PAKVITOPN-" . $no_nota)->with('sukses', 'Data berhasil di simpan');
             } else {
                 continue;
             }
@@ -162,7 +162,7 @@ class ObatPakanController extends Controller
         ) as c ON a.id_pakan = c.id_pakan
         LEFT JOIN (
             SELECT a.id_pakan,sum(a.total_rp + a.biaya_dll) as sum_ttl_rp, sum(pcs) as pcs_sum_ttl_rp FROM stok_produk_perencanaan as a
-                    WHERE a.h_opname = 'T' AND a.pcs != 0 
+                    WHERE a.h_opname = 'T' AND a.pcs != 0 and  a.admin not in('import','nanda')
                     GROUP BY a.id_pakan
         ) as d on a.id_pakan = d.id_pakan
         WHERE a.no_nota = '$no_nota' ORDER BY a.pcs DESC;");
@@ -171,7 +171,7 @@ class ObatPakanController extends Controller
             'no_nota' => $no_nota,
             'history' => $history
         ];
-        return view('stok_pakan.cek',$data);
+        return view('stok_pakan.cek', $data);
     }
 
     public function tambah_pakan_stok(Request $r)
@@ -293,7 +293,7 @@ class ObatPakanController extends Controller
         $jenis = $r->jenis;
         $tgl1 = $r->tgl1 ?? date('Y-m-01');
         $tgl2 = $r->tgl2 ?? date('Y-m-d');
-        
+
         $jenisQ = $jenis != 'pakan' ? "'obat_air', 'obat_pakan'" : "'pakan'";
         $history = DB::select("SELECT a.no_nota,a.h_opname,a.admin,a.tgl,a.id_pakan, b.nm_produk, a.pcs, a.pcs_kredit, c.nm_satuan, a.total_rp
         FROM stok_produk_perencanaan as a 

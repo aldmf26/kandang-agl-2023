@@ -2,7 +2,7 @@
     <div class="col-lg-4 mb-2">
         <label for="">Tanggal</label>
         <input type="date" value="{{ date('Y-m-d') }}" name="tgl" class="form-control" id="">
-        <input type="hidden" name="kategori" value="{{$kategori}}">
+        <input type="hidden" name="kategori" value="{{ $kategori }}">
     </div>
     <div class="col-lg-12">
         <table class="table table-striped">
@@ -21,7 +21,7 @@
                         <select name="id_pakan[]" id="" class="select2tbhPakan form-control">
                             <option value="">- Pilih Produk -</option>
                             @foreach ($produk as $p)
-                            <option value="{{$p->id_produk}}">{{$p->nm_produk}}</option>
+                                <option value="{{ $p->id_produk }}">{{ $p->nm_produk }}</option>
                             @endforeach
                             <option value="tambah">+ Produk Baru</option>
                         </select>
@@ -30,7 +30,7 @@
                         <input type="text" name="pcs[]" class="form-control">
 
                     </td>
-                    <td><input type="text" value="0" name="ttl_rp[]" class="form-control"></td>
+                    <td><input type="number" min="1000000" value="0" name="ttl_rp[]" class="form-control"></td>
                     <td><input type="text" value="0" name="biaya_dll[]" class="form-control"></td>
                     <td>
                         <button type="button" class="btn rounded-pill remove_baris" count="1"><i
@@ -46,7 +46,8 @@
     </div>
 
     <div class="col-lg-12">
-        <button type="button" class="btn btn-block btn-lg {{$kategori == 'pakan' ? 'tbh_baris' : 'tbh_baris_vitamin'}} "
+        <button type="button"
+            class="btn btn-block btn-lg {{ $kategori == 'pakan' ? 'tbh_baris' : 'tbh_baris_vitamin' }} "
             style="background-color: #F4F7F9; color: #8FA8BD; font-size: 14px; padding: 13px;">
             <i class="fas fa-plus"></i> Tambah Baris Baru
         </button>
