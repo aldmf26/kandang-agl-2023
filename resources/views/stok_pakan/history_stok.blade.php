@@ -2,12 +2,12 @@
     <div class="row">
         <div class="col-lg-4 mb-2">
             <label for="">Dari</label>
-            <input type="date" class="form-control" id="tgl1" value="{{$tgl1}}">
-            <input type="hidden" class="form-control" id="id_pakan" value="{{$id_pakan}}">
+            <input type="date" class="form-control" id="tgl1" value="{{ $tgl1 }}">
+            <input type="hidden" class="form-control" id="id_pakan" value="{{ $id_pakan }}">
         </div>
         <div class="col-lg-4 mb-2">
             <label for="">Sampai</label>
-            <input type="date" class="form-control" id="tgl2" value="{{$tgl2}}">
+            <input type="date" class="form-control" id="tgl2" value="{{ $tgl2 }}">
         </div>
         <div class="col-lg-2">
             <label for="">Aksi</label> <br>
@@ -29,25 +29,25 @@
     </thead>
     <tbody style="border-color: #435EBE;">
         @php
-        $saldo = 0;
+            $saldo = 0;
         @endphp
         @foreach ($stok as $s)
-        @php
-        $saldo += $s->pcs - $s->pcs_kredit
-        @endphp
-        <tr>
-            <td>{{tanggal($s->tgl)}}</td>
-            <td>{{$s->nm_produk}}</td>
-            <td align="right">{{number_format($s->pcs,0)}}</td>
-            <td align="right">{{number_format($s->pcs_kredit,0)}}</td>
-            <td align="right">{{number_format($saldo,0)}}</td>
-            <td align="center">
-                <i
-                    class="fas {{$s->h_opname == 'Y' ? 'fa-check-circle text-success' : 'fa-times-circle text-danger' }} "></i>
+            @php
+                $saldo += $s->pcs - $s->pcs_kredit;
+            @endphp
+            <tr>
+                <td>{{ tanggal($s->tgl) }}</td>
+                <td>{{ $s->nm_produk }}</td>
+                <td align="right">{{ number_format($s->pcs, 0) }}</td>
+                <td align="right">{{ number_format($s->pcs_kredit, 0) }}</td>
+                <td align="right">{{ number_format($saldo, 0) }}</td>
+                <td align="center">
+                    <i
+                        class="fas {{ $s->h_opname == 'Y' ? 'fa-check-circle text-success' : 'fa-times-circle text-danger' }} "></i>
 
-            </td>
-            <td>{{$s->admin}}</td>
-        </tr>
+                </td>
+                <td>{{ $s->admin }}</td>
+            </tr>
         @endforeach
 
     </tbody>
