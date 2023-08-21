@@ -6,10 +6,13 @@
                 <h6 class="float-start">{{ $title }}</h6>
                 <x-theme.button modal="T" href="/dashboard_kandang" icon="fa-home" addClass="float-end"
                     teks="" />
+                <x-theme.button modal="T" href="/dashboard_kandang/print_opname/{{$no_nota}}/print" icon="fa-print" addClass="float-end print"
+                    teks="Print" />
+
             </div>
 
         </div>
-        <div class="row">
+        <div class="row tbl1">
             <div class="col-lg-3">
                 <img src="https://agrilaras.putrirembulan.com/assets/img/logo.png" alt="Logo" width="150px">
             </div>
@@ -42,7 +45,7 @@
     <x-slot name="cardBody">
         <form action="{{ route('save_opname_telur_mtd') }}" method="post" class="save_jurnal">
             @csrf
-            <section class="row">
+            <section class="row tbl2">
 
 
                 <div class="col-lg-12">
@@ -97,9 +100,4 @@
                 </div>
             </section>
     </x-slot>
-
-
-
-
-
 </x-theme.app>

@@ -151,7 +151,7 @@ class ObatPakanController extends Controller
         }
     }
 
-    public function print_opname($no_nota)
+    public function print_opname($no_nota, $print = null)
     {
         $history = DB::select("SELECT a.admin,a.tgl,a.id_pakan,b.nm_produk,a.pcs,a.pcs_kredit,a.total_rp,a.biaya_dll,c.stok,d.sum_ttl_rp,d.pcs_sum_ttl_rp FROM `stok_produk_perencanaan` as a 
         LEFT JOIN tb_produk_perencanaan as b ON a.id_pakan = b.id_produk
@@ -171,7 +171,8 @@ class ObatPakanController extends Controller
             'no_nota' => $no_nota,
             'history' => $history
         ];
-        return view('stok_pakan.cek', $data);
+        $view = empty($print) ? 'cek' : 'print';
+        return view("stok_pakan.$view", $data);
     }
 
     public function tambah_pakan_stok(Request $r)
