@@ -4,7 +4,8 @@
         <div class="row justify-content-end">
             <div class="col-lg-12">
                 <h6 class="float-start">{{ $title }}</h6>
-                <x-theme.button modal="T" href="/dashboard_kandang" icon="fa-home" addClass="float-end" teks="" />
+                <x-theme.button modal="T" href="/dashboard_kandang" icon="fa-home" addClass="float-end"
+                    teks="" />
             </div>
 
         </div>
@@ -65,30 +66,29 @@
                                 $ttlRp = 0;
                             @endphp
                             @foreach ($history as $no => $d)
-                            @php
-                                $stokProgram = $d->stok - $d->pcs + $d->pcs_kredit;
-                                $selisih = $d->stok - $stokProgram;
-                                if(!empty($d->sum_ttl_rp)) {
+                                @php
+                                    $stokProgram = $d->stok - $d->pcs + $d->pcs_kredit;
+                                    $selisih = $d->stok - $stokProgram;
                                     $hargaSatuan = $d->sum_ttl_rp / $d->pcs_sum_ttl_rp;
-                                    $selisihRupiah = $hargaSatuan *  $selisih;
-                                }
-                                $ttlRp += $selisihRupiah ?? 0;
-
-                            @endphp
+                                    
+                                    $selisihRupiah = $hargaSatuan * $selisih;
+                                    $ttlRp += $selisihRupiah ?? 0;
+                                    
+                                @endphp
                                 <tr>
-                                    <td>{{ $no+1 }}</td>
+                                    <td>{{ $no + 1 }}</td>
                                     <td>{{ $d->nm_produk }}</td>
-                                    <td align="right">{{ number_format($stokProgram,0) }}</td>
-                                    <td align="right">{{ number_format($d->stok,0) }}</td>
-                                    <td align="right">{{ number_format($d->stok - $stokProgram,0) }}</td>
-                                    <td align="right">{{ number_format($hargaSatuan ?? 0,0) }}</td>
-                                    <td align="right">{{ number_format($selisihRupiah ?? 0,0) }}</td>
+                                    <td align="right">{{ number_format($stokProgram, 0) }}</td>
+                                    <td align="right">{{ number_format($d->stok, 0) }}</td>
+                                    <td align="right">{{ number_format($d->stok - $stokProgram, 0) }}</td>
+                                    <td align="right">{{ number_format($hargaSatuan, 0) }}</td>
+                                    <td align="right">{{ number_format($selisihRupiah ?? 0, 0) }}</td>
                                 </tr>
                             @endforeach
                         </tbody>
                         <tfoot>
                             <tr>
-                                <th class="text-center" colspan="6">Total</th>
+                                <th class="text-center" colspan="6">Total {{$hargaSatuan}}</th>
                                 <th class="text-end">{{ number_format($ttlRp, 0) }}</th>
                             </tr>
                         </tfoot>
@@ -100,5 +100,5 @@
 
 
 
-    
+
 </x-theme.app>
