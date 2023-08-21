@@ -70,7 +70,7 @@
                                 $selisih = $d->stok - $stokProgram;
                                 if(!empty($d->sum_ttl_rp)) {
                                     $hargaSatuan = $d->sum_ttl_rp / $d->pcs_sum_ttl_rp;
-                                    $selisihRupiah = $hargaSatuan * ($selisih < 0 ? $selisih * -1 : $selisih);
+                                    $selisihRupiah = $hargaSatuan *  $selisih;
                                 }
                                 $ttlRp += $selisihRupiah ?? 0;
 
