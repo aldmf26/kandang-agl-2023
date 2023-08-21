@@ -4,7 +4,8 @@
         <div class="row justify-content-end">
             <div class="col-lg-12">
                 <h6 class="float-start">{{ $title }}</h6>
-                <x-theme.button modal="T" href="/dashboard_kandang" icon="fa-home" addClass="float-end" teks="" />
+                <x-theme.button modal="T" href="/dashboard_kandang" icon="fa-home" addClass="float-end"
+                    teks="" />
             </div>
 
         </div>
@@ -63,37 +64,37 @@
                         </thead>
                         <tbody>
                             @foreach ($produk as $no => $p)
-                            @php
-                            $telur = DB::selectOne("SELECT a.pcs_selisih,a.kg_selisih, b.id_produk_telur as
+                                @php
+                                    $telur = DB::selectOne("SELECT a.pcs_selisih,a.kg_selisih, b.id_produk_telur as
                             id_telur,b.nm_telur, SUM(a.pcs - a.pcs_kredit) as pcs, SUM(a.kg -
                             a.kg_kredit) as kg
                             FROM stok_telur as a
                             left JOIN telur_produk as b on b.id_produk_telur = a.id_telur
                             WHERE a.id_gudang = 1 and a.id_telur = '$p->id_produk_telur' AND a.nota_transfer = '$nota'
                             GROUP by a.id_telur");
-                            @endphp
-                            @if (!empty($telur->pcs))
-                            <tr>
-                                <td>{{ $no + 1 }}</td>
-                                <td>{{ $p->nm_telur }}</td>
-                                <td align="right">{{ number_format($telur->pcs + $telur->pcs_selisih, 0) }}
-                                </td>
-                                <td align="right">{{ number_format($telur->kg + $telur->kg_selisih, 2) }}
-                                </td>
-                                <td align="right">
-                                    {{ $telur->pcs }}
-                                </td>
-                                <td align="right">
-                                    {{number_format($telur->kg, 2, ',', '.')}}
-                                </td>
-                                <td align="right">
-                                    {{ $telur->pcs_selisih }}
-                                </td>
-                                <td align="right">
-                                    {{ number_format($telur->kg_selisih,2) }}
-                                </td>
-                            </tr>
-                            @endif
+                                @endphp
+                                @if (!empty($telur->pcs))
+                                    <tr>
+                                        <td>{{ $no + 1 }}</td>
+                                        <td>{{ $p->nm_telur }}</td>
+                                        <td align="right">{{ number_format($telur->pcs + $telur->pcs_selisih, 0) }}
+                                        </td>
+                                        <td align="right">{{ number_format($telur->kg + $telur->kg_selisih, 2) }}
+                                        </td>
+                                        <td align="right">
+                                            {{ $telur->pcs }}
+                                        </td>
+                                        <td align="right">
+                                            {{ number_format($telur->kg, 2, ',', '.') }}
+                                        </td>
+                                        <td align="right">
+                                            {{ $telur->pcs_selisih }}
+                                        </td>
+                                        <td align="right">
+                                            {{ number_format($telur->kg_selisih, 2) }}
+                                        </td>
+                                    </tr>
+                                @endif
                             @endforeach
                         </tbody>
                     </table>
@@ -105,8 +106,8 @@
 
 
     @section('scripts')
-    <script>
-        $(document).ready(function() {
+        <script>
+            $(document).ready(function() {
                 $(document).on("keyup", ".pcs_opname", function() {
                     var count = $(this).attr("id_produk");
                     var input = $(this).val();
@@ -163,6 +164,6 @@
                 });
                 aksiBtn("form");
             });
-    </script>
+        </script>
     @endsection
 </x-theme.app>

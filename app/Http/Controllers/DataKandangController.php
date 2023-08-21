@@ -18,6 +18,7 @@ class DataKandangController extends Controller
     
     public function store(Request $r)
     {
+        dd($r->all());
         DB::table('kandang')->insert([
             'chick_in' => $r->tgl,
             'tgl_masuk' => $r->tgl,

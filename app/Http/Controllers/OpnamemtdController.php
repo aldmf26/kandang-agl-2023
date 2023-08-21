@@ -39,13 +39,13 @@ class OpnamemtdController extends Controller
 
     public function save_opname_telur_mtd(Request $r)
     {
-        $urutan_opname = DB::selectOne("SELECT count(a.nota_transfer) as urutan
-        FROM (SELECT a.nota_transfer
-              FROM stok_telur as a where a.jenis = 'Opname' group by a.nota_transfer) as a;");
+        $urutan_opname = DB::selectOne("SELECT a.nota_transfer as urutan
+        FROM stok_telur as a WHERE a.jenis = 'Opname' ORDER BY a.id_stok_telur DESC;");
+
         if (empty($urutan_opname) || $urutan_opname->urutan == '0') {
-            $urutan = '1001';
+            $urutan = 1001;
         } else {
-            $urutan = '1001' + $urutan_opname->urutan;
+            $urutan = str()->remove('Opname-', $urutan_opname->urutan) + 1;
         }
 
         $max_customer = DB::table('invoice_telur')->latest('urutan_customer')->where('id_customer', '3')->first();
@@ -216,6 +216,4 @@ class OpnamemtdController extends Controller
         ];
         return view('opname_telur_mtd.history', $data);
     }
-
-    
 }

@@ -343,7 +343,6 @@ class Penjualan_telurmartadahController extends Controller
                     'customer' => $r->customer,
                     'no_nota' => $no_nota,
                     'id_produk' => $r->id_produk[$x],
-                    'id_produk' => $r->id_produk[$x],
                     'pcs' => $total_pcs,
                     'kg' => $total_kg_kotor,
                     'kg_jual' => $total_kg_bersih,

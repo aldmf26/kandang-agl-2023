@@ -23,7 +23,7 @@
                 </div>
                 <div class="col-lg-2 col-6">
                     <label for="">Nota Opname</label>
-                    <input type="text" class="form-control tgl_nota" name="tgl" value="Opname-{{$urutan}}">
+                    <input type="text" class="form-control tgl_nota" name="nota_opname" value="Opname-{{$urutan}}">
                 </div>
                 <div class="col-lg-12">
                     <hr style="border: 1px solid black">
