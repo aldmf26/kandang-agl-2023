@@ -24,7 +24,6 @@ class DataKandangController extends Controller
             'nm_kandang' => $r->nm_kandang,
             'id_strain' => $r->strain,
             'stok_awal' => $r->ayam_awal,
-            'admin' => auth()->user()->name
         ]);
 
         return redirect()->route($r->route ?? 'data_kandang.index')->with('sukses', 'Data Berhasil Ditambahkan');
