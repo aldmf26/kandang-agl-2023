@@ -67,7 +67,7 @@
                             @foreach ($history as $no => $d)
                             @php
                                 $stokProgram = $d->stok - $d->pcs + $d->pcs_kredit;
-                                $selisih = $stokProgram - $d->stok;
+                                $selisih = $d->stok - $stokProgram;
                                 if(!empty($d->sum_ttl_rp)) {
                                     $hargaSatuan = $d->sum_ttl_rp / $d->pcs_sum_ttl_rp;
                                     $selisihRupiah = $hargaSatuan * ($selisih < 0 ? $selisih * -1 : $selisih);
@@ -80,7 +80,7 @@
                                     <td>{{ $d->nm_produk }}</td>
                                     <td align="right">{{ number_format($stokProgram,0) }}</td>
                                     <td align="right">{{ number_format($d->stok,0) }}</td>
-                                    <td align="right">{{ number_format($stokProgram - $d->stok,0) }}</td>
+                                    <td align="right">{{ number_format($d->stok - $stokProgram,0) }}</td>
                                     <td align="right">{{ number_format($hargaSatuan ?? 0,0) }}</td>
                                     <td align="right">{{ number_format($selisihRupiah ?? 0,0) }}</td>
                                 </tr>
