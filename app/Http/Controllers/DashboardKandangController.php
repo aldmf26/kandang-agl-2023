@@ -186,10 +186,12 @@ class DashboardKandangController extends Controller
         $tgl1 =  $this->tgl1;
         $tgl2 =  $this->tgl2;
         $transfer = DB::select("SELECT 
-        b.nm_telur, sum(a.pcs_pcs + (a.ikat * 180) + a.pcs_kg) as pcs, a.* ,
-        sum(a.pcs_kg + a.kg_ikat + (((a.pcs_kg / 15) * 0.12) + a.kg_kg)) as kg
+        b.nm_telur, a.tgl, a.no_nota, sum(a.pcs_pcs + (a.ikat * 180) + a.pcs_kg) as pcs, (c.kg_pcs + c.kg_ikat + c.kg_kg_kotor + c.kg_kg) as kg_total
         FROM `invoice_mtd` as a
         LEFT JOIN telur_produk as b ON a.id_produk = b.id_produk_telur
+        LEFT JOIN (
+            SELECT no_nota, SUM(kg_pcs) as kg_pcs, sum(kg_ikat) as kg_ikat, sum(kg_kg_kotor) as kg_kg_kotor, sum(kg_kg) as kg_kg FROM `invoice_mtd` GROUP BY no_nota
+        ) as c ON a.no_nota = c.no_nota
         WHERE a.jenis = 'tf'
         GROUP BY a.no_nota
         ORDER BY a.id_invoice_mtd DESC;");
@@ -206,7 +208,7 @@ class DashboardKandangController extends Controller
     {
         $tbl = DB::select("SELECT 
         b.nm_telur, sum(a.pcs_pcs + (a.ikat * 180) + a.pcs_kg) as pcs, a.* ,
-        sum(a.pcs_kg + a.kg_ikat + (((a.pcs_kg / 15) * 0.12) + a.kg_kg)) as kg
+        sum(a.pcs_kg + a.kg_ikat + a.kg_kg) as kg
         FROM `invoice_mtd` as a
         LEFT JOIN telur_produk as b ON a.id_produk = b.id_produk_telur
         WHERE a.jenis = 'tf'

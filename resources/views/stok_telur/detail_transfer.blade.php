@@ -15,7 +15,8 @@
                     <tr>
                         <td style="padding: 5px">No. Nota</td>
                         <td style="padding: 5px">:</td>
-                        <td style="padding: 5px">{{ $nota }} <span class="text-warning">(copy di nota manual)</span></td>
+                        <td style="padding: 5px">{{ $nota }} <span class="text-warning">(copy di nota
+                                manual)</span></td>
                     </tr>
                     <tr>
                         <td style="padding: 5px">Admin</td>
@@ -66,7 +67,7 @@
                 @foreach ($datas as $d)
                     @php
                         $ttl_pcs += $d->pcs_pcs + $d->ikat * 180 + $d->pcs_kg;
-                        $ttl_kg += $d->pcs_kg + $d->kg_ikat + (($d->pcs_kg / 15) * 0.12 + $d->kg_kg);
+                        $ttl_kg += $d->kg_pcs + $d->kg_ikat + $d->kg_kg;
                         $ttl_rak += $d->rak_kg;
                     @endphp
                     <tr class="baris1">
@@ -113,7 +114,7 @@
             </tbody>
 
         </table>
-       
+
         <table width="30%" style="white-space: nowrap;">
             <tr>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
