@@ -30,11 +30,10 @@
                         <a onclick="event.preventDefault();" class="text-white opnme_pakan dropdown-item hoverbtn"
                             href="#">Opname</a>
                         <a onclick="event.preventDefault();" data-bs-toggle="modal" data-bs-target="#history_pakvit"
-                            class="text-white history_pakvit dropdown-item hoverbtn" href="#" jenis="pakan">History Stok
-                            Masuk</a>
-                        <a onclick="event.preventDefault();" data-bs-toggle="modal" data-bs-target="#history_pakvit"
+                            class="text-white history_pakvit dropdown-item hoverbtn" href="#" jenis="pakan">History</a>
+                        {{-- <a onclick="event.preventDefault();" data-bs-toggle="modal" data-bs-target="#history_pakvit"
                             class="text-white history_pakvit dropdown-item hoverbtn" href="#"
-                            jenis="pakan">History Opname</a>
+                            jenis="pakan">History Opname</a> --}}
 
 
                     </div>
@@ -95,10 +94,10 @@
                             href="#">Opname</a>
                         <a onclick="event.preventDefault();" data-bs-toggle="modal" data-bs-target="#history_pakvit"
                             class="text-white history_pakvit dropdown-item hoverbtn" href="#"
-                            jenis="vitamin">History Stok Masuk</a>
-                        <a onclick="event.preventDefault();" data-bs-toggle="modal" data-bs-target="#history_pakvit"
+                            jenis="vitamin">History</a>
+                        {{-- <a onclick="event.preventDefault();" data-bs-toggle="modal" data-bs-target="#history_pakvit"
                             class="text-white history_pakvit dropdown-item hoverbtn" href="#"
-                            jenis="vitamin">History Opname</a>
+                            jenis="vitamin">History Opname</a> --}}
                     </div>
                 </div>
             </div>

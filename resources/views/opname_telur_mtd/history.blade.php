@@ -35,8 +35,12 @@
             <th class="dhead">Tanggal</th>
             <th class="dhead">No Nota</th>
             <th class="dhead">Produk</th>
-            <th class="dhead">Pcs</th>
-            <th class="dhead">Kg</th>
+            <th class="dhead text-end">Pcs Program</th>
+            <th class="dhead text-end">Kg Program</th>
+            <th class="dhead text-end">Pcs Aktual</th>
+            <th class="dhead text-end">Kg Aktual</th>
+            <th class="dhead text-end">Pcs Selisih</th>
+            <th class="dhead text-end">Kg Selisih</th>
         </tr>
     </thead>
     <tbody>
@@ -44,10 +48,14 @@
         <tr>
             <td>{{$no+1}}</td>
             <td>{{tanggal($i->tgl)}}</td>
-            <td>{{$i->nota_transfer}}</td>
+            <td><a href="/opnamecek/{{$i->nota_transfer}}" target="_blank">{{$i->nota_transfer}}</a></td>
             <td>{{$i->nm_telur}}</td>
-            <td>{{number_format($i->pcs,0) }}</td>
-            <td>{{number_format($i->kg,2) }}</td>
+            <td align="right">{{number_format($i->pcs - ($i->pcs_selisih * -1),0) }}</td>
+            <td align="right">{{number_format($i->kg - ($i->kg_selisih * -1),2) }}</td>
+            <td align="right">{{number_format($i->pcs,0) }}</td>
+            <td align="right">{{number_format($i->kg,2) }}</td>
+            <td align="right">{{number_format($i->pcs_selisih,0) }}</td>
+            <td align="right">{{number_format($i->kg_selisih,2) }}</td>
         </tr>
         @endforeach
     </tbody>

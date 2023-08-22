@@ -300,7 +300,7 @@ class ObatPakanController extends Controller
         FROM stok_produk_perencanaan as a 
         left join tb_produk_perencanaan as b on b.id_produk = a.id_pakan
         left join tb_satuan as c on c.id_satuan = b.dosis_satuan
-        where b.kategori in($jenisQ) AND a.tgl BETWEEN '$tgl1' AND '$tgl2';");
+        where b.kategori in($jenisQ) AND a.tgl BETWEEN '$tgl1' AND '$tgl2' ORDER BY a.h_opname ASC;");
 
         $data = [
             'history' => $history,

@@ -10,28 +10,20 @@ class OpnamemtdController extends Controller
 {
     public function index(Request $r)
     {
-        $max = DB::table('invoice_telur')->latest('urutan')->first();
+        $max = DB::table('stok_telur')->where('jenis', 'Opname')->latest('nota_transfer')->first();
 
         if (empty($max)) {
             $nota_t = '1000';
         } else {
-            $nota_t = $max->urutan + 1;
+            $nota_t = str()->remove('Opname-',$max->nota_transfer) + 1;
         }
 
-        $urutan_opname = DB::selectOne("SELECT count(a.nota_transfer) as urutan
-        FROM (SELECT a.nota_transfer
-              FROM stok_telur as a where a.jenis = 'Opname' group by a.nota_transfer) as a;");
-        if (empty($urutan_opname) || $urutan_opname->urutan == '0') {
-            $urutan = '1001';
-        } else {
-            $urutan = '1001' + $urutan_opname->urutan;
-        }
+
         $data = [
             'title' => 'Opname Telur',
-            'nota' => $nota_t,
             'produk' => DB::table('telur_produk')->get(),
             'id_gudang' => $r->id_gudang,
-            'urutan' => $urutan
+            'urutan' => $nota_t
 
         ];
         return view('opname_telur_mtd.index', $data);
@@ -94,7 +86,7 @@ class OpnamemtdController extends Controller
 
         return redirect()->route('opname_cek', 'Opname-' . $urutan)->with('sukses', 'Data berhasil ditambahkan');
     }
-    public function cek($no_nota)
+    public function cek($no_nota, $print = null)
     {
         $data = [
             'nota' => $no_nota,
@@ -103,7 +95,8 @@ class OpnamemtdController extends Controller
             'produk' => DB::table('telur_produk')->get(),
             'datas' => DB::table('stok_telur')->where([['nota_transfer', $no_nota], ['jenis', 'Opname']])->get()
         ];
-        return view('opname_telur_mtd.cek', $data);
+        $view = empty($print) ? 'cek' : 'print';
+        return view('opname_telur_mtd.'.$view, $data);
     }
 
     public function bayar_opname(Request $r)
@@ -207,7 +200,7 @@ class OpnamemtdController extends Controller
         $data = [
             'produk' => DB::table('telur_produk')->get(),
             'gudang' => DB::table('gudang_telur')->get(),
-            'invoice' => DB::select("SELECT a.tgl, a.nota_transfer, b.nm_telur, a.pcs, a.kg, a.admin
+            'invoice' => DB::select("SELECT a.pcs_selisih,a.kg_selisih,a.tgl, a.nota_transfer, b.nm_telur, a.pcs, a.kg, a.admin
             FROM stok_telur as a 
             left join telur_produk as b on b.id_produk_telur = a.id_telur
             where a.tgl BETWEEN '$tgl1' and '$tgl2' and a.id_gudang='1' and a.jenis ='opname';"),

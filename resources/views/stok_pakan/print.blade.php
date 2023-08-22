@@ -27,11 +27,9 @@
 <body>
     <div class="py-5 px-5 container">
         <div class="row tbl1">
-            <div class="col-lg-3">
+            <div class="col-lg-12">
                 <img src="https://agrilaras.putrirembulan.com/assets/img/logo.png" alt="Logo" width="150px">
-            </div>
-            <div class="col-lg-6">
-                <table>
+                <table class="float-end mt-3">
                     <tr>
                         <td style="padding: 5px">Tanggal</td>
                         <td style="padding: 5px">:</td>
@@ -47,15 +45,14 @@
                         <td style="padding: 5px">:</td>
                         <td style="padding: 5px">{{ $history[0]->admin }}</td>
                     </tr>
-
-
+    
+    
                 </table>
             </div>
+            
         </div>
       
         <section class="row tbl2">
-
-
             <div class="col-lg-12">
                 <h6 class="text-center">Opname Pakan & Vitamin</h6>
                 <hr style="border: 1px solid black">

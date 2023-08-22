@@ -347,7 +347,7 @@ Route::controller(Penjualan_umum_cekController::class)->group(function () {
 Route::controller(OpnamemtdController::class)->group(function () {
     Route::get('/opnamemtd', 'index')->name('opnamemtd');
     Route::get('/bayar_opname', 'bayar_opname')->name('bayar_opname');
-    Route::get('/opnamecek/{no_nota}', 'cek')->name('opname_cek');
+    Route::get('/opnamecek/{no_nota}/{print?}', 'cek')->name('opname_cek');
     Route::post('/save_opname_telur_mtd', 'save_opname_telur_mtd')->name('save_opname_telur_mtd');
     Route::post('/save_bayar_opname', 'save_bayar_opname')->name('save_bayar_opname');
     Route::get('/bukukan_opname_martadah', 'bukukan_opname_martadah')->name('bukukan_opname_martadah');

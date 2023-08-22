@@ -6,6 +6,8 @@
                 <h6 class="float-start">{{ $title }}</h6>
                 <x-theme.button modal="T" href="/dashboard_kandang" icon="fa-home" addClass="float-end"
                     teks="" />
+                <x-theme.button modal="T" href="{{ $nota }}/print" icon="fa-print" addClass="float-end"
+                    teks="" />
             </div>
 
         </div>
@@ -102,68 +104,4 @@
             </section>
     </x-slot>
 
-
-
-
-    @section('scripts')
-        <script>
-            $(document).ready(function() {
-                $(document).on("keyup", ".pcs_opname", function() {
-                    var count = $(this).attr("id_produk");
-                    var input = $(this).val();
-                    input = input.replace(/[^\d\,]/g, "");
-                    input = input.replace(".", ",");
-                    input = input.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
-
-                    if (input === "") {
-                        $(this).val("");
-                        $('.pcs_opname_biasa' + count).val(0)
-                    } else {
-                        $(this).val(input);
-                        input = input.replaceAll(".", "");
-                        input2 = input.replace(",", ".");
-                        $('.pcs_opname_biasa' + count).val(input2)
-                    }
-
-                    var pcs_program = $('.pcs_program' + count).val();
-
-                    var selisih = parseFloat(pcs_program) - parseFloat(input2);
-
-                    var total_selisih = parseInt(selisih).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
-                    $('.pcs_selisih' + count).val(total_selisih);
-                    $('.pcs_selisih_biasa' + count).val(selisih);
-
-                });
-                $(document).on("keyup", ".kg_opname", function() {
-                    var count = $(this).attr("id_produk");
-                    var input = $(this).val();
-                    input = input.replace(/[^\d\,]/g, "");
-                    input = input.replace(".", ",");
-                    input = input.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
-
-                    if (input === "") {
-                        $(this).val("");
-                        $('.kg_opname_biasa' + count).val(0)
-                    } else {
-                        $(this).val(input);
-                        input = input.replaceAll(".", "");
-                        input2 = input.replace(",", ".");
-                        $('.kg_opname_biasa' + count).val(input2)
-                    }
-
-                    var kg_program = $('.kg_program' + count).val();
-
-                    var selisih = parseFloat(kg_program) - parseFloat(input2);
-
-                    var total_selisih = selisih.toFixed(2).replace(".", ",");
-                    total_selisih = total_selisih.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
-
-                    $('.kg_selisih' + count).val(total_selisih);
-                    $('.kg_selisih_biasa' + count).val(selisih);
-
-                });
-                aksiBtn("form");
-            });
-        </script>
-    @endsection
 </x-theme.app>
