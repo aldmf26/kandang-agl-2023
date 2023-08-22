@@ -75,7 +75,7 @@
                             WHERE a.id_gudang = 1 and a.id_telur = '$p->id_produk_telur' AND a.nota_transfer = '$nota'
                             GROUP by a.id_telur");
                                 @endphp
-                                {{-- @if (!empty($telur->pcs)) --}}
+                                @if (!empty($telur->pcs))
                                     <tr>
                                         <td>{{ $no + 1 }}</td>
                                         <td>{{ $p->nm_telur }}</td>
@@ -96,7 +96,7 @@
                                             {{ number_format($telur->kg_selisih, 2) }}
                                         </td>
                                     </tr>
-                                {{-- @endif --}}
+                                @endif
                             @endforeach
                         </tbody>
                     </table>
