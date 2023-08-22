@@ -186,7 +186,7 @@ class DashboardKandangController extends Controller
         $tgl1 =  $this->tgl1;
         $tgl2 =  $this->tgl2;
         $transfer = DB::select("SELECT 
-        b.nm_telur, a.tgl, a.no_nota, sum(a.pcs_pcs + (a.ikat * 180) + a.pcs_kg) as pcs, (c.kg_pcs + c.kg_ikat + c.kg_kg_kotor + c.kg_kg) as kg_total
+        b.nm_telur, a.tgl,a.void, a.no_nota, sum(a.pcs_pcs + (a.ikat * 180) + a.pcs_kg) as pcs, (c.kg_pcs + c.kg_ikat + c.kg_kg_kotor + c.kg_kg) as kg_total
         FROM `invoice_mtd` as a
         LEFT JOIN telur_produk as b ON a.id_produk = b.id_produk_telur
         LEFT JOIN (
