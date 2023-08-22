@@ -447,9 +447,8 @@ class DashboardKandangController extends Controller
         $ttlRpBelum = 0;
         foreach ($penjualan as $p) {
             $ttlRp += $p->total;
-            if(empty($p->admin_cek)) {
+            if (empty($p->admin_cek)) {
                 $ttlRpBelum += $p->total;
-
             }
         }
         $data = [
