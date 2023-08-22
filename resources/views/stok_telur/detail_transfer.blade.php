@@ -127,14 +127,14 @@
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                 <td>Total Kg</td>
                 <td>:</td>
-                <td>{{ number_format($ttl_kg, 0) }}</td>
+                <td>{{ number_format($ttl_kg, 1) }}</td>
                 <td></td>
             </tr>
             <tr>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                 <td>Total Ikat</td>
                 <td>:</td>
-                <td>{{ number_format($ttl_pcs / 180, 2) }}</td>
+                <td>{{ number_format($ttl_pcs / 180, 1) }}</td>
                 <td></td>
             </tr>
             <tr>
