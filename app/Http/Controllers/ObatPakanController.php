@@ -124,6 +124,7 @@ class ObatPakanController extends Controller
                         'h_opname' => 'Y',
                         'pcs' => $qty_selisih,
                         'pcs_kredit' => 0,
+                        'pcs_selisih' => $r->selisih[$x],
                         'total_rp' => 0
                     ];
                     DB::table('stok_produk_perencanaan')->insert($datas);
@@ -140,6 +141,7 @@ class ObatPakanController extends Controller
                         'h_opname' => 'Y',
                         'pcs' => 0,
                         'pcs_kredit' => $qty_selisih,
+                        'pcs_selisih' => $r->selisih[$x],
                         'total_rp' => 0
                     ];
                     DB::table('stok_produk_perencanaan')->insert($datas);
@@ -295,15 +297,38 @@ class ObatPakanController extends Controller
         $tgl1 = $r->tgl1 ?? date('Y-m-01');
         $tgl2 = $r->tgl2 ?? date('Y-m-d');
 
-        $jenisQ = $jenis != 'pakan' ? "'obat_air', 'obat_pakan'" : "'pakan'";
+        $jenisMapping = [
+            'pakan' => "'pakan'",
+            'pakan_opname' => "'pakan'",
+            'vitamin' => "'obat_air', 'obat_pakan'",
+            'vitamin_opname' => "'obat_air', 'obat_pakan'",
+        ];
+        $jenisQ = $jenisMapping[$jenis];
+        
+        $whereOpname = in_array($jenis, ['pakan_opname', 'vitamin_opname']) ?  " AND a.h_opname = 'Y'" : '';
+        $historyBaru = DB::select("SELECT a.h_opname,a.no_nota,a.admin,a.tgl,a.id_pakan,b.nm_produk,a.pcs,a.pcs_kredit,a.total_rp,a.biaya_dll,c.stok,d.sum_ttl_rp,d.pcs_sum_ttl_rp FROM `stok_produk_perencanaan` as a 
+        LEFT JOIN tb_produk_perencanaan as b ON a.id_pakan = b.id_produk
+        LEFT JOIN (
+            SELECT a.id_pakan, (sum(a.pcs) - sum(a.pcs_kredit)) as stok
+                    FROM stok_produk_perencanaan as a 
+                    group by a.id_pakan
+        ) as c ON a.id_pakan = c.id_pakan
+        LEFT JOIN (
+            SELECT a.id_pakan,sum(a.total_rp + a.biaya_dll) as sum_ttl_rp, sum(pcs) as pcs_sum_ttl_rp FROM stok_produk_perencanaan as a
+                    WHERE a.h_opname = 'T' AND a.pcs != 0 and  a.admin not in('import','nanda')
+                    GROUP BY a.id_pakan
+        ) as d on a.id_pakan = d.id_pakan
+        WHERE b.kategori IN ($jenisQ) AND a.tgl BETWEEN '2023-08-15' AND '$tgl2' AND a.h_opname = 'Y'
+        ORDER BY a.pcs DESC;");
+
         $history = DB::select("SELECT a.no_nota,a.h_opname,a.admin,a.tgl,a.id_pakan, b.nm_produk, a.pcs, a.pcs_kredit, c.nm_satuan, a.total_rp
         FROM stok_produk_perencanaan as a 
         left join tb_produk_perencanaan as b on b.id_produk = a.id_pakan
         left join tb_satuan as c on c.id_satuan = b.dosis_satuan
-        where b.kategori in($jenisQ) AND a.tgl BETWEEN '$tgl1' AND '$tgl2' ORDER BY a.h_opname ASC;");
+        where b.kategori in($jenisQ) AND a.tgl BETWEEN '$tgl1' AND '$tgl2' $whereOpname ORDER BY a.h_opname ASC;");
 
         $data = [
-            'history' => $history,
+            'history' => $historyBaru,
             'tgl1' => $tgl1,
             'tgl2' => $tgl2,
             'jenis' => $jenis

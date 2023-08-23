@@ -21,8 +21,11 @@
             <th class="dhead">Tanggal</th>
             <th class="dhead text-center">No Nota</th>
             <th class="dhead">Nama Produk</th>
-            <th class="dhead" style="text-align: right">Stok Masuk</th>
-            <th class="dhead" style="text-align: right">Stok Keluar</th>
+            <th style="text-align: right" class="dhead">Stok Program</th>
+            <th style="text-align: right" class="dhead">Stok Aktual</th>
+            <th style="text-align: right" class="dhead">Stok Selisih</th>
+            <th style="text-align: right" class="dhead">Harga Satuan</th>
+            <th style="text-align: right" class="dhead">Rupiah</th>
             <th class="dhead">Opname</th>
             <th class="dhead">Admin</th>
         </tr>
@@ -33,6 +36,16 @@
         @endphp
         @foreach ($history as $no => $d)
             @php
+                $stokProgram = $d->stok - $d->pcs + $d->pcs_kredit;
+                $selisih = $d->stok - $stokProgram;
+                if ($d->sum_ttl_rp != 0) {
+                    $hargaSatuan = $d->sum_ttl_rp / $d->pcs_sum_ttl_rp;
+                } else {
+                    $hargaSatuan = 0;
+                }
+                
+                $selisihRupiah = $hargaSatuan * $selisih;
+                // $ttlRp += $selisih < 0 ? $selisihRupiah * -1 : $selisihRupiah;
                 $saldo += $d->pcs - $d->pcs_kredit;
             @endphp
             <tr>
@@ -44,8 +57,14 @@
                     <td align="center">{{ $d->no_nota }}</td>
                 @endif
                 <td>{{ ucwords($d->nm_produk) }}</td>
-                <td align="right">{{ number_format($d->pcs, 1) }}</td>
-                <td align="right">{{ number_format($d->pcs_kredit, 1) }}</td>
+                <td align="right">{{ number_format($stokProgram, 1) }}</td>
+                <td align="right">{{ number_format($d->stok, 1) }}</td>
+                <td align="right">{{ number_format($d->stok - $stokProgram, 1) }}</td>
+                <td align="right">{{ number_format($hargaSatuan, 1) }}</td>
+                <td align="right">
+                    {{ number_format($selisih < 0 ? $selisihRupiah * -1 : $selisihRupiah, 0) }}
+                </td>
+                
                 <td align="center">
                     <i
                         class="fas {{ $d->h_opname == 'Y' ? 'fa-check-circle text-success' : 'fa-times-circle text-danger' }} "></i>

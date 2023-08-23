@@ -203,7 +203,7 @@ class OpnamemtdController extends Controller
             'invoice' => DB::select("SELECT a.pcs_selisih,a.kg_selisih,a.tgl, a.nota_transfer, b.nm_telur, a.pcs, a.kg, a.admin
             FROM stok_telur as a 
             left join telur_produk as b on b.id_produk_telur = a.id_telur
-            where a.tgl BETWEEN '$tgl1' and '$tgl2' and a.id_gudang='1' and a.jenis ='opname';"),
+            where a.tgl BETWEEN '2023-08-12' and '$tgl2' and a.id_gudang='1' and a.jenis ='opname';"),
             'tgl1' => $tgl1,
             'tgl2' => $tgl2
         ];

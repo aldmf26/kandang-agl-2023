@@ -80,9 +80,9 @@
                                 <tr>
                                     <td>{{ $no + 1 }}</td>
                                     <td>{{ $d->nm_produk }}</td>
-                                    <td align="right">{{ number_format($stokProgram, 0) }}</td>
-                                    <td align="right">{{ number_format($d->stok, 0) }}</td>
-                                    <td align="right">{{ number_format($d->stok - $stokProgram, 0) }}</td>
+                                    <td align="right">{{ number_format($stokProgram, 1) }}</td>
+                                    <td align="right">{{ number_format($d->stok, 1) }}</td>
+                                    <td align="right">{{ number_format($d->stok - $stokProgram, 1) }}</td>
                                     <td align="right">{{ number_format($hargaSatuan, 1) }}</td>
                                     <td align="right">
                                         {{ number_format($selisih < 0 ? $selisihRupiah * -1 : $selisihRupiah, 0) }}
