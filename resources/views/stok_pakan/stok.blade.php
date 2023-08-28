@@ -30,7 +30,8 @@
                         <a onclick="event.preventDefault();" class="text-white opnme_pakan dropdown-item hoverbtn"
                             href="#">Opname</a>
                         <a onclick="event.preventDefault();" data-bs-toggle="modal" data-bs-target="#history_pakvit"
-                            class="text-white history_pakvit dropdown-item hoverbtn" href="#" jenis="pakan">History Masuk Keluar</a>
+                            class="text-white history_pakvit dropdown-item hoverbtn" href="#"
+                            jenis="pakan">History Masuk Keluar</a>
                         <a onclick="event.preventDefault();" data-bs-toggle="modal" data-bs-target="#history_pakvit"
                             class="text-white history_pakvit dropdown-item hoverbtn" href="#"
                             jenis="pakan_opname">History Opname</a>
@@ -52,6 +53,11 @@
             </thead>
             <tbody>
                 @foreach ($pakan as $no => $p)
+                    @if ($p->pcs_debit - $p->pcs_kredit < 1)
+                        @php
+                            continue;
+                        @endphp
+                    @endif
                     <tr>
                         <td>{{ $no + 1 }}</td>
                         <td><a href="#" onclick="event.preventDefault();" class="history_stok"
@@ -95,7 +101,7 @@
                         <a onclick="event.preventDefault();" data-bs-toggle="modal" data-bs-target="#history_pakvit"
                             class="text-white history_pakvit dropdown-item hoverbtn" href="#"
                             jenis="vitamin">History Masuk Keluar</a>
-                            <a onclick="event.preventDefault();" data-bs-toggle="modal" data-bs-target="#history_pakvit"
+                        <a onclick="event.preventDefault();" data-bs-toggle="modal" data-bs-target="#history_pakvit"
                             class="text-white history_pakvit dropdown-item hoverbtn" href="#"
                             jenis="vitamin_opname">History Opname</a>
                     </div>
@@ -114,6 +120,11 @@
             </thead>
             <tbody>
                 @foreach ($vitamin as $no => $p)
+                    @if ($p->pcs_debit - $p->pcs_kredit < 1)
+                        @php
+                            continue;
+                        @endphp
+                    @endif
                     <tr>
                         <td>{{ $no + 1 }}</td>
                         <td><a href="#" onclick="event.preventDefault();" class="history_stok"
