@@ -934,8 +934,19 @@ class DashboardKandangController extends Controller
             }
 
             if (!empty($r->id_pakan)) {
+
+
                 $total_kg_pakan = 0;
                 for ($i = 0; $i < count($r->id_pakan); $i++) {
+
+                    $id_pakan = $r->id_pakan[$i];
+                    $harga = DB::selectOne("SELECT a.id_pakan, sum(a.pcs) as pcs , sum(a.total_rp) as ttl_rp
+                    FROM stok_produk_perencanaan as a
+                    where  a.pcs != 0 and a.admin != 'import'  
+                    and a.tgl between '2023-01-01' and '$tgl' and a.h_opname = 'T' and a.id_pakan = '$id_pakan'
+                    GROUP by a.id_pakan;");
+
+                    $h_satuan = $harga->ttl_rp / $harga->pcs;
 
                     // if ($r->stok[$i] < $r->gr_pakan[$i]) {
                     //     $error = 'error';
@@ -959,7 +970,7 @@ class DashboardKandangController extends Controller
                         'id_pakan' => $r->id_pakan[$i],
                         'tgl' => $tgl,
                         'pcs' => 0,
-                        'total_rp' => 0,
+                        'total_rp' => $h_satuan * $r->gr_pakan[$i],
                         'no_nota' => $no_nota,
                         'pcs_kredit' =>  $r->gr_pakan[$i],
                         'admin' => auth()->user()->name
@@ -1001,6 +1012,14 @@ class DashboardKandangController extends Controller
 
                 if (!empty($r->id_obat_pakan[0])) {
                     for ($i = 0; $i < count($r->id_obat_pakan); $i++) {
+                        $id_pakan = $r->id_obat_pakan[$i];
+                        $harga = DB::selectOne("SELECT a.id_pakan, sum(a.pcs) as pcs , sum(a.total_rp) as ttl_rp
+                    FROM stok_produk_perencanaan as a
+                    where  a.pcs != 0 and a.admin != 'import'  
+                    and a.tgl between '2023-01-01' and '$tgl' and a.h_opname = 'T' and a.id_pakan = '$id_pakan'
+                    GROUP by a.id_pakan;");
+
+                        $h_satuan = $harga->ttl_rp / $harga->pcs;
                         $data1 = [
                             'kategori' => 'obat_pakan',
                             'id_produk' => $r->id_obat_pakan[$i],
@@ -1019,7 +1038,7 @@ class DashboardKandangController extends Controller
                             'id_pakan' => $id_obat_pakan,
                             'tgl' => $tgl,
                             'pcs' => 0,
-                            'total_rp' => 0,
+                            'total_rp' => $h_satuan * ((($total_kg_pakan / 1000) / $r->campuran_obat_pakan[$i]) * $r->dosis_obat_pakan[$i]),
                             'no_nota' => $no_nota,
                             'id_kandang' => $id_kandang,
                             'pcs_kredit' => (($total_kg_pakan / 1000) / $r->campuran_obat_pakan[$i]) * $r->dosis_obat_pakan[$i],
@@ -1031,6 +1050,18 @@ class DashboardKandangController extends Controller
 
                 if (!empty($r->id_obat_air[0])) {
                     for ($i = 0; $i < count($r->id_obat_air); $i++) {
+
+                        $id_pakan = $r->id_obat_pakan[$i];
+
+                        $harga = DB::selectOne("SELECT a.id_pakan, sum(a.pcs) as pcs , sum(a.total_rp) as ttl_rp
+                        FROM stok_produk_perencanaan as a
+                        where  a.pcs != 0 and a.admin != 'import'  
+                        and a.tgl between '2023-01-01' and '$tgl' and a.h_opname = 'T' and a.id_pakan = '$id_pakan'
+                        GROUP by a.id_pakan;");
+
+                        $h_satuan = $harga->ttl_rp / $harga->pcs;
+
+
                         $data1 = [
                             'kategori' => 'obat_air',
                             'id_produk' => $r->id_obat_air[$i],
@@ -1052,7 +1083,7 @@ class DashboardKandangController extends Controller
                             'id_pakan' => $id_obat_air,
                             'tgl' => $tgl,
                             'pcs' => 0,
-                            'total_rp' => 0,
+                            'total_rp' => $h_satuan * $r->dosis_obat_air[$i],
                             'no_nota' => $no_nota,
                             'pcs_kredit' =>  $r->dosis_obat_air[$i],
                             'admin' => auth()->user()->name

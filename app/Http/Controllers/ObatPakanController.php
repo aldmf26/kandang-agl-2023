@@ -304,7 +304,7 @@ class ObatPakanController extends Controller
             'vitamin_opname' => "'obat_air', 'obat_pakan'",
         ];
         $jenisQ = $jenisMapping[$jenis];
-        
+
         $whereOpname = in_array($jenis, ['pakan_opname', 'vitamin_opname']) ?  " AND a.h_opname = 'Y'" : '';
         $historyBaru = DB::select("SELECT a.h_opname,a.no_nota,a.admin,a.tgl,a.id_pakan,b.nm_produk,a.pcs,a.pcs_kredit,a.total_rp,a.biaya_dll,c.stok,d.sum_ttl_rp,d.pcs_sum_ttl_rp FROM `stok_produk_perencanaan` as a 
         LEFT JOIN tb_produk_perencanaan as b ON a.id_pakan = b.id_produk

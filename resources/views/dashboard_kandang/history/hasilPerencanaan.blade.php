@@ -20,8 +20,8 @@
                     {{ $populasi }} | Pakan/Gr :
                     {{ number_format($pakan->total / $populasi, 0) }}
                     | {{ $umur->mgg + 1 }} Minggu</h4>
-                <a href="#" id_kandang="{{ $id_kandang }}" tgl="{{ $tgl_per }}"
-                    class="btn  btn-primary float-end " id="edit_per"><i class="fas fa-edit"></i>
+                <a href="#" id_kandang="{{ $id_kandang }}" tgl="{{ $tgl_per }}" class="btn  btn-primary float-end "
+                    id="edit_per"><i class="fas fa-edit"></i>
                     Edit</a>
             </div>
         </div>
@@ -51,12 +51,12 @@
                         </thead>
                         <tbody>
                             @foreach ($pakan2 as $p)
-                                <tr>
-                                    <td style="">{{ $p->nm_pakan }} <br></td>
-                                    <td style="">
-                                        {{ number_format(($p->persen / 100) * $pakan1->karung, 1) }} </td>
-                                    <td style="">Kg</td>
-                                </tr>
+                            <tr>
+                                <td style="">{{ $p->nm_pakan }} <br></td>
+                                <td style="">
+                                    {{ number_format(($p->persen / 100) * $pakan1->karung, 1) }} </td>
+                                <td style="">Kg</td>
+                            </tr>
                             @endforeach
                         </tbody>
                         <thead style="font-family: Helvetica; color: #78909C; text-transform: uppercase;">
@@ -68,13 +68,13 @@
                         </thead>
                         <tbody>
                             @foreach ($obat_pakan as $o)
-                                <tr>
-                                    <td style="">{{ $o->nm_produk }} <br></td>
-                                    <td style="">
-                                        {{ number_format(($o->dosis * $pakan1->karung) / $o->campuran, 1) }}
-                                    </td>
-                                    <td style="">Kg</td>
-                                </tr>
+                            <tr>
+                                <td style="">{{ $o->nm_produk }} <br></td>
+                                <td style="">
+                                    {{ number_format(($o->dosis * $pakan1->karung) / $o->campuran, 1) }}
+                                </td>
+                                <td style="">{{$o->satuan}}</td>
+                            </tr>
                             @endforeach
                         </tbody>
                     </table>
@@ -90,7 +90,7 @@
                     {{number_format($pakan1->gr2,1)}} Kg
                 </h4>
                 @endif
-            
+
             </div>
             <div class="card-body">
                 <table class="table table-bordered" border="1" width="100%">
@@ -103,23 +103,23 @@
                         </tr>
                     </thead>
                     @php
-                        $ttl = 0;
-                        $ttlKarung = 0;
+                    $ttl = 0;
+                    $ttlKarung = 0;
                     @endphp
                     <tbody>
                         @foreach ($pakan2 as $p)
-                            @php
-                                $ttlKarung += $p->gr_pakan;
-                            @endphp
-                            <tr>
-                                <td style="">
-                                    <?= $p->nm_pakan ?>
-                                </td>
-                                <td style="">
-                                    <?= number_format(($p->persen / 100) * $pakan1->gr2,1) ?>
-                                </td>
-                                <td style="">Kg</td>
-                            </tr>
+                        @php
+                        $ttlKarung += $p->gr_pakan;
+                        @endphp
+                        <tr>
+                            <td style="">
+                                <?= $p->nm_pakan ?>
+                            </td>
+                            <td style="">
+                                <?= number_format(($p->persen / 100) * $pakan1->gr2,1) ?>
+                            </td>
+                            <td style="">Kg</td>
+                        </tr>
                         @endforeach
                     </tbody>
                     <thead
@@ -154,7 +154,7 @@
             <div class="card-header">
                 @if (empty($pakan1->gr2))
                 @else
-                    <h4 style="color: #787878;">Total Pakan</h4>
+                <h4 style="color: #787878;">Total Pakan</h4>
                 @endif
             </div>
             <div class="card-body">
@@ -169,21 +169,21 @@
                     </thead>
                     <tbody>
                         @php
-                            $ttl = 0;
+                        $ttl = 0;
                         @endphp
                         @foreach ($pakan2 as $p)
-                            @php
-                                $ttl += $p->gr_pakan;
-                            @endphp
-                            <tr>
-                                <td style="">
-                                    <?= $p->nm_pakan ?>
-                                </td>
-                                <td style="">
-                                    <?= number_format($p->gr_pakan / 1000, 1) ?>
-                                </td>
-                                <td style="">Kg</td>
-                            </tr>
+                        @php
+                        $ttl += $p->gr_pakan;
+                        @endphp
+                        <tr>
+                            <td style="">
+                                <?= $p->nm_pakan ?>
+                            </td>
+                            <td style="">
+                                <?= number_format($p->gr_pakan / 1000, 1) ?>
+                            </td>
+                            <td style="">Kg</td>
+                        </tr>
                         @endforeach
                     </tbody>
                     <thead
@@ -196,11 +196,11 @@
                     </thead>
                     <tbody>
                         @foreach ($obat_pakan as $o)
-                            <tr>
-                                <td style="">{{ $o->nm_produk }}</td>
-                                <td style="">{{ number_format(($ttl / 1000) * $o->dosis, 1) }} </td>
-                                <td style="">{{ $o->satuan }}</td>
-                            </tr>
+                        <tr>
+                            <td style="">{{ $o->nm_produk }}</td>
+                            <td style="">{{ number_format(($ttl / 1000) * $o->dosis, 1) }} </td>
+                            <td style="">{{ $o->satuan }}</td>
+                        </tr>
                         @endforeach
                     </tbody>
                 </table>
@@ -230,22 +230,22 @@
                 <tbody style="color: #787878; font-family:  Helvetica;">
 
                     @if (empty($obat_air))
-                        <tr>
-                            <td style=" text-align: center;" colspan="8">Data tidak ada</td>
-                        </tr>
+                    <tr>
+                        <td style=" text-align: center;" colspan="8">Data tidak ada</td>
+                    </tr>
                     @else
-                        @foreach ($obat_air as $o)
-                            <tr>
-                                <td style="">{{ $o->nm_produk }}</td>
-                                <td style="">{{ $o->dosis }}</td>
-                                <td style="">{{ $o->satuan }}</td>
-                                <td style="">{{ $o->campuran }}</td>
-                                <td style="">{{ $o->satuan2 }}</td>
-                                <td style="">{{ $o->waktu }}</td>
-                                <td style="">{{ $o->ket }}</td>
-                                <td style="">{{ $o->cara }}</td>
-                            </tr>
-                        @endforeach
+                    @foreach ($obat_air as $o)
+                    <tr>
+                        <td style="">{{ $o->nm_produk }}</td>
+                        <td style="">{{ $o->dosis }}</td>
+                        <td style="">{{ $o->satuan }}</td>
+                        <td style="">{{ $o->campuran }}</td>
+                        <td style="">{{ $o->satuan2 }}</td>
+                        <td style="">{{ $o->waktu }}</td>
+                        <td style="">{{ $o->ket }}</td>
+                        <td style="">{{ $o->cara }}</td>
+                    </tr>
+                    @endforeach
                     @endif
                 </tbody>
             </table>
@@ -268,17 +268,17 @@
                 </thead>
                 <tbody style="color: #787878; font-family:  Helvetica;">
                     @if (empty($obat_ayam))
-                        <tr>
-                            <td style=" text-align: center;" colspan="7">Data tidak ada</td>
-                        </tr>
+                    <tr>
+                        <td style=" text-align: center;" colspan="7">Data tidak ada</td>
+                    </tr>
                     @else
-                        @foreach ($obat_ayam as $o)
-                            <tr>
-                                <td style="">{{ $o->nm_produk }}</td>
-                                <td style="">{{ number_format($o->dosis, 1) }}</td>
-                                <td style="">{{ $o->satuan }}</td>
-                            </tr>
-                        @endforeach
+                    @foreach ($obat_ayam as $o)
+                    <tr>
+                        <td style="">{{ $o->nm_produk }}</td>
+                        <td style="">{{ number_format($o->dosis, 1) }}</td>
+                        <td style="">{{ $o->satuan }}</td>
+                    </tr>
+                    @endforeach
                     @endif
 
                 </tbody>
