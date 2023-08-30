@@ -17,8 +17,9 @@
             }
 
             .merah {
-                background-color: #ff3030 !important;
-                color: white;
+                background-color: #f6e6e6 !important;
+                color: red;
+                font-weight: bold;
             }
         </style>
         <h5 class="float-start mt-1">{{ $title }} ~ {{ tanggal(date('Y-m-d')) }}</h5>
