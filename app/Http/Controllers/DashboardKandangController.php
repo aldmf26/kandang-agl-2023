@@ -1022,7 +1022,7 @@ class DashboardKandangController extends Controller
 
         if (!empty($r->id_obat_air)) {
             for ($i = 0; $i < count($r->id_obat_air); $i++) {
-                $id_pakan = $r->id_obat_pakan[$i];
+                $id_pakan = $r->id_obat_air[$i];
 
                 $harga = DB::selectOne("SELECT a.id_pakan, sum(a.pcs) as pcs , sum(a.total_rp) as ttl_rp
                         FROM stok_produk_perencanaan as a
@@ -1235,15 +1235,19 @@ class DashboardKandangController extends Controller
                 if (!empty($r->id_obat_air[0])) {
                     for ($i = 0; $i < count($r->id_obat_air); $i++) {
 
-                        $id_pakan = $r->id_obat_pakan[$i];
+                        $id_pakan = $r->id_obat_air[$i];
 
                         $harga = DB::selectOne("SELECT a.id_pakan, sum(a.pcs) as pcs , sum(a.total_rp) as ttl_rp
                         FROM stok_produk_perencanaan as a
                         where  a.pcs != 0 and a.admin != 'import'  
                         and a.tgl between '2023-01-01' and '$tgl' and a.h_opname = 'T' and a.id_pakan = '$id_pakan'
                         GROUP by a.id_pakan;");
-
                         $h_satuan = $harga->ttl_rp / $harga->pcs;
+
+                        if ($id_pakan == '23') {
+                            dd($h_satuan);
+                        }
+
 
 
                         $data1 = [
