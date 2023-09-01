@@ -47,11 +47,12 @@
                         <tbody>
                             @foreach ($produk as $no => $p)
                                 @php
+                                    $cekGudang2 = $id_gudang == 2 ? "AND a.check ='Y'" : '';
                                     $telur = DB::selectOne("SELECT b.nm_telur, SUM(a.pcs - a.pcs_kredit) as pcs, SUM(a.kg -
                             a.kg_kredit) as kg
                             FROM stok_telur as a
                             left JOIN telur_produk as b on b.id_produk_telur = a.id_telur
-                            WHERE a.id_gudang = '$id_gudang' and a.id_telur = '$p->id_produk_telur' and a.opname = 'T' AND a.check ='Y'
+                            WHERE a.id_gudang = '$id_gudang' and a.id_telur = '$p->id_produk_telur' and a.opname = 'T' $cekGudang2
                             GROUP by a.id_telur;");
                                 @endphp
                                 <tr>
