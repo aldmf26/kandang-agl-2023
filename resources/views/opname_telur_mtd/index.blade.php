@@ -51,7 +51,7 @@
                             a.kg_kredit) as kg
                             FROM stok_telur as a
                             left JOIN telur_produk as b on b.id_produk_telur = a.id_telur
-                            WHERE a.id_gudang = '$id_gudang' and a.id_telur = '$p->id_produk_telur' and a.opname = 'T'
+                            WHERE a.id_gudang = '$id_gudang' and a.id_telur = '$p->id_produk_telur' and a.opname = 'T' AND a.check ='Y'
                             GROUP by a.id_telur;");
                                 @endphp
                                 <tr>
