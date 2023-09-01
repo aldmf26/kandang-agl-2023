@@ -60,7 +60,7 @@
                                     <td>{{ $p->nm_telur }}</td>
                                     <td align="right">{{ empty($telur->pcs) ? '0' : number_format($telur->pcs, 0) }}
                                     </td>
-                                    <td align="right">{{ empty($telur->pcs) ? '0' : number_format($telur->kg, 2) }}</td>
+                                    <td align="right">{{ empty($telur->kg) ? '0' : number_format($telur->kg, 2) }}</td>
                                     <td>
                                         <input style="text-align: right" type="text"
                                             class="form-control pcs_opname pcs_opname{{ $p->id_produk_telur }}"
