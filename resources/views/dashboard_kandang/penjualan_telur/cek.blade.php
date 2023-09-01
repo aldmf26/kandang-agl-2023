@@ -17,19 +17,20 @@
                             <hr>
                         </div>
                         <div class="col-lg-5">
-                            <img src="https://agrilaras.putrirembulan.com/assets/img/logo.png" alt="Logo" width="150px">
+                            <img src="https://agrilaras.putrirembulan.com/assets/img/logo.png" alt="Logo"
+                                width="150px">
                         </div>
                         <div class="col-lg-7">
                             <table>
                                 <tr>
                                     <td style="padding: 5px">Tanggal</td>
                                     <td style="padding: 5px">:</td>
-                                    <td style="padding: 5px">{{Tanggal($invoice2->tgl)}}</td>
+                                    <td style="padding: 5px">{{ Tanggal($invoice2->tgl) }}</td>
                                 </tr>
                                 <tr>
                                     <td style="padding: 5px">No. Nota</td>
                                     <td style="padding: 5px">:</td>
-                                    <td style="padding: 5px">{{$invoice2->no_nota}} <span class="text-danger">(mohon
+                                    <td style="padding: 5px">{{ $invoice2->no_nota }} <span class="text-danger">(mohon
                                             dicopy
                                             di nota manual)</span>
                                     </td>
@@ -37,7 +38,7 @@
                                 <tr>
                                     <td style="padding: 5px">Kpd Yth</td>
                                     <td style="padding: 5px">:</td>
-                                    <td style="padding: 5px">Bpk/Ibu {{$invoice2->customer}}</td>
+                                    <td style="padding: 5px">Bpk/Ibu {{ $invoice2->customer }}</td>
                                 </tr>
                                 {{-- <tr>
                                     <td style="padding: 5px">Pengirim</td>
@@ -57,8 +58,10 @@
                             <tr>
                                 <th class="dhead" width="10%" rowspan="2">Produk </th>
                                 <th style="text-align: center" class="dhead abu" colspan="3">Penjualan per pcs</th>
-                                <th style="text-align: center" class="dhead putih" colspan="3">Penjualan per ikat</th>
-                                <th style="text-align: center" class="dhead abuGelap" colspan="4">Penjualan per rak</th>
+                                <th style="text-align: center" class="dhead putih" colspan="3">Penjualan per ikat
+                                </th>
+                                <th style="text-align: center" class="dhead abuGelap" colspan="4">Penjualan per rak
+                                </th>
                                 <th rowspan="2" class="dhead" width="10%"
                                     style="text-align: center; white-space: nowrap;">Total
                                     Rp
@@ -77,7 +80,8 @@
 
                                 <th class="dhead abuGelap" width="7%" style="text-align: center;">Pcs</th>
                                 <th class="dhead abuGelap" width="7%" style="text-align: center;">Kg kotor</th>
-                                <th class="dhead abuGelap" width="7%" style="text-align: center;">Kg bersih <br> potong
+                                <th class="dhead abuGelap" width="7%" style="text-align: center;">Kg bersih <br>
+                                    potong
                                     rak</th>
                                 {{-- <th class="dhead" width="7%" style="text-align: center;">Rak</th> --}}
                                 <th class="dhead abuGelap" width="10%" style="text-align: center;">Rp Rak</th>
@@ -87,52 +91,52 @@
                         </thead>
                         <tbody>
                             @php
-                            $total_semua = 0;
-                            $ttl_pcs = 0;
-                            $ttl_kg_kotor = 0;
-                            $ttl_kg_bersih = 0;
+                                $total_semua = 0;
+                                $ttl_pcs = 0;
+                                $ttl_kg_kotor = 0;
+                                $ttl_kg_bersih = 0;
                             @endphp
                             @foreach ($invoice as $i)
-                            <tr>
+                                <tr>
 
-                                <td>{{$i->nm_telur}}</td>
-                                <td align="right">{{$i->pcs_pcs}}</td>
-                                <td align="right">{{$i->kg_pcs}}</td>
-                                <td align="right">Rp. {{number_format($i->rp_pcs,0)}}</td>
-                                <!-- Jual Ikat -->
-                                <td align="right">{{$i->ikat}}</td>
-                                <td align="right">{{$i->kg_ikat}}</td>
-                                <td align="right">Rp. {{number_format($i->rp_ikat,0)}}</td>
-                                <!-- Jual Ikat -->
-                                <!-- Jual Kg -->
-                                <td align="right">{{$i->pcs_kg}}</td>
-                                <td align="right">{{$i->kg_kg_kotor}}</td>
-                                <td align="right">{{$i->kg_kg}}</td>
-                                {{-- <td align="right">{{$i->rak_kg}}</td> --}}
-                                <td align="right">Rp. {{number_format($i->rp_kg,0)}}</td>
-                                <!-- Jual Kg -->
-                                <td align="right">
-                                    @php
-                                    $rp_pcs = $i->pcs_pcs * $i->rp_pcs;
-                                    $rp_ikat = ($i->kg_ikat - $i->ikat) * $i->rp_ikat;
-                                    // $rak_kali = round($i->rak_kg * 0.12,1);
-                                    $rak_kotor = round(($i->pcs_kg/15) * 0.12,1);
-                                    $kg_rak_kotor = $i->kg_kg + $rak_kotor;
-                                    $rp_kg = $i->kg_kg * $i->rp_kg;
-                                    $total_rp = $rp_pcs + $rp_ikat + $rp_kg;
-
-                                    $ikat_kg_bersih = $i->kg_ikat - $i->ikat;
-
-                                    @endphp
-                                    Rp. {{number_format($total_rp,0)}}
-                                </td>
-                            </tr>
-                            @php
-                            $total_semua += $total_rp;
-                            $ttl_pcs += $i->pcs_pcs + ($i->ikat * 180) + $i->pcs_kg;
-                            $ttl_kg_kotor += $i->kg_pcs + $i->kg_ikat + $i->kg_kg_kotor;
-                            $ttl_kg_bersih += $ikat_kg_bersih + $i->kg_kg;
-                            @endphp
+                                    <td>{{ $i->nm_telur }}</td>
+                                    <td align="right">{{ $i->pcs_pcs }}</td>
+                                    <td align="right">{{ $i->kg_pcs }}</td>
+                                    <td align="right">Rp. {{ number_format($i->rp_pcs, 0) }}</td>
+                                    <!-- Jual Ikat -->
+                                    <td align="right">{{ $i->ikat }}</td>
+                                    <td align="right">{{ $i->kg_ikat }}</td>
+                                    <td align="right">Rp. {{ number_format($i->rp_ikat, 0) }}</td>
+                                    <!-- Jual Ikat -->
+                                    <!-- Jual Kg -->
+                                    <td align="right">{{ $i->pcs_kg }}</td>
+                                    <td align="right">{{ $i->kg_kg_kotor }}</td>
+                                    <td align="right">{{ $i->kg_kg }}</td>
+                                    {{-- <td align="right">{{$i->rak_kg}}</td> --}}
+                                    <td align="right">Rp. {{ number_format($i->rp_kg, 0) }}</td>
+                                    <!-- Jual Kg -->
+                                    <td align="right">
+                                        @php
+                                            $rp_pcs = $i->pcs_pcs * $i->rp_pcs;
+                                            $rp_ikat = ($i->kg_ikat - $i->ikat) * $i->rp_ikat;
+                                            // $rak_kali = round($i->rak_kg * 0.12,1);
+                                            $rak_kotor = round(($i->pcs_kg / 15) * 0.12, 1);
+                                            $kg_rak_kotor = $i->kg_kg + $rak_kotor;
+                                            $rp_kg = $i->kg_kg * $i->rp_kg;
+                                            $total_rp = $rp_pcs + $rp_ikat + $rp_kg;
+                                            
+                                            $ikat_kg_bersih = $i->kg_ikat - $i->ikat;
+                                            
+                                        @endphp
+                                        Rp. {{ number_format($total_rp, 0) }}
+                                    </td>
+                                </tr>
+                                @php
+                                    $total_semua += $total_rp;
+                                    $ttl_pcs += $i->pcs_pcs + $i->ikat * 180 + $i->pcs_kg;
+                                    $ttl_kg_kotor += $i->kg_pcs + $i->kg_ikat + $i->kg_kg_kotor;
+                                    $ttl_kg_bersih += $ikat_kg_bersih + $i->kg_kg;
+                                @endphp
                             @endforeach
 
 
@@ -150,27 +154,27 @@
                             <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                             <td>Total Pcs</td>
                             <td>:</td>
-                            <td>{{number_format($ttl_pcs,0)}}</td>
+                            <td>{{ number_format($ttl_pcs, 0) }}</td>
                             <td></td>
                         </tr>
                         <tr>
                             <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                             <td>Total (Bruto)</td>
                             <td>:</td>
-                            <td>{{number_format($ttl_kg_kotor,1)}}</td>
+                            <td>{{ number_format($ttl_kg_kotor, 1) }}</td>
                             <td></td>
                         </tr>
                         <tr>
                             <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
                             <td>Berat Bersih (Netto)</td>
                             <td>:</td>
-                            <td>{{number_format($ttl_kg_bersih,1)}}</td>
+                            <td>{{ number_format($ttl_kg_bersih, 1) }}</td>
                             <td></td>
                         </tr>
                         <tr>
                             <td colspan="3"></td>
                             <td><b>JUMLAH TOTAL </b></td>
-                            <td><b>Rp.{{ number_format($total_semua,0)}}</b></td>
+                            <td><b>Rp.{{ number_format($total_semua, 0) }}</b></td>
                         </tr>
                     </table>
                 </div>
