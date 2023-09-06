@@ -295,9 +295,9 @@ class Penjualan_telurmartadahController extends Controller
         $no_nota = $r->no_nota;
         if ($voucherUpdate) {
             $cekAdmin = DB::table('invoice_telur')->where('no_nota', $no_nota)->first();
-            
-            $cekTransfer = DB::table('stok_telur')->where([['tgl','>', $r->tgl], ['jenis', 'Opname']])->first();
-            if(empty($cekTransfer)){
+
+            $cekTransfer = DB::table('stok_telur')->where([['tgl', '>=', $r->tgl], ['jenis', 'Opname']])->first();
+            if (empty($cekTransfer)) {
                 DB::table('stok_telur')->where('nota_transfer', $no_nota)->delete();
             }
             DB::table('tb_void')->where([['no_nota', $no_nota], ['voucher', $r->voucher]])->update(['status' => 'Y']);
@@ -382,7 +382,7 @@ class Penjualan_telurmartadahController extends Controller
                 ];
                 DB::table('invoice_mtd')->insert($data);
 
-                if(empty($cekTransfer)){
+                if (empty($cekTransfer)) {
                     DB::table('stok_telur')->insert([
                         'id_kandang' => 0,
                         'id_telur' => $r->id_produk[$x],
