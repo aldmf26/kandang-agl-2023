@@ -298,7 +298,7 @@ class Penjualan_telurmartadahController extends Controller
 
             $cekTransfer = DB::table('stok_telur')->where([['tgl', '>=', $r->tgl], ['jenis', 'Opname']])->first();
 
-            dd($cekTransfer);
+
             if (empty($cekTransfer)) {
                 DB::table('stok_telur')->where('nota_transfer', $no_nota)->delete();
             }
