@@ -133,6 +133,9 @@
         </div>
     </div>
 @endforeach
+<div id="loadTbhObatPakanEdit"></div>
+<button class="btn btn-primary btn-sm tbhObatPakanEdit mb-3" type="button"><i
+    class="fa fa-plus"></i>Tambah Obat Pakan</button>
 <h5 style="text-decoration: underline">Obat/vit dengan campuran air</h5>
 @foreach ($obat_air as $oba)
 <div class="row">
@@ -192,7 +195,9 @@
     </div>
 </div>
 @endforeach
-
+<div id="loadTbhObatAirEdit"></div>
+<button class="btn btn-primary btn-sm tbhObatAirEdit mb-3" type="button"><i
+    class="fa fa-plus"></i>Tambah Obat Air</button>
 <h5 style="text-decoration: underline">Obat/ekor ayam</h5>
 @foreach ($obat_aym as $tot)    
 <div class="row">

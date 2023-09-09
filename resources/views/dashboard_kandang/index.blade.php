@@ -46,9 +46,9 @@
         @include('dashboard_kandang.tabel.stokTelur')
         <section class="row">
             @if (session()->has('error'))
-            <div class="col-lg-12">
-                <x-theme.alert pesan="kontak dr anto kalo ada yg merah" />
-            </div>
+                <div class="col-lg-12">
+                    <x-theme.alert pesan="kontak dr anto kalo ada yg merah" />
+                </div>
             @endif
 
             @include('dashboard_kandang.tabel.penjualanUmum')
@@ -67,8 +67,8 @@
         </section>
     </x-slot>
     @section('js')
-    <script>
-        $(document).on('click', '.rumus', function() {
+        <script>
+            $(document).on('click', '.rumus', function() {
                 var rumus = $(this).attr('rumus');
                 $.ajax({
                     type: "get",
@@ -484,6 +484,16 @@
                 });
             })
 
+            $(document).on('click', '.tbhObatPakanEdit', function() {
+                $.ajax({
+                    type: "GET",
+                    url: "{{ route('dashboard_kandang.load_obat_pakan') }}",
+                    success: function(r) {
+                        $("#loadTbhObatPakanEdit").append(r);
+                    }
+                });
+            })
+
             function loadObatAir() {
                 $.ajax({
                     type: "GET",
@@ -536,6 +546,17 @@
                     });
                 }
             })
+
+            $(document).on('click', '.tbhObatAirEdit', function() {
+                $.ajax({
+                    type: "GET",
+                    url: "{{ route('dashboard_kandang.load_obat_air') }}",
+                    success: function(r) {
+                        $("#loadTbhObatAirEdit").append(r);
+                    }
+                });
+            })
+
             $(document).on('submit', '#form_tambah_obat_air', function(e) {
                 e.preventDefault()
                 var datas = $("#form_tambah_obat_air").serialize()
@@ -655,7 +676,7 @@
                     }
                 });
             });
-            
+
 
             $(document).on('click', '.history_pakvit', function(e) {
                 e.preventDefault()
@@ -664,7 +685,7 @@
                     type: "GET",
                     url: "{{ route('dashboard_kandang.history_pakvit') }}",
                     data: {
-                        jenis:jenis
+                        jenis: jenis
                     },
                     success: function(r) {
                         $('#load_history_pakvit').html(r);
@@ -688,11 +709,11 @@
                 var jenis = $("#jenis").val();
                 $.ajax({
                     type: "get",
-                    url: "{{route('dashboard_kandang.search_history_pakvit')}}",
+                    url: "{{ route('dashboard_kandang.search_history_pakvit') }}",
                     data: {
-                        tgl1:tgl1,
-                        tgl2:tgl2,
-                        jenis:jenis,
+                        tgl1: tgl1,
+                        tgl2: tgl2,
+                        jenis: jenis,
                     },
                     success: function(r) {
                         $('#load_history_pakvit').html(r);
@@ -710,10 +731,10 @@
 
 
             // pakan
-    </script>
+        </script>
 
-    <script>
-        function load_stok_pakan() {
+        <script>
+            function load_stok_pakan() {
                 $.ajax({
                     type: "GET",
                     url: "{{ route('dashboard_kandang.load_stok_pakan') }}",
@@ -896,6 +917,6 @@
                 $('.ttl_rp').val(ttl_rp);
 
             });
-    </script>
+        </script>
     @endsection
 </x-theme.app>
