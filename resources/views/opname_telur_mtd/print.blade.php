@@ -33,7 +33,7 @@
                     <tr>
                         <td style="padding: 5px">Tanggal</td>
                         <td style="padding: 5px">:</td>
-                        <td style="padding: 5px">{{ Tanggal($data->tgl) }}</td>
+                        <td style="padding: 5px">{{ Tanggal($detail->tgl) }}</td>
                     </tr>
                     <tr>
                         <td style="padding: 5px">No. Nota </td>
@@ -43,7 +43,7 @@
                     <tr>
                         <td style="padding: 5px">Admin</td>
                         <td style="padding: 5px">:</td>
-                        <td style="padding: 5px">{{ $data->admin }}</td>
+                        <td style="padding: 5px">{{ $detail->admin }}</td>
                     </tr>
     
     

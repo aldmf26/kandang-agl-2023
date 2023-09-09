@@ -31,6 +31,7 @@ class OpnamemtdController extends Controller
 
     public function save_opname_telur_mtd(Request $r)
     {
+
         $urutan_opname = DB::selectOne("SELECT a.nota_transfer as urutan
         FROM stok_telur as a WHERE a.jenis = 'Opname' ORDER BY a.id_stok_telur DESC;");
 
@@ -91,7 +92,7 @@ class OpnamemtdController extends Controller
         $data = [
             'nota' => $no_nota,
             'title' => 'Cek Opname',
-            'data' => DB::table('stok_telur')->where([['nota_transfer', $no_nota], ['jenis', 'Opname']])->first(),
+            'detail' => DB::table('stok_telur')->where([['nota_transfer', $no_nota], ['jenis', 'Opname']])->first(),
             'produk' => DB::table('telur_produk')->get(),
             'datas' => DB::table('stok_telur')->where([['nota_transfer', $no_nota], ['jenis', 'Opname']])->get()
         ];
