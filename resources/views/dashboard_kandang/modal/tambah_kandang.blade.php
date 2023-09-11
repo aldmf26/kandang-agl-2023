@@ -5,8 +5,14 @@
         <div class="row">
             <div class="col-lg-6">
                 <div class="form-group">
-                    <label for="">Tanggal Lahir</label>
-                    <input required value="{{ date('Y-m-d') }}" type="date" name="tgl" class="form-control">
+                    <label for="">Tanggal Chick in</label>
+                    <input required value="{{ date('Y-m-d') }}" type="date" name="tgl_lahir" class="form-control">
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="form-group">
+                    <label for="">Tanggal Masuk</label>
+                    <input required value="{{ date('Y-m-d') }}" type="date" name="tgl_masuk" class="form-control">
                 </div>
             </div>
             <div class="col-lg-6">
@@ -20,10 +26,10 @@
                 <select name="strain" class="form-control select2-kandang" id="">
                     <option value="">- Pilih Strain -</option>
                     @php
-                    $strain = ['isa', 'lohman', 'hisex', 'hyline', 'hovogen'];
+                    $strain = DB::table('strain')->get()
                     @endphp
                     @foreach ($strain as $d)
-                    <option value="{{ ucwords($d) }}">{{ ucwords($d) }} Brown</option>
+                    <option value="{{ $d->id_strain }}">{{ $d->nm_strain }}</option>
                     @endforeach
                 </select>
             </div>
@@ -31,6 +37,12 @@
                 <div class="form-group">
                     <label for="">Ayam Awal</label>
                     <input required type="text" name="ayam_awal" class="form-control">
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="form-group">
+                    <label for="">Tanggal Afkir</label>
+                    <input required type="date" name="chick_out" class="form-control">
                 </div>
             </div>
         </div>

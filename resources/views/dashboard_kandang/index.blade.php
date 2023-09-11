@@ -46,9 +46,9 @@
         @include('dashboard_kandang.tabel.stokTelur')
         <section class="row">
             @if (session()->has('error'))
-                <div class="col-lg-12">
-                    <x-theme.alert pesan="kontak dr anto kalo ada yg merah" />
-                </div>
+            <div class="col-lg-12">
+                <x-theme.alert pesan="kontak dr anto kalo ada yg merah" />
+            </div>
             @endif
 
             @include('dashboard_kandang.tabel.penjualanUmum')
@@ -64,11 +64,12 @@
             @include('dashboard_kandang.modal.transfer_ayam')
             @include('dashboard_kandang.modal.penjualan_ayam')
             @include('dashboard_kandang.modal.history_pakvit')
+            @include('dashboard_kandang.modal.edit_kandang')
         </section>
     </x-slot>
     @section('js')
-        <script>
-            $(document).on('click', '.rumus', function() {
+    <script>
+        $(document).on('click', '.rumus', function() {
                 var rumus = $(this).attr('rumus');
                 $.ajax({
                     type: "get",
@@ -731,10 +732,10 @@
 
 
             // pakan
-        </script>
+    </script>
 
-        <script>
-            function load_stok_pakan() {
+    <script>
+        function load_stok_pakan() {
                 $.ajax({
                     type: "GET",
                     url: "{{ route('dashboard_kandang.load_stok_pakan') }}",
@@ -917,6 +918,7 @@
                 $('.ttl_rp').val(ttl_rp);
 
             });
-        </script>
+           edit('edit_kandang', 'id_kandang', 'data_kandang/edit', 'load-edit')
+    </script>
     @endsection
 </x-theme.app>

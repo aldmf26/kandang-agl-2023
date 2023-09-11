@@ -27,39 +27,39 @@
 
                 <tbody>
                     @foreach ($kandang as $no => $a)
-                        <tr>
-                            <td>{{ $no + 1 }}</td>
-                            <td>{{ tanggal($a->chick_in) }}</td>
-                            <td>{{ ucwords($a->nm_kandang) }}</td>
-                            <td>{{ ucwords($a->nm_strain) }}</td>
-                            <td>
-                                {{ $a->stok_awal }}
-                            </td>
-                            <td>
-                                1
-                            </td>
-                            <td>
-                                <div class="btn-group" role="group">
-                                    <span class="btn btn-sm" data-bs-toggle="dropdown">
-                                        <i class="fas fa-ellipsis-v text-primary"></i>
-                                    </span>
-                                    <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                    <tr>
+                        <td>{{ $no + 1 }}</td>
+                        <td>{{ tanggal($a->chick_in) }}</td>
+                        <td>{{ ucwords($a->nm_kandang) }}</td>
+                        <td>{{ ucwords($a->nm_strain) }}</td>
+                        <td>
+                            {{ $a->stok_awal }}
+                        </td>
+                        <td>
+                            1
+                        </td>
+                        <td>
+                            <div class="btn-group" role="group">
+                                <span class="btn btn-sm" data-bs-toggle="dropdown">
+                                    <i class="fas fa-ellipsis-v text-primary"></i>
+                                </span>
+                                <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1">
 
-                                        <li>
-                                            <a class="dropdown-item text-info edit" href="#"
-                                                data-bs-toggle="modal" data-bs-target="#edit"
-                                                id_akun="{{ $a->id_kandang }}"><i class="me-2 fas fa-pen"></i>Edit</a>
-                                        </li>
-                                        <li>
-                                            <a class="dropdown-item text-danger delete_nota"
-                                                no_nota="{{ $a->id_kandang }}" href="#" data-bs-toggle="modal"
-                                                data-bs-target="#delete"><i class="me-2 fas fa-trash"></i>Delete
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </td>
-                        </tr>
+                                    <li>
+                                        <a class="dropdown-item text-info edit" href="#" data-bs-toggle="modal"
+                                            data-bs-target="#edit" id_akun="{{ $a->id_kandang }}"><i
+                                                class="me-2 fas fa-pen"></i>Edit</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item text-danger delete_nota" no_nota="{{ $a->id_kandang }}"
+                                            href="#" data-bs-toggle="modal" data-bs-target="#delete"><i
+                                                class="me-2 fas fa-trash"></i>Delete
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
                     @endforeach
                 </tbody>
             </table>
@@ -72,8 +72,7 @@
                     <div class="col-lg-6">
                         <div class="form-group">
                             <label for="">chick In</label>
-                            <input required value="{{ date('Y-m-d') }}" type="date" name="tgl"
-                                class="form-control">
+                            <input required value="{{ date('Y-m-d') }}" type="date" name="tgl" class="form-control">
                         </div>
                     </div>
                     <div class="col-lg-6">
@@ -87,10 +86,10 @@
                         <select name="strain" class="form-control select2" id="">
                             <option value="">- Pilih Strain -</option>
                             @php
-                                $strain = DB::table('strain')->get();
+                            $strain = DB::table('strain')->get();
                             @endphp
                             @foreach ($strain as $d)
-                                <option value="{{ $d->id_strain }}">{{ ucwords($d->nm_strain) }} Brown</option>
+                            <option value="{{ $d->id_strain }}">{{ ucwords($d->nm_strain) }} Brown</option>
                             @endforeach
                         </select>
                     </div>
@@ -115,8 +114,8 @@
         <x-theme.btn_alert_delete route="data_kandang.delete" name="id_kandang" />
     </x-slot>
     @section('js')
-        <script>
-            edit('edit', 'id_akun', 'data_kandang/edit', 'load-edit')
-        </script>
+    <script>
+        edit('edit', 'id_akun', 'data_kandang/edit', 'load-edit')
+    </script>
     @endsection
 </x-theme.app>
