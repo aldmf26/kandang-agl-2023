@@ -11,8 +11,14 @@
             </div>
             <div class="col-lg-6">
                 <div class="form-group">
-                    <label for="">Tanggal Masuk</label>
+                    <label for="">Tanggal Chick in2</label>
                     <input required value="{{ date('Y-m-d') }}" type="date" name="tgl_masuk" class="form-control">
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="form-group">
+                    <label for="">Tanggal Afkir</label>
+                    <input required type="date" name="chick_out" class="form-control">
                 </div>
             </div>
             <div class="col-lg-6">
@@ -39,12 +45,7 @@
                     <input required type="text" name="ayam_awal" class="form-control">
                 </div>
             </div>
-            <div class="col-lg-6">
-                <div class="form-group">
-                    <label for="">Tanggal Afkir</label>
-                    <input required type="date" name="chick_out" class="form-control">
-                </div>
-            </div>
+
         </div>
     </x-theme.modal>
 </form>

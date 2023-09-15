@@ -8,8 +8,14 @@
     </div>
     <div class="col-lg-6">
         <div class="form-group">
-            <label for="">Tanggal Masuk</label>
+            <label for="">Tanggal Chick in2</label>
             <input required value="{{ $d->tgl_masuk }}" type="date" name="tgl_masuk" class="form-control">
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="form-group">
+            <label for="">Tanggal Afkir</label>
+            <input required type="date" name="chick_out" class="form-control" value="{{ $d->chick_out }}">
         </div>
     </div>
     <div class="col-lg-6">
@@ -34,10 +40,5 @@
             <input required type="text" value="{{ $d->stok_awal }}" name="ayam_awal" class="form-control">
         </div>
     </div>
-    <div class="col-lg-6">
-        <div class="form-group">
-            <label for="">Tanggal Afkir</label>
-            <input required type="date" name="chick_out" class="form-control" value="{{ $d->chick_out }}">
-        </div>
-    </div>
+
 </div>
