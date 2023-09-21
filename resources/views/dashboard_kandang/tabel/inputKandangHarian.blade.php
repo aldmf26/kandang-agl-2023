@@ -114,8 +114,7 @@
                     @foreach ($telur as $t)
                         @php
                             $tgl = '2023-09-20';
-                            $tglKemarin = Carbon\Carbon::yesterday()->format('Y-m-d');
-                            dd($tglKemarin);
+                            $tglKemarin = '2023-09-19';
                             $stok = DB::selectOne("SELECT * FROM stok_telur as a WHERE a.id_kandang = '$d->id_kandang'
                     AND a.tgl = '$tgl' AND a.id_telur = '$t->id_produk_telur'");
                             
