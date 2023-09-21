@@ -133,8 +133,10 @@
                             $ttlKgKemarin += $stokKemarin->kg ?? 0;
                             // dd($pcsKemarin - $pcs);
                             $kelasTtlPcsTelur = $ttlPcs - $ttlPcsKemarin < -60 ? 'merah' : 'abu';
-                        $kelasTtKgTelur = $ttlKg - $ttlKgKemarin < 2.5 ? 'merah' : 'abu'; @endphp <td data-bs-toggle="modal" id_kandang="{{ $d->id_kandang }}"
-                            nm_kandang="{{ $d->nm_kandang }}" class="tambah_telur " data-bs-target="#tambah_telur">
+                            $kelasTtKgTelur = $ttlKg - $ttlKgKemarin < -2.5 ? 'merah' : 'abu';
+                        @endphp
+                        <td data-bs-toggle="modal" id_kandang="{{ $d->id_kandang }}" nm_kandang="{{ $d->nm_kandang }}"
+                            class="tambah_telur " data-bs-target="#tambah_telur">
                             <span>{{ $stok->pcs ?? 0 }}</span>
                         </td>
                     @endforeach
