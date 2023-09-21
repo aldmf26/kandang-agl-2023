@@ -87,7 +87,7 @@
                     @foreach ($telur as $t)
                         @php
                         $tanggalObjek = Carbon\Carbon::parse($tgl);
-                            $tglKemarin = Carbon\Carbon::now()->diffInDays($tanggalObjek);
+                            $tglKemarin = Carbon\Carbon::now()->diffInDays($tanggalObjek)->format('Y-m-d');
                             
                             $stok = DB::selectOne("SELECT * FROM stok_telur as a WHERE a.id_kandang = '$d->id_kandang'
                     AND a.tgl = '$tgl' AND a.id_telur = '$t->id_produk_telur'");
