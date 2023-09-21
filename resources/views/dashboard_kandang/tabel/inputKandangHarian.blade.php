@@ -113,7 +113,7 @@
                     @endphp
                     @foreach ($telur as $t)
                         @php
-                            $tgl = '2023-09-20';
+                            $tgl = date('Y-m-d');
                             $tglKemarin = Carbon\Carbon::yesterday()->format('Y-m-d');
                             
                             $stok = DB::selectOne("SELECT * FROM stok_telur as a WHERE a.id_kandang = '$d->id_kandang'
@@ -133,10 +133,8 @@
                             $ttlKgKemarin += $stokKemarin->kg ?? 0;
                             // dd($pcsKemarin - $pcs);
                             $kelasTtlPcsTelur = $ttlPcs - $ttlPcsKemarin < -60 ? 'merah' : 'abu';
-                            $kelasTtKgTelur = $ttlKg - $ttlKgKemarin < -2.5 ? 'merah' : 'abu';
-                        @endphp
-                        <td data-bs-toggle="modal" id_kandang="{{ $d->id_kandang }}" nm_kandang="{{ $d->nm_kandang }}"
-                            class="tambah_telur " data-bs-target="#tambah_telur">
+                        $kelasTtKgTelur = $ttlKg - $ttlKgKemarin < 2.5 ? 'merah' : 'abu'; @endphp <td data-bs-toggle="modal" id_kandang="{{ $d->id_kandang }}"
+                            nm_kandang="{{ $d->nm_kandang }}" class="tambah_telur " data-bs-target="#tambah_telur">
                             <span>{{ $stok->pcs ?? 0 }}</span>
                         </td>
                     @endforeach
@@ -149,7 +147,6 @@
                         {{ number_format($ttlKg, 1) }} ({{ number_format($ttlKg - $ttlKgKemarin, 1) }})
                     </td>
                     {{-- end telur --}}
-
 
                     {{-- pakan --}}
                     @php
@@ -167,17 +164,10 @@
                         {{ number_format($gr_perekor, 0) }}</td>
 
                     {{-- end pakan --}}
-                    <td align="center" style="white-space: nowrap">
-                        @if (auth()->user()->posisi_id == 1)
-                            <a onclick="return confirm('Yakin ingin di selesaikan ?')"
-                                href="{{ route('dashboard_kandang.kandang_selesai', $d->id_kandang) }}"
-                                class="badge bg-primary"><i class="fas fa-check"></i></a>
-                            <a href="#" class="badge bg-warning edit_kandang"
-                                id_kandang="{{ $d->id_kandang }}" data-bs-toggle="modal"
-                                data-bs-target="#edit_kandang"><i class="fas fa-edit"></i></a>
-                        @else
-                        @endif
-
+                    <td align="center">
+                        <a onclick="return confirm('Yakin ingin di selesaikan ?')"
+                            href="{{ route('dashboard_kandang.kandang_selesai', $d->id_kandang) }}"
+                            class="badge bg-primary"><i class="fas fa-check"></i></a>
                     </td>
                 </tr>
                 @php
