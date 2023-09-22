@@ -1106,8 +1106,6 @@ class DashboardKandangController extends Controller
             return redirect()->route('dashboard_kandang.index')->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
 
-
-
         // return redirect()->route('dashboard_kandang.index')->with('sukses', 'Data Perencanaan Berhasil didedit');
     }
 
