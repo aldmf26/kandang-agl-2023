@@ -1798,9 +1798,13 @@ class DashboardKandangController extends Controller
         $cum_ttlkg = 0;
 
         foreach ($pullet as $d) {
+
+            $abnor =  $d->abnormalPcs ?? 0;
+            $normal = $d->normalPcs ?? 0;
+
             $kum += $d->death + $d->culling;
             $cum_kg += $d->kg_pakan;
-            $cum_ttlpcs += $d->ttl_pcs;
+            $cum_ttlpcs += $normal + $abnor;
             $cum_ttlkg += $d->ttl_kg;
             $populasi = $d->stok_awal - $d->pop;
 
@@ -1810,8 +1814,7 @@ class DashboardKandangController extends Controller
 
             // isi
 
-            $abnor =  $d->abnormalPcs ?? 0;
-            $normal = $d->normalPcs ?? 0;
+
 
             $sheet1->setCellValue("A$kolom", date('Y-m-d', strtotime($d->tgl)))
                 ->setCellValue("B$kolom", $d->mgg)
