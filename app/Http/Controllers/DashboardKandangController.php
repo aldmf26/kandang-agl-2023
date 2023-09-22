@@ -1808,6 +1808,13 @@ class DashboardKandangController extends Controller
 
             $birdTotal = $d->death + $d->culling;
 
+
+
+            // isi
+
+            $abnor =  $d->abnormalPcs ?? 0;
+            $normal = $d->normalPcs ?? 0;
+
             $sheet1->setCellValue("A$kolom", date('Y-m-d', strtotime($d->tgl)))
                 ->setCellValue("B$kolom", $d->mgg)
                 ->setCellValue("C$kolom", $populasi - $birdTotal ?? 0)
@@ -1823,7 +1830,8 @@ class DashboardKandangController extends Controller
                 ->setCellValue("J$kolom", $cum_kg)
                 ->setCellValue("K$kolom", $d->normalPcs ?? 0)
                 ->setCellValue("L$kolom", $d->abnormalPcs ?? 0)
-                ->setCellValue("M$kolom", $d->abnormalPcs ?? 0 + $d->normalPcs ?? 0)
+
+                ->setCellValue("M$kolom", $abnor + $normal)
                 ->setCellValue("N$kolom", $pop > 0 ? number_format(($d->ttl_pcs / $pop) * 100, 2) : 0)
                 ->setCellValue("O$kolom", $cum_ttlpcs);
             $ttlPcs = $d->normalPcs ?? 0 + $d->abnormalPcs ?? 0;
