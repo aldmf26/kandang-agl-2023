@@ -1802,8 +1802,10 @@ class DashboardKandangController extends Controller
             $abnor =  $d->abnormalPcs ?? 0;
             $normal = $d->normalPcs ?? 0;
 
+
+
             $kum += $d->death + $d->culling;
-            $cum_kg += $d->kg_pakan;
+            $cum_kg += $d->kg_pakan / 1000;
             $cum_ttlpcs += $normal + $abnor;
             $cum_ttlkg += $d->ttl_kg;
             $populasi = $d->stok_awal - $d->pop;
@@ -1827,7 +1829,7 @@ class DashboardKandangController extends Controller
             $pop = $populasi  ?? 0;
             $sheet1->setCellValue("G$kolom", ($birdTotal) > 0 && $pop > 0 ? number_format((($death + $culling) / $pop) * 100, 2) : 0)
                 ->setCellValue("H$kolom", $kum)
-                ->setCellValue("I$kolom", $d->kg_pakan)
+                ->setCellValue("I$kolom", $d->kg_pakan / 1000)
                 ->setCellValue("J$kolom", $cum_kg)
                 ->setCellValue("K$kolom", $d->normalPcs ?? 0)
                 ->setCellValue("L$kolom", $d->abnormalPcs ?? 0)
@@ -1837,10 +1839,11 @@ class DashboardKandangController extends Controller
                 ->setCellValue("O$kolom", $cum_ttlpcs);
             $ttlPcs = $d->normalPcs ?? 0 + $d->abnormalPcs ?? 0;
             $weightKg = $d->ttl_kg - ($ttlPcs / 180);
+            $kg_pakan = $d->kg_pakan / 1000;
             $sheet1->setCellValue("P$kolom", number_format($weightKg, 2))
                 ->setCellValue("Q$kolom", number_format($cum_ttlkg - ($cum_ttlpcs / 180), 2))
                 ->setCellValue("R$kolom", empty($d->normalPcs) ? 0 : number_format(($weightKg / $d->normalPcs ?? 0) * 1000, 2))
-                ->setCellValue("S$kolom", number_format($d->kg_pakan ?? 0 / $weightKg ?? 0, 2))
+                ->setCellValue("S$kolom", number_format($kg_pakan ?? 0 / $weightKg ?? 0, 2))
                 ->setCellValue("T$kolom", empty($cum_ttlpcs) ? 0 : number_format($cum_kg / ($cum_ttlkg - ($cum_ttlpcs / 180)), 2));
 
             $kolom++;
