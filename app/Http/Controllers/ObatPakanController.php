@@ -155,7 +155,8 @@ class ObatPakanController extends Controller
 
     public function print_opname($no_nota, $print = null)
     {
-        $history = DB::select("SELECT a.admin,a.tgl,a.id_pakan,b.nm_produk,a.pcs,a.pcs_kredit,a.total_rp,a.biaya_dll,c.stok,d.sum_ttl_rp,d.pcs_sum_ttl_rp FROM `stok_produk_perencanaan` as a 
+        $history = DB::select("SELECT a.admin,a.tgl,a.id_pakan,b.nm_produk,a.pcs,a.pcs_kredit,a.total_rp,a.biaya_dll,c.stok,d.sum_ttl_rp,d.pcs_sum_ttl_rp 
+        FROM `stok_produk_perencanaan` as a 
         LEFT JOIN tb_produk_perencanaan as b ON a.id_pakan = b.id_produk
         LEFT JOIN (
             SELECT a.id_pakan, (sum(a.pcs) - sum(a.pcs_kredit)) as stok

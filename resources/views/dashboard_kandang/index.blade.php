@@ -65,6 +65,7 @@
             @include('dashboard_kandang.modal.penjualan_ayam')
             @include('dashboard_kandang.modal.history_pakvit')
             @include('dashboard_kandang.modal.edit_kandang')
+            @include('dashboard_kandang.modal.opname_rak')
         </section>
     </x-slot>
     @section('js')
@@ -919,6 +920,17 @@
 
             });
            edit('edit_kandang', 'id_kandang', 'data_kandang/edit', 'load-edit')
+
+
+            // rak telur 
+            $(document).on('keyup', '.stokAktualRak', function(){
+                var nilai = $(this).val().replace(/,/g, '');
+                var stokProgram = $('.stokProgramRak').val().replace(/,/g, '');
+                var selisih = stokProgram - nilai
+                $('.stokSelisihRak').val(selisih.toLocaleString('en-US'));
+            })
+
+
     </script>
     @endsection
 </x-theme.app>

@@ -61,6 +61,7 @@ class DashboardKandangController extends Controller
             'produkPakan' => DB::table('tb_produk_perencanaan')->where('kategori', 'pakan')->get(),
             'produk' => $this->produk,
             'stok_ayam' => DB::selectOne("SELECT sum(a.debit - a.kredit) as saldo_kandang FROM stok_ayam as a where a.id_gudang = '1' and a.jenis = 'ayam'"),
+            'stok_rak' => DB::selectOne("SELECT sum(a.debit - a.kredit) as saldo FROM tb_rak_telur as a where a.id_gudang = '1'"),
             'stok_ayam_bjm' => DB::selectOne("SELECT sum(a.debit - a.kredit) as saldo_bjm FROM stok_ayam as a where a.id_gudang = '2' and a.jenis = 'ayam'"),
             'stok_karung' => DB::selectOne("SELECT sum(a.debit - a.kredit) as saldo_karung FROM stok_ayam as a where a.id_gudang = '1' and a.jenis = 'karung'"),
 

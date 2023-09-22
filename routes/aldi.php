@@ -19,6 +19,7 @@ use App\Http\Controllers\PeralatanController;
 use App\Http\Controllers\PiutangController;
 use App\Http\Controllers\PoController;
 use App\Http\Controllers\ProfitController;
+use App\Http\Controllers\rakController;
 use App\Http\Controllers\StokTelurMtdController;
 use App\Http\Controllers\SuplierController;
 use App\Http\Controllers\UserController;
@@ -407,6 +408,14 @@ Route::middleware('auth')->group(function () {
             Route::post('/save_edit_telur', 'save_edit_telur')->name('save_edit_telur');
             Route::get('/cek_penjualan_telur', 'cek_penjualan_telur')->name('cek_penjualan_telur');
             Route::get('/void_penjualan_mtd', 'void_penjualan_mtd')->name('void_penjualan_mtd');
+        });
+    Route::controller(rakController::class)
+        ->prefix('rak')
+        ->name('rak.')
+        ->group(function () {
+            Route::post('/create', 'create')->name('create');
+            Route::post('/opname', 'opname')->name('opname');
+            Route::get('/print_opname/{no_nota}/{print?}', 'print_opname')->name('print_opname');
         });
 
     Route::controller(ObatPakanController::class)

@@ -1,5 +1,5 @@
 <div class="row mb-4">
-    <div class="col-lg-4">
+    <div class="col-lg-3">
         <table class="table table-bordered" width="100%">
             <tr>
                 <th style="text-align: center" colspan="2">
@@ -27,7 +27,7 @@
 
         </table>
     </div>
-    <div class="col-lg-4">
+    <div class="col-lg-3">
         <table class="table table-bordered" width="100%">
             <tr>
                 <th style="text-align: center">
@@ -50,7 +50,7 @@
 
         </table>
     </div>
-    <div class="col-lg-4">
+    <div class="col-lg-3">
         <table class="table table-bordered" width="100%">
             <tr>
                 <th style="text-align: center">
@@ -59,12 +59,39 @@
             </tr>
             <tr>
                 <th style="text-align: center; height: 60px;">
-                    <h6>{{empty($stok_karung->saldo_karung) ? '0' : $stok_karung->saldo_karung}} Karung</h6>
+                    <h6>{{empty($stok_karung->saldo_karung) ? '0' : number_format($stok_karung->saldo_karung,0)}} Karung</h6>
                 </th>
             </tr>
             <tr>
                 <th style="text-align: center" colspan="2">
                     <a href="#" data-bs-toggle="modal" data-bs-target="#history_karung"
+                        class="btn btn-sm btn-primary">History </a>
+                </th>
+            </tr>
+
+        </table>
+    </div>
+    <div class="col-lg-3">
+        <table class="table table-bordered" width="100%">
+            <tr>
+                <th style="text-align: center">
+                    <h6>Rak Telur<br>{{tanggal(date('Y-m-d'))}}</h6>
+                </th>
+            </tr>
+            <tr>
+                <th style="text-align: center; height: 60px;">
+                    <h6>{{number_format($stok_rak->saldo ?? 0,0)}} Rak</h6>
+                </th>
+            </tr>
+            
+            <tr>
+                
+                <th style="text-align: center" colspan="2">
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#tambah_rak"
+                        class="btn btn-sm btn-primary">Tambah Rak </a>
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#opname_rak"
+                        class="btn btn-sm btn-primary">Opname </a>
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#history_rak"
                         class="btn btn-sm btn-primary">History </a>
                 </th>
             </tr>
