@@ -1843,7 +1843,7 @@ class DashboardKandangController extends Controller
             $sheet1->setCellValue("P$kolom", number_format($weightKg, 2))
                 ->setCellValue("Q$kolom", number_format($cum_ttlkg - ($cum_ttlpcs / 180), 2))
                 ->setCellValue("R$kolom", empty($d->normalPcs) ? 0 : number_format(($weightKg / $d->normalPcs ?? 0) * 1000, 2))
-                ->setCellValue("S$kolom", number_format($kg_pakan  / $weightKg, 2))
+                ->setCellValue("S$kolom", number_format($weightKg == 0 ? 0 : $kg_pakan  / $weightKg, 2))
                 ->setCellValue("T$kolom", empty($cum_ttlpcs) ? 0 : number_format($cum_kg / ($cum_ttlkg - ($cum_ttlpcs / 180)), 2));
 
             $kolom++;
