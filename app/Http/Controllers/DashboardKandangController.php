@@ -1738,7 +1738,7 @@ class DashboardKandangController extends Controller
         );
 
         // daily production
-        $pullet = DB::select("SELECT a.tgl, sum(c.mati) as pop_mati sum(c.jual) as pop_jual, b.stok_awal, SUM(a.gr) as kg_pakan, TIMESTAMPDIFF(WEEK, b.chick_in , a.tgl) AS mgg,
+        $pullet = DB::select("SELECT a.tgl, sum(c.mati) as pop_mati, sum(c.jual) as pop_jual, b.stok_awal, SUM(a.gr) as kg_pakan, TIMESTAMPDIFF(WEEK, b.chick_in , a.tgl) AS mgg,
         c.mati as death, c.jual as culling, normal.normalPcs, normal.normalKg, abnormal.abnormalPcs, abnormal.abnormalKg, d.pcs,d.kg, sum(d.pcs) as ttl_pcs, SUM(d.kg) as ttl_kg, b.chick_in as ayam_awal
         FROM tb_pakan_perencanaan as a
         LEFT JOIN kandang as b ON a.id_kandang = b.id_kandang
