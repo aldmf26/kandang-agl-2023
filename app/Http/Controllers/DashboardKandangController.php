@@ -1822,7 +1822,7 @@ class DashboardKandangController extends Controller
 
             $sheet1->setCellValue("A$kolom", date('Y-m-d', strtotime($d->tgl)))
                 ->setCellValue("B$kolom", $d->mgg)
-                ->setCellValue("C$kolom", $populasi - $birdTotal ?? 0)
+                ->setCellValue("C$kolom", $populasi - $kum)
                 ->setCellValue("D$kolom", $d->death ?? 0)
                 ->setCellValue("E$kolom", $d->culling ?? 0)
                 ->setCellValue("F$kolom", $birdTotal);
