@@ -1738,7 +1738,7 @@ class DashboardKandangController extends Controller
         );
 
         // daily production
-        $pullet = DB::select("SELECT a.tgl, sum(c.mati + c.jual) as pop, b.stok_awal, SUM(a.gr) as kg_pakan, TIMESTAMPDIFF(WEEK, b.chick_in , a.tgl) AS mgg,
+        $pullet = DB::select("SELECT a.tgl, sum(c.mati) as pop_mati sum(c.jual) as pop_jual, b.stok_awal, SUM(a.gr) as kg_pakan, TIMESTAMPDIFF(WEEK, b.chick_in , a.tgl) AS mgg,
         c.mati as death, c.jual as culling, normal.normalPcs, normal.normalKg, abnormal.abnormalPcs, abnormal.abnormalKg, d.pcs,d.kg, sum(d.pcs) as ttl_pcs, SUM(d.kg) as ttl_kg, b.chick_in as ayam_awal
         FROM tb_pakan_perencanaan as a
         LEFT JOIN kandang as b ON a.id_kandang = b.id_kandang
@@ -1757,6 +1757,7 @@ class DashboardKandangController extends Controller
         WHERE a.id_kandang = '$id_kandang'
         GROUP BY a.tgl
         ORDER BY a.tgl ASC");
+
         $spreadsheet->setActiveSheetIndex(0);
         $sheet1 = $spreadsheet->getActiveSheet();
         $sheet1->setTitle('DAILY PRODUCTION');
@@ -1810,7 +1811,7 @@ class DashboardKandangController extends Controller
             $cum_kg += $d->kg_pakan / 1000;
             $cum_ttlpcs += $normal + $abnor;
             $cum_ttlkg += $d->ttl_kg;
-            $populasi = $d->stok_awal - $d->pop;
+            $populasi = $d->stok_awal - $d->pop_mati + $d->pop_jual;
 
             $birdTotal = $d->death + $d->culling;
 
