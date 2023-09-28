@@ -1841,7 +1841,7 @@ class DashboardKandangController extends Controller
                 ->setCellValue("L$kolom", $d->abnormalPcs ?? 0)
 
                 ->setCellValue("M$kolom", $abnor + $normal)
-                ->setCellValue("N$kolom", $pop > 0 ? number_format((($abnor + $normal) / $pop) * 100, 2) : 0)
+                ->setCellValue("N$kolom", $pop > 0 ? number_format($abnor + $normal, 2) : 0)
                 ->setCellValue("O$kolom", $cum_ttlpcs);
             $ttlPcs = $d->normalPcs ?? 0 + $d->abnormalPcs ?? 0;
             $weightKg = empty($d->ttl_kg) || empty($ttlPcs) ? 0 : $d->ttl_kg - ($ttlPcs / 180);
