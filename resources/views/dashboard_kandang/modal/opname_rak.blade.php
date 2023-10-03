@@ -40,7 +40,7 @@
             <table class="table">
                 <tr>
                     <th class="dhead">Tanggal</th>
-                    <th class="dhead text-end">Qty</th>
+                    <th class="dhead text-end">Qty (1 Ball = 70pcs Jordan)</th>
                     <th class="dhead text-end">Ttl Rp</th>
                     <th class="dhead text-end">Biaya lain-lain</th>
                 </tr>
