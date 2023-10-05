@@ -32,10 +32,10 @@
                 <select name="strain" class="form-control select2-kandang" id="">
                     <option value="">- Pilih Strain -</option>
                     @php
-                    $strain = DB::table('strain')->get()
+                        $strain = DB::table('strain')->get();
                     @endphp
                     @foreach ($strain as $d)
-                    <option value="{{ $d->id_strain }}">{{ $d->nm_strain }}</option>
+                        <option value="{{ $d->id_strain }}">{{ $d->nm_strain }}</option>
                     @endforeach
                 </select>
             </div>
@@ -43,6 +43,12 @@
                 <div class="form-group">
                     <label for="">Ayam Awal</label>
                     <input required type="text" name="ayam_awal" class="form-control">
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="form-group">
+                    <label for="">Rupiah</label>
+                    <input required type="text" name="rupiah" class="form-control">
                 </div>
             </div>
 

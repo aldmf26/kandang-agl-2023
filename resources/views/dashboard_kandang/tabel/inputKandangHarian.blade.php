@@ -165,9 +165,15 @@
 
                     {{-- end pakan --}}
                     <td align="center">
-                        <a onclick="return confirm('Yakin ingin di selesaikan ?')"
-                            href="{{ route('dashboard_kandang.kandang_selesai', $d->id_kandang) }}"
-                            class="badge bg-primary"><i class="fas fa-check"></i></a>
+                        @if (auth()->user()->posisi_id == 1)
+                            <a onclick="return confirm('Yakin ingin di selesaikan ?')"
+                                href="{{ route('dashboard_kandang.kandang_selesai', $d->id_kandang) }}"
+                                class="badge bg-primary"><i class="fas fa-check"></i></a>
+                            <a href="#" class="badge bg-warning edit_kandang"
+                                id_kandang="{{ $d->id_kandang }}" data-bs-toggle="modal"
+                                data-bs-target="#edit_kandang"><i class="fas fa-edit"></i></a>
+                        @else
+                        @endif
                     </td>
                 </tr>
                 @php

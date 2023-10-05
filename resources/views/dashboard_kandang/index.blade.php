@@ -46,9 +46,9 @@
         @include('dashboard_kandang.tabel.stokTelur')
         <section class="row">
             @if (session()->has('error'))
-            <div class="col-lg-12">
-                <x-theme.alert pesan="kontak dr anto kalo ada yg merah" />
-            </div>
+                <div class="col-lg-12">
+                    <x-theme.alert pesan="kontak dr anto kalo ada yg merah" />
+                </div>
             @endif
 
             @include('dashboard_kandang.tabel.penjualanUmum')
@@ -69,8 +69,8 @@
         </section>
     </x-slot>
     @section('js')
-    <script>
-        $(document).on('click', '.rumus', function() {
+        <script>
+            $(document).on('click', '.rumus', function() {
                 var rumus = $(this).attr('rumus');
                 $.ajax({
                     type: "get",
@@ -733,10 +733,10 @@
 
 
             // pakan
-    </script>
+        </script>
 
-    <script>
-        function load_stok_pakan() {
+        <script>
+            function load_stok_pakan() {
                 $.ajax({
                     type: "GET",
                     url: "{{ route('dashboard_kandang.load_stok_pakan') }}",
@@ -919,18 +919,16 @@
                 $('.ttl_rp').val(ttl_rp);
 
             });
-           edit('edit_kandang', 'id_kandang', 'data_kandang/edit', 'load-edit')
+            edit('edit_kandang', 'id_kandang', 'data_kandang/edit', 'load-edit')
 
 
             // rak telur 
-            $(document).on('keyup', '.stokAktualRak', function(){
+            $(document).on('keyup', '.stokAktualRak', function() {
                 var nilai = $(this).val().replace(/,/g, '');
                 var stokProgram = $('.stokProgramRak').val().replace(/,/g, '');
                 var selisih = stokProgram - nilai
                 $('.stokSelisihRak').val(selisih.toLocaleString('en-US'));
             })
-
-
-    </script>
+        </script>
     @endsection
 </x-theme.app>

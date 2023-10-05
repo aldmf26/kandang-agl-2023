@@ -29,8 +29,9 @@
         <select name="strain" class="form-control select2-edit" id="">
             <option value="">- Pilih Strain -</option>
             @foreach ($strain as $s)
-            <option value="{{ $s->id_strain }}" {{$s->id_strain == $d->id_strain ? 'Selected' : ''}}>{{ $s->nm_strain }}
-            </option>
+                <option value="{{ $s->id_strain }}" {{ $s->id_strain == $d->id_strain ? 'Selected' : '' }}>
+                    {{ $s->nm_strain }}
+                </option>
             @endforeach
         </select>
     </div>
@@ -38,6 +39,12 @@
         <div class="form-group">
             <label for="">Ayam Awal</label>
             <input required type="text" value="{{ $d->stok_awal }}" name="ayam_awal" class="form-control">
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="form-group">
+            <label for="">Rupiah</label>
+            <input required type="text" value="{{ $d->rupiah }}" name="rupiah" class="form-control">
         </div>
     </div>
 

@@ -26,6 +26,7 @@ class DataKandangController extends Controller
             'id_strain' => $r->strain,
             'stok_awal' => $r->ayam_awal,
             'chick_out' => $r->chick_out,
+            'rupiah' => $r->rupiah
         ]);
 
         // Setelah mendapatkan ID kandang, Anda dapat menggunakannya untuk operasi insert di tabel 'populasi'

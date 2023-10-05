@@ -56,6 +56,7 @@ class DashboardKandangController extends Controller
             'kandang' => DB::table('kandang as a')
                 ->select(DB::raw("FLOOR(DATEDIFF('$tgl', a.chick_in) / 7) AS mgg"), 'a.*')
                 ->where('selesai', 'T')
+                ->orderBy('a.nm_kandang', 'ASC')
                 ->get(),
             'telur' => DB::table('telur_produk')->get(),
             'produkPakan' => DB::table('tb_produk_perencanaan')->where('kategori', 'pakan')->get(),
