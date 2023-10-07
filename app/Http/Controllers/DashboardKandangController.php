@@ -177,7 +177,7 @@ class DashboardKandangController extends Controller
     public function load_populasi($id_kandang)
     {
         $data = [
-            'kandang' => DB::table('kandang')->get()
+            'kandang' => DB::table('kandang')->where('selesai', 'T')->get()
             // 'kandang' => DB::table('kandang')->where('id_kandang', $id_kandang)->first()
         ];
         return view('dashboard_kandang.modal.load_populasi', $data);
@@ -1433,6 +1433,19 @@ class DashboardKandangController extends Controller
         $obat_air = $this->getQueryObatPerencanaan($tgl, $id_kandang, 'obat_air');
         $obat_aym = $this->getQueryObatPerencanaan($tgl, $id_kandang, 'obat_ayam');
 
+        $check_pakan = DB::selectOne("SELECT a.check
+        FROM stok_produk_perencanaan as a 
+        left join tb_produk_perencanaan as b on b.id_produk = a.id_pakan 
+        where a.tgl = '$tgl' and b.kategori = 'pakan' 
+        group by b.kategori
+        ");
+        $check_obat = DB::selectOne("SELECT a.check
+        FROM stok_produk_perencanaan as a 
+        left join tb_produk_perencanaan as b on b.id_produk = a.id_pakan 
+        where a.tgl = '$tgl' and b.kategori in('obat_pakan','obat_air') 
+        group by b.kategori
+        ");
+
         $data = [
             'tgl' => $tgl,
             'id_kandang' => $id_kandang,
@@ -1448,6 +1461,8 @@ class DashboardKandangController extends Controller
             'obat_air2' => $obat_air2,
             'obat_ayam' => $obat_ayam,
             'obat_aym' => $obat_aym,
+            'check_pakan' => $check_pakan,
+            'check_obat' => $check_obat
         ];
         return view('dashboard_kandang.history.editPerencanaan', $data);
     }

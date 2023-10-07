@@ -59,6 +59,7 @@ class DataKandangController extends Controller
             'id_strain' => $r->strain,
             'stok_awal' => $r->ayam_awal,
             'chick_out' => $r->chick_out,
+            'rupiah' => $r->rupiah
         ]);
 
         return redirect()->route('dashboard_kandang.index')->with('sukses', 'Data Berhasil Ditambahkan');
