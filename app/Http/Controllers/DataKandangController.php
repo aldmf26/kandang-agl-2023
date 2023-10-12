@@ -38,7 +38,7 @@ class DataKandangController extends Controller
         ]);
 
 
-        return redirect()->route($r->route ?? 'data_kandang.index')->with('sukses', 'Data Berhasil Ditambahkan');
+        return back()->with('sukses', 'Kandang Berhasil Diselesaikan');
     }
 
     public function edit($id)

@@ -33,8 +33,8 @@
                     </span>
                     <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1">
                         <li>
-                            <a class="dropdown-item text-info" href="#" data-bs-toggle="modal"
-                                data-bs-target="#tambah_kandang"><i class="me-2 fas fa-border-all"></i>kandang</a>
+                            <a class="dropdown-item text-info" href="{{ route('data_kandang.index') }}"><i
+                                    class="me-2 fas fa-border-all"></i>kandang</a>
                         </li>
                     </ul>
                 </div>

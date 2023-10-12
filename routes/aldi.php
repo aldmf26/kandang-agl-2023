@@ -318,6 +318,7 @@ Route::middleware('auth')->group(function () {
             Route::post('/export_telur', 'export_telur')->name('export_telur');
             Route::get('/load_telur/{id_kandang}', 'load_telur')->name('load_telur');
             Route::get('/kandang_selesai/{id_kandang}', 'kandang_selesai')->name('kandang_selesai');
+            Route::get('/kandang_belum_selesai/{id_kandang}', 'kandang_belum_selesai')->name('kandang_belum_selesai');
             Route::get('/load_populasi/{id_kandang}', 'load_populasi')->name('load_populasi');
             Route::post('/tambah_populasi', 'tambah_populasi')->name('tambah_populasi');
             Route::post('/tambah_karung', 'tambah_karung')->name('tambah_karung');

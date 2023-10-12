@@ -76,7 +76,14 @@ class DashboardKandangController extends Controller
     public function kandang_selesai($id_kandang)
     {
         DB::table('kandang')->where('id_kandang', $id_kandang)->update(['selesai' => 'Y']);
-        return redirect()->route('dashboard_kandang.index')->with('sukses', 'Kandang Berhasil Di selesaikan');
+        // return redirect()->route('dashboard_kandang.index')->with('sukses', 'Kandang Berhasil Di selesaikan');
+        return back()->with('sukses', 'Kandang Berhasil Diselesaikan');
+    }
+    public function kandang_belum_selesai($id_kandang)
+    {
+        DB::table('kandang')->where('id_kandang', $id_kandang)->update(['selesai' => 'T']);
+        // return redirect()->route('dashboard_kandang.index')->with('sukses', 'Kandang Berhasil Di selesaikan');
+        return back()->with('sukses', 'Kandang Berhasil Diselesaikan');
     }
 
     public function tambah_telur(Request $r)

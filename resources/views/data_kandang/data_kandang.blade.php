@@ -5,61 +5,64 @@
         <div class="row justify-content-end">
 
             <div class="col-lg-12">
-                <x-theme.button modal="Y" idModal="tambah" icon="fa-plus" addClass="float-end" teks="Buat Baru" />
+                <x-theme.button modal="Y" idModal="tambah_kandang" icon="fa-plus" addClass="float-end"
+                    teks="Buat Baru" />
 
             </div>
         </div>
     </x-slot>
     <x-slot name="cardBody">
         <section class="row">
-            <table class="table table-hover" id="table">
+            <table class="table table-hover table-bordered" id="table">
                 <thead>
                     <tr>
                         <th width="5">#</th>
-                        <th>Check In</th>
-                        <th>Nama Kandang</th>
+                        <th class="text-center">Kandang</th>
+                        <th>Chick In</th>
+                        <th>Chick Out</th>
+                        <th>Chick In2</th>
                         <th>Strain</th>
-                        <th>Ayam Awal</th>
-                        <th>Ayam Akhir</th>
-                        <th>Aksi</th>
+                        <th class="text-end">Ayam Awal</th>
+                        <th class="text-end">Rupiah</th>
+
+                        <th class="text-center">Aksi</th>
                     </tr>
                 </thead>
 
                 <tbody>
                     @foreach ($kandang as $no => $a)
-                    <tr>
-                        <td>{{ $no + 1 }}</td>
-                        <td>{{ tanggal($a->chick_in) }}</td>
-                        <td>{{ ucwords($a->nm_kandang) }}</td>
-                        <td>{{ ucwords($a->nm_strain) }}</td>
-                        <td>
-                            {{ $a->stok_awal }}
-                        </td>
-                        <td>
-                            1
-                        </td>
-                        <td>
-                            <div class="btn-group" role="group">
-                                <span class="btn btn-sm" data-bs-toggle="dropdown">
-                                    <i class="fas fa-ellipsis-v text-primary"></i>
-                                </span>
-                                <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                        <tr>
+                            <td>{{ $no + 1 }}</td>
+                            <td class="text-center">{{ ucwords($a->nm_kandang) }}</td>
+                            <td>{{ tanggal($a->chick_in) }}</td>
+                            <td>{{ tanggal($a->chick_out) }}</td>
+                            <td>{{ tanggal($a->tgl_masuk) }}</td>
+                            <td>{{ ucwords($a->nm_strain) }}</td>
+                            <td class="text-end">
+                                {{ $a->stok_awal }}
+                            </td>
+                            <td class="text-end">
+                                Rp {{ number_format($a->rupiah, 0) }}
+                            </td>
 
-                                    <li>
-                                        <a class="dropdown-item text-info edit" href="#" data-bs-toggle="modal"
-                                            data-bs-target="#edit" id_akun="{{ $a->id_kandang }}"><i
-                                                class="me-2 fas fa-pen"></i>Edit</a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item text-danger delete_nota" no_nota="{{ $a->id_kandang }}"
-                                            href="#" data-bs-toggle="modal" data-bs-target="#delete"><i
-                                                class="me-2 fas fa-trash"></i>Delete
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </td>
-                    </tr>
+                            <td align="center">
+                                @if (auth()->user()->posisi_id == 1)
+                                    @if ($a->selesai == 'T')
+                                        <a onclick="return confirm('Yakin ingin di selesaikan ?')"
+                                            href="{{ route('dashboard_kandang.kandang_selesai', $a->id_kandang) }}"
+                                            class="badge bg-primary"><i class="fas fa-check"></i></a>
+                                    @else
+                                        <a onclick="return confirm('Yakin ingin di selesaikan ?')"
+                                            href="{{ route('dashboard_kandang.kandang_belum_selesai', $a->id_kandang) }}"
+                                            class="badge bg-info"><i class="fas fa-undo"></i></a>
+                                    @endif
+                                    <a href="#" class="badge bg-warning edit_kandang"
+                                        id_kandang="{{ $a->id_kandang }}" data-bs-toggle="modal"
+                                        data-bs-target="#edit_kandang"><i class="fas fa-edit"></i></a>
+                                @else
+                                @endif
+                            </td>
+                        </tr>
                     @endforeach
                 </tbody>
             </table>
@@ -72,7 +75,8 @@
                     <div class="col-lg-6">
                         <div class="form-group">
                             <label for="">chick In</label>
-                            <input required value="{{ date('Y-m-d') }}" type="date" name="tgl" class="form-control">
+                            <input required value="{{ date('Y-m-d') }}" type="date" name="tgl"
+                                class="form-control">
                         </div>
                     </div>
                     <div class="col-lg-6">
@@ -86,10 +90,10 @@
                         <select name="strain" class="form-control select2" id="">
                             <option value="">- Pilih Strain -</option>
                             @php
-                            $strain = DB::table('strain')->get();
+                                $strain = DB::table('strain')->get();
                             @endphp
                             @foreach ($strain as $d)
-                            <option value="{{ $d->id_strain }}">{{ ucwords($d->nm_strain) }} Brown</option>
+                                <option value="{{ $d->id_strain }}">{{ ucwords($d->nm_strain) }} Brown</option>
                             @endforeach
                         </select>
                     </div>
@@ -103,19 +107,23 @@
             </x-theme.modal>
         </form>
 
+        @include('dashboard_kandang.modal.tambah_kandang')
+
+
+        <x-theme.btn_alert_delete route="data_kandang.delete" name="id_kandang" />
         <form action="{{ route('data_kandang.update') }}" method="post">
             @csrf
-            <x-theme.modal title="Edit Kandang" idModal="edit" size="modal-lg">
-                <div id="load-edit">
+            <input type="hidden" name="route" value="dashboard_kandang.index">
+            <x-theme.modal title="Edit Kandang" idModal="edit_kandang">
+                <div class="row">
+                    <div id="load-edit"></div>
                 </div>
             </x-theme.modal>
         </form>
-
-        <x-theme.btn_alert_delete route="data_kandang.delete" name="id_kandang" />
     </x-slot>
     @section('js')
-    <script>
-        edit('edit', 'id_akun', 'data_kandang/edit', 'load-edit')
-    </script>
+        <script>
+            edit('edit_kandang', 'id_kandang', 'data_kandang/edit', 'load-edit')
+        </script>
     @endsection
 </x-theme.app>
