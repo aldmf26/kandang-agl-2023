@@ -215,8 +215,10 @@
         </tbody>
         <tfoot>
             <th colspan="2">Total</th>
-            <th class="text-end">{{ number_format($total_populasi, 0) }}</th>
             <th class="text-end">{{ number_format($total_mati, 0) }} / {{ number_format($total_jual, 0) }}</th>
+            <th class="text-end">{{ number_format($total_populasi, 0) }}</th>
+            <th class="text-end">{{ number_format($total_pcs, 0) }}</th>
+            <th class="text-end">{{ number_format($total_kilo, 1) }}</th>
             @php
                 $total_pcs = 0;
             @endphp
@@ -228,8 +230,7 @@
                 @endphp
                 <th class="text-end">{{ number_format($totalstok->total_pcs, 0) }}</th>
             @endforeach
-            <th class="text-end">{{ number_format($total_pcs, 0) }}</th>
-            <th class="text-end">{{ number_format($total_kilo, 1) }}</th>
+            
             <th class="text-end">{{ number_format($total_kg_pakan, 1) }}</th>
             <th></th>
             <th></th>
