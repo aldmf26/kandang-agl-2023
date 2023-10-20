@@ -2,12 +2,12 @@
     <x-slot name="cardHeader">
         <style>
             .abu {
-                background-color: #d3d3d3 !important;
+                background-color: #ffffff !important;
                 color: rgb(37, 37, 37);
             }
 
             .putih {
-                background-color: #f6e6e6 !important;
+                background-color: #ffffff !important;
                 color: rgb(37, 37, 37);
             }
 
@@ -17,7 +17,7 @@
             }
 
             .merah {
-                background-color: #f6e6e6 !important;
+                background-color: #ffffff !important;
                 color: red;
                 font-weight: bold;
             }
