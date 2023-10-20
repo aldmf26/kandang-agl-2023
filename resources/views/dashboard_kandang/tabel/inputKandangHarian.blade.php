@@ -30,8 +30,8 @@
         <thead>
             <tr>
                 <th rowspan="2" width="1%" class="text-center dhead">Kdg</th>
-                <th colspan="5" class="text-center  putih">Populasi</th>
-                <th colspan="5" class="text-center abu"> Telur </th>
+                <th colspan="3" class="text-center  putih">Populasi</th>
+                <th colspan="7" class="text-center abu"> Telur </th>
                 <th colspan="2" class="text-center putih">pakan</th>
                 <th width="2%" class="text-center dhead" rowspan="2">Aksi</th>
             </tr>
@@ -137,11 +137,11 @@
                     @endphp
                     {{-- telur --}}
 
-                    <td data-bs-toggle="modal" id_kandang="{{ $d->id_kandang }}" nm_kandang="{{ $d->nm_kandang }}"
+                    <td  data-bs-toggle="modal" id_kandang="{{ $d->id_kandang }}" nm_kandang="{{ $d->nm_kandang }}"
                         class="tambah_telur {{ $kelasTtlPcsTelur }}" data-bs-target="#tambah_telur">
                         {{ $ttlPcs }} ({{ $ttlPcs - $ttlPcsKemarin }})
                     </td>
-                    <td data-bs-toggle="modal" id_kandang="{{ $d->id_kandang }}" nm_kandang="{{ $d->nm_kandang }}"
+                    <td  data-bs-toggle="modal" id_kandang="{{ $d->id_kandang }}" nm_kandang="{{ $d->nm_kandang }}"
                         class="tambah_telur {{ $kelasTtKgTelur }}" data-bs-target="#tambah_telur">
                         {{ number_format($ttlKg, 1) }} ({{ number_format($ttlKg - $ttlKgKemarin, 1) }})
                     </td>
@@ -162,7 +162,7 @@
                             // dd($pcsKemarin - $pcs);
                             
                         @endphp <td data-bs-toggle="modal" id_kandang="{{ $d->id_kandang }}"
-                            nm_kandang="{{ $d->nm_kandang }}" class="tambah_telur " data-bs-target="#tambah_telur">
+                            nm_kandang="{{ $d->nm_kandang }}" class="tambah_telur putih" data-bs-target="#tambah_telur">
                             <span>{{ $stok->pcs ?? 0 }}</span>
                         </td>
                     @endforeach
@@ -184,8 +184,10 @@
                         $gr_pakan = DB::selectOne("SELECT sum(a.gr) as ttl, a.no_nota FROM tb_pakan_perencanaan as a
                         where a.id_kandang = '$d->id_kandang' and a.tgl = '$tgl' group by a.id_kandang");
                         $gr_perekor = empty($pakan) ? 0 : $pakan->total / $pop;
-                    $kelas = $gr_perekor < 100 ? 'merah' : 'putih'; @endphp <td data-bs-toggle="modal" id_kandang="{{ $d->id_kandang }}"
-                        class="tambah_perencanaan" data-bs-target="#tambah_perencanaan">
+                    $kelas = $gr_perekor < 100 ? 'merah' : 'putih'; 
+                    @endphp 
+                    <td data-bs-toggle="modal" id_kandang="{{ $d->id_kandang }}"
+                        class="tambah_perencanaan merah" data-bs-target="#tambah_perencanaan">
                         {{ empty($gr_pakan) ? 0 : number_format($gr_pakan->ttl / 1000, 1) }}</td>
                     <td data-bs-toggle="modal" id_kandang="{{ $d->id_kandang }}"
                         class="{{ $kelas }} tambah_perencanaan" data-bs-target="#tambah_perencanaan">
