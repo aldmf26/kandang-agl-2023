@@ -977,17 +977,17 @@ class DashboardKandangController extends Controller
                     DB::table('stok_produk_perencanaan')->insert($dataStok);
                     $total_kg_pakan += $r->gr_pakan[$i];
                 }
-            }
-            if (!empty($kg_pakan_box)) {
-                $dataKarung = [
-                    'tgl' => $tgl,
-                    'id_kandang' => $id_kandang,
-                    'karung' => $kg_pakan_box,
-                    'gr' => $kg_karung,
-                    'gr2' => $kg_karung_sisa,
-                    'no_nota' => $no_nota,
-                ];
-                DB::table('tb_karung_perencanaan')->insert($dataKarung);
+                if (!empty($kg_pakan_box)) {
+                    $dataKarung = [
+                        'tgl' => $tgl,
+                        'id_kandang' => $id_kandang,
+                        'karung' => $kg_pakan_box,
+                        'gr' => $kg_karung,
+                        'gr2' => $kg_karung_sisa,
+                        'no_nota' => $no_nota,
+                    ];
+                    DB::table('tb_karung_perencanaan')->insert($dataKarung);
+                }
             }
 
 
