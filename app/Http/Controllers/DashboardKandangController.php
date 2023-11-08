@@ -18,7 +18,7 @@ class DashboardKandangController extends Controller
     public function __construct(Request $r)
     {
         $this->produk = Produk::with('satuan')->where([['kontrol_stok', 'Y'], ['kategori_id', 3]])->get();
-        $this->gudang = Gudang::where('kategori_id', 3)->get();
+        $this->gudang = Gudang::where('kategori_id', 1)->get();
         if (empty($r->period)) {
             $this->tgl1 = date('Y-m-01');
             $this->tgl2 = date('Y-m-t');
@@ -542,26 +542,25 @@ class DashboardKandangController extends Controller
 
     public function save_penjualan_umum(Request $r)
     {
-        for ($i = 0; $i < count($r->id_produk); $i++) {
-            DB::table('penjualan_agl')->insert([
-                'urutan' => $r->no_nota,
-                'nota_manual' => $r->nota_manual,
-                'tgl' => $r->tgl,
-                'kode' => 'PUM',
-                'id_customer' => $r->id_customer,
-                'driver' => '',
-                'id_produk' => $r->id_produk[$i],
-                'qty' => $r->qty[$i],
-                'rp_satuan' => $r->rp_satuan[$i],
-                'total_rp' => $r->total_rp[$i],
-                'ket' => '',
-                'id_jurnal' => 0,
-                'admin' => auth()->user()->name,
-                'lokasi' => 'mtd'
-            ]);
-        }
-
-        return redirect()->route('dashboard_kandang.penjualan_umum')->with('sukses', 'Data Berhasil Ditambahkan');
+            for ($i = 0; $i < count($r->id_produk); $i++) {
+                DB::table('penjualan_agl')->insert([
+                    'urutan' => $r->no_nota,
+                    'nota_manual' => $r->nota_manual,
+                    'tgl' => $r->tgl,
+                    'kode' => 'PUM',
+                    'id_customer' => $r->id_customer,
+                    'driver' => '',
+                    'id_produk' => $r->id_produk[$i],
+                    'qty' => $r->qty[$i],
+                    'rp_satuan' => $r->rp_satuan[$i],
+                    'total_rp' => $r->total_rp[$i],
+                    'ket' => '',
+                    'id_jurnal' => 0,
+                    'admin' => auth()->user()->name,
+                    'lokasi' => 'mtd'
+                ]);
+            }
+            return redirect()->route('dashboard_kandang.penjualan_umum')->with('sukses', 'Data Berhasil Ditambahkan');
     }
 
     public function edit_penjualan(Request $r)
@@ -625,7 +624,7 @@ class DashboardKandangController extends Controller
 
     public function detail($no_nota)
     {
-        $penjualan = DB::selectOne("SELECT *, sum(a.total_rp) as total, count(*) as ttl_produk  FROM `penjualan_agl` as a
+        $penjualan = DB::selectOne("SELECT *,a.id_customer as nm_customer, sum(a.total_rp) as total, count(*) as ttl_produk  FROM `penjualan_agl` as a
         LEFT JOIN customer as b ON a.id_customer = b.id_customer
         WHERE a.urutan = '$no_nota' ");
         $data = [
@@ -977,7 +976,6 @@ class DashboardKandangController extends Controller
                     DB::table('stok_produk_perencanaan')->insert($dataStok);
                     $total_kg_pakan += $r->gr_pakan[$i];
                 }
-               
             }
 
             if (!empty($kg_pakan_box)) {

@@ -35,7 +35,7 @@
                                 </td>
 
                                 <td>
-                                    <input type="text" class="form-control" name="id_customer">
+                                    <input type="text" required class="form-control" name="id_customer">
                                 </td>
                             </tr>
                         </tbody>
