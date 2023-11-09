@@ -342,14 +342,14 @@
                         $('.select2-edit').select2({
                             dropdownParent: $(`#tambah_perencanaan .modal-content`)
                         });
-                        plusRowPakan('tbhPakan', 'dashboard_kandang/tbh_pakan')
+                        plusRowPakan('tbhPakan', 'dashboard_kandang/tbh_pakan', 1)
                     }
                 });
             }
 
-            function plusRowPakan(classPlus, url) {
-                $(document).on("click", "." + classPlus, function() {
-                    countPakan += 1;
+            function plusRowPakan(classPlus, url, count) {
+                $(document).off("click", "." + classPlus).on("click", "." + classPlus, function() {
+                    countPakan = count++;
                     $.ajax({
                         url: `${url}?count=` + countPakan,
                         type: "GET",
@@ -434,7 +434,7 @@
 
             function plusRowObatPakan(classPlus, url, countObatPakan) {
 
-                $(document).on("click", "." + classPlus, function() {
+                $(document).off("click", "." + classPlus).on("click", "." + classPlus, function() {
                     $.ajax({
                         url: `${url}?count=` + countObatPakan,
                         type: "GET",
@@ -511,7 +511,7 @@
             }
 
             function plusRowObatAir(classPlus, url) {
-                $(document).on("click", "." + classPlus, function() {
+                $(document).off("click", "." + classPlus).on("click", "." + classPlus, function() {
                     var appendData = ''
                     $.ajax({
                         url: `${url}?count=` + count,
