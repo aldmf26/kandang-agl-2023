@@ -32,6 +32,7 @@
     <thead>
         <tr>
             <th class="dhead" width="5">#</th>
+            <th class="dhead">Admin</th>
             <th class="dhead">Tanggal</th>
             <th class="dhead">No Nota</th>
             <th class="dhead">Produk</th>
@@ -47,6 +48,7 @@
         @foreach ($invoice as $no => $i)
         <tr>
             <td>{{$no+1}}</td>
+            <td>{{strtoupper($i->admin)}}</td>
             <td>{{tanggal($i->tgl)}}</td>
             <td><a href="/opnamecek/{{$i->nota_transfer}}" target="_blank">{{$i->nota_transfer}}</a></td>
             <td>{{$i->nm_telur}}</td>
