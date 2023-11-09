@@ -724,13 +724,33 @@ class DashboardKandangController extends Controller
             'total_rp' => $r->total_rp
         ]);
     }
-
+    public function getDataPakan($kategori)
+    {
+        return DB::select("SELECT 
+        a.id_pakan as id_produk, 
+        b.nm_produk, 
+        SUM(a.pcs) as pcs_debit, 
+        SUM(a.pcs_kredit) as pcs_kredit, 
+        c.nm_satuan
+            FROM 
+                stok_produk_perencanaan as a 
+            LEFT JOIN 
+                tb_produk_perencanaan as b ON b.id_produk = a.id_pakan
+            LEFT JOIN 
+                tb_satuan as c ON c.id_satuan = b.dosis_satuan
+            WHERE 
+                b.kategori = '$kategori'
+            GROUP BY 
+                a.id_pakan
+            HAVING 
+                (SUM(a.pcs) - SUM(a.pcs_kredit)) <> 0;");
+    }
     public function load_obat_pakan()
     {
 
         $data = [
             'title' => 'Perencanaan',
-            'pakan' => DB::table('tb_produk_perencanaan')->where('kategori', 'obat_pakan')->get(),
+            'pakan' => $this->getDataPakan('obat_pakan'),
         ];
         return view('dashboard_kandang.perencanaan.load_obat_pakan', $data);
     }
@@ -743,7 +763,7 @@ class DashboardKandangController extends Controller
     public function tbh_obatPakan(Request $r)
     {
         $data = [
-            'pakan' => DB::table('tb_produk_perencanaan')->where('kategori', 'obat_pakan')->get(),
+            'pakan' => $this->getDataPakan('obat_pakan'),
             'count' => $r->count
         ];
         return view('dashboard_kandang.perencanaan.tbh_obatPakan', $data);
@@ -790,14 +810,14 @@ class DashboardKandangController extends Controller
 
         $data = [
             'title' => 'Perencanaan',
-            'pakan' => DB::table('tb_produk_perencanaan')->where('kategori', 'obat_air')->get(),
+            'pakan' => $this->getDataPakan('obat_air'),
         ];
         return view('dashboard_kandang.perencanaan.load_obat_air', $data);
     }
     public function tbh_obatAir(Request $r)
     {
         $data = [
-            'pakan' => DB::table('tb_produk_perencanaan')->where('kategori', 'obat_air')->get(),
+            'pakan' => $this->getDataPakan('obat_air'),
             'count' => $r->count
         ];
         return view('dashboard_kandang.perencanaan.tbh_obatAir', $data);
@@ -1431,8 +1451,8 @@ class DashboardKandangController extends Controller
                     left join tb_produk_perencanaan as b on a.id_produk_pakan = b.id_produk 
                     where a.id_kandang = '$id_kandang' AND  a.tgl = '$tgl'");
         $pakan = DB::table('tb_produk_perencanaan')->where('kategori', 'pakan')->get();
-        $obat = DB::table('tb_produk_perencanaan')->where('kategori', 'obat_pakan')->get();
-        $obat_air2 = DB::table('tb_produk_perencanaan')->where('kategori', 'obat_air')->get();
+        $obat = $this->getDataPakan('obat_pakan');
+        $obat_air2 = $this->getDataPakan('obat_air');
         $obat_ayam = DB::table('tb_produk_perencanaan')->where('kategori', 'obat_ayam')->get();
         $karung = DB::table('tb_karung_perencanaan')->where([['id_kandang', $id_kandang], ['tgl', $tgl]])->first();
         $kandang = DB::table('kandang')->get();

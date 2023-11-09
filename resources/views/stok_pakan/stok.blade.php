@@ -123,7 +123,7 @@
                     <tr>
                         <td>{{ $no + 1 }}</td>
                         <td><a href="#" onclick="event.preventDefault();" class="history_stok"
-                                id_pakan="{{ $p->id_pakan }}">{{ $p->nm_produk }}</a></td>
+                                id_pakan="{{ $p->id_pakan }}">{{ $p->nm_produk }}</a> {{$p->kategori}}</td>
                         <td style="text-align: right">{{ number_format($p->pcs_debit - $p->pcs_kredit, 0) }}</td>
                         <td style="text-align: center">{{ $p->nm_satuan }}</td>
                     </tr>

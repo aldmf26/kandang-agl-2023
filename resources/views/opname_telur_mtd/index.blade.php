@@ -18,14 +18,32 @@
             @csrf
             <section class="row">
 
-                <div class="col-lg-2 col-6">
-                    <label for="">Tanggal</label>
-                    <input type="date" class="form-control tgl_nota" name="tgl" value="{{ date('Y-m-d') }}">
+                <div class="col-lg-5 col-6">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th class="dhead">Tanggal</th>
+                                <th class="dhead">Nota Opname</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <input type="date" class="form-control tgl_nota" name="tgl"
+                                        value="{{ date('Y-m-d') }}">
+
+                                </td>
+                                <td>
+                                    <input type="text" class="form-control tgl_nota" name="nota_opname"
+                                        value="Opname-{{ $urutan }}" readonly>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
-                <div class="col-lg-2 col-6">
-                    <label for="">Nota Opname</label>
-                    <input type="text" class="form-control tgl_nota" name="nota_opname"
-                        value="Opname-{{ $urutan }}">
+                <div class="col-lg-7">
+                    <label for="">&nbsp;</label>
+                    <h6 class="text-warning"><em>Untuk Input koma Masukkan tanda <span class="text-danger">koma (,)</span> Jangan titik (.)</em> </h6>
                 </div>
                 <div class="col-lg-12">
                     <hr style="border: 1px solid black">
