@@ -342,14 +342,14 @@
                         $('.select2-edit').select2({
                             dropdownParent: $(`#tambah_perencanaan .modal-content`)
                         });
-                        plusRowPakan('tbhPakan', 'dashboard_kandang/tbh_pakan', 1)
+                        plusRowPakan('tbhPakan', 'dashboard_kandang/tbh_pakan')
                     }
                 });
             }
 
-            function plusRowPakan(classPlus, url, count) {
+            function plusRowPakan(classPlus, url) {
                 $(document).off("click", "." + classPlus).on("click", "." + classPlus, function() {
-                    countPakan = count++;
+                    countPakan++;
                     $.ajax({
                         url: `${url}?count=` + countPakan,
                         type: "GET",
