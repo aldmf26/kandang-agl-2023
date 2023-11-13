@@ -1051,9 +1051,9 @@ class DashboardKandangController extends Controller
                 }
             }
 
-            if (!empty($r->id_obat_air)) {
-                for ($i = 0; $i < count($r->id_obat_air); $i++) {
-                    $id_pakan = $r->id_obat_air[$i];
+            if (!empty($r->id_obatAir)) {
+                for ($i = 0; $i < count($r->id_obatAir); $i++) {
+                    $id_pakan = $r->id_obatAir[$i];
 
                     $harga = DB::selectOne("SELECT a.id_pakan, sum(a.pcs) as pcs , sum(a.total_rp) as ttl_rp
                         FROM stok_produk_perencanaan as a
@@ -1064,7 +1064,7 @@ class DashboardKandangController extends Controller
                     $h_satuan = $harga->ttl_rp / $harga->pcs;
                     $data1 = [
                         'kategori' => 'obat_air',
-                        'id_produk' => $r->id_obat_air[$i],
+                        'id_produk' => $r->id_obatAir[$i],
                         'dosis' => $r->dosis_obat_air[$i],
                         'campuran' => $r->campuran_obat_air[$i],
                         'tgl' => $tgl,
@@ -1078,11 +1078,11 @@ class DashboardKandangController extends Controller
 
                     DB::table('tb_obat_perencanaan')->insert($data1);
 
-                    $id_obat_air = $r->id_obat_air[$i];
-                    $stok = DB::selectOne("SELECT sum(pcs) as stok FROM stok_produk_perencanaan WHERE id_pakan = '$id_obat_air'");
+                    $id_obatAir = $r->id_obatAir[$i];
+                    $stok = DB::selectOne("SELECT sum(pcs) as stok FROM stok_produk_perencanaan WHERE id_pakan = '$id_obatAir'");
                     $dataStok = [
                         'id_kandang' => $id_kandang,
-                        'id_pakan' => $id_obat_air,
+                        'id_pakan' => $id_obatAir,
                         'tgl' => $tgl,
                         'pcs' => 0,
                         'total_rp' => $h_satuan * $r->dosis_obat_air[$i],
