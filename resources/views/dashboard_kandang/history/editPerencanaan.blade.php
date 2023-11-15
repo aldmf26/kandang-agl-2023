@@ -180,8 +180,8 @@
             <div class="col-lg-3">
                 <div class="form-group">
                     <label for="">Obat</label>
-                    <input type="hidden" name="id_obat_air[]" value="{{ $oba->id_produk }}">
-                    <select name="id_obatAir[]" id="" detail="1"
+                    {{-- <input type="hidden" name="id_obat_air[]" value="{{ $oba->id_produk }}"> --}}
+                    <select name="id_obat_air[]" id="" detail="1"
                         class="form-control select2-edit-perencanaan id_obat_air">
                         <option value="">- Pilih Obat -</option>
                         @foreach ($obat_air2 as $o)
