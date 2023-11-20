@@ -245,7 +245,7 @@
             <th style="background-color: {{ $bgZona }} !important" class="text-end">
                 {{ number_format($total_populasi, 0) }}</th>
             <th class="text-end">{{ number_format($total_pcs, 0) }}
-                ({{ number_forat($total_pcs - $total_kemarin_pcs, 0) }})</th>
+                ({{ number_format($total_pcs - $total_kemarin_pcs, 0) }})</th>
             <th class="text-end">{{ number_format($total_kilo, 1) }}</th>
 
             @foreach ($telur as $t)
