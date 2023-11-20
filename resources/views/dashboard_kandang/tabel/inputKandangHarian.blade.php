@@ -221,6 +221,7 @@
                     $total_mati += $mati;
                     $total_jual += $jual;
                     $total_kilo += $ttlKg;
+                    $total_kilo_kemaren += $ttlKgKemarin;
                     $total_kg_pakan += empty($gr_pakan) ? 0 : $gr_pakan->ttl / 1000;
                 @endphp
             @endforeach
@@ -246,7 +247,8 @@
                 {{ number_format($total_populasi, 0) }}</th>
             <th class="text-end">{{ number_format($total_pcs, 0) }}
                 ({{ number_format($total_pcs - $total_kemarin_pcs, 0) }})</th>
-            <th class="text-end">{{ number_format($total_kilo, 1) }}</th>
+            <th class="text-end">{{ number_format($total_kilo, 1) }}
+                ({{ number_format($total_kilo - $total_kilo_kemaren, 0) }})</th>
 
             @foreach ($telur as $t)
                 @php
