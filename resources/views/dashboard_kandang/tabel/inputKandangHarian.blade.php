@@ -71,6 +71,7 @@
                 $total_mati = 0;
                 $total_jual = 0;
                 $total_kilo = 0;
+                $total_kilo_kemaren = 0;
                 $total_kg_pakan = 0;
             @endphp
             @foreach ($kandang as $no => $d)
