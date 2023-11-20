@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use Illuminate\Support\Facades\Http;
 
 class DashboardKandangController extends Controller
 {
@@ -542,25 +543,25 @@ class DashboardKandangController extends Controller
 
     public function save_penjualan_umum(Request $r)
     {
-            for ($i = 0; $i < count($r->id_produk); $i++) {
-                DB::table('penjualan_agl')->insert([
-                    'urutan' => $r->no_nota,
-                    'nota_manual' => $r->nota_manual,
-                    'tgl' => $r->tgl,
-                    'kode' => 'PUM',
-                    'id_customer' => $r->id_customer,
-                    'driver' => '',
-                    'id_produk' => $r->id_produk[$i],
-                    'qty' => $r->qty[$i],
-                    'rp_satuan' => $r->rp_satuan[$i],
-                    'total_rp' => $r->total_rp[$i],
-                    'ket' => '',
-                    'id_jurnal' => 0,
-                    'admin' => auth()->user()->name,
-                    'lokasi' => 'mtd'
-                ]);
-            }
-            return redirect()->route('dashboard_kandang.penjualan_umum')->with('sukses', 'Data Berhasil Ditambahkan');
+        for ($i = 0; $i < count($r->id_produk); $i++) {
+            DB::table('penjualan_agl')->insert([
+                'urutan' => $r->no_nota,
+                'nota_manual' => $r->nota_manual,
+                'tgl' => $r->tgl,
+                'kode' => 'PUM',
+                'id_customer' => $r->id_customer,
+                'driver' => '',
+                'id_produk' => $r->id_produk[$i],
+                'qty' => $r->qty[$i],
+                'rp_satuan' => $r->rp_satuan[$i],
+                'total_rp' => $r->total_rp[$i],
+                'ket' => '',
+                'id_jurnal' => 0,
+                'admin' => auth()->user()->name,
+                'lokasi' => 'mtd'
+            ]);
+        }
+        return redirect()->route('dashboard_kandang.penjualan_umum')->with('sukses', 'Data Berhasil Ditambahkan');
     }
 
     public function edit_penjualan(Request $r)
@@ -1528,7 +1529,7 @@ class DashboardKandangController extends Controller
 
     public function getProdukObat($id_kandang, $jenis)
     {
-        return DB::select("SELECT a.waktu,a.cara_pemakaian as cara,a.tgl,b.nm_produk, a.dosis,a.campuran, e.nm_satuan as dosis_satuan, f.nm_satuan as campuran_satuan,(a.dosis) as dosis_obat,d.debit
+        return DB::select("SELECT a.waktu,a.cara_pemakaian as cara,a.tgl,b.nm_produk, a.dosis,a.campuran, e.nm_satuan as dosis_satuan, f.nm_satuan as campuran_satuan,(a.dosis) as dosis_obat,d.debit, z.total_rp
         FROM tb_obat_perencanaan as a
         LEFT JOIN tb_produk_perencanaan as b  ON a.id_produk = b.id_produk
         LEFT JOIN tb_satuan as e ON b.dosis_satuan = e.id_satuan
@@ -1539,7 +1540,8 @@ class DashboardKandangController extends Controller
             WHERE a.kategori = '$jenis' AND b.debit != 0
             GROUP BY a.id_produk
         ) AS d ON d.id_produk = a.id_produk
-        WHERE b.kategori = '$jenis' AND a.id_kandang = '$id_kandang' ORDER BY a.tgl DESC;");
+        left join stok_produk_perencanaan as z on z.id_pakan = a.id_produk and a.tgl = z.tgl and z.h_opname != 'Y' and z.id_kandang = '$id_kandang'
+        WHERE b.kategori = '$jenis' AND a.id_kandang = '$id_kandang' ORDER BY a.tgl ASC;");
     }
 
     public function export_telur(Request $r)
@@ -1945,7 +1947,7 @@ class DashboardKandangController extends Controller
         // end daily -----------------------------------------------
 
         // obat pakan -----------------
-        $obat_pakan = DB::select("SELECT a.tgl,b.nm_produk, a.dosis,a.campuran, e.nm_satuan as dosis_satuan, f.nm_satuan as campuran_satuan,(a.dosis * c.ttl_pakan) as dosis_obat,d.debit
+        $obat_pakan = DB::select("SELECT a.tgl,b.nm_produk, a.dosis,a.campuran, e.nm_satuan as dosis_satuan, f.nm_satuan as campuran_satuan,(a.dosis * c.ttl_pakan) as dosis_obat,d.debit, z.total_rp
         FROM tb_obat_perencanaan as a
         LEFT JOIN tb_produk_perencanaan as b  ON a.id_produk = b.id_produk
         LEFT JOIN tb_satuan as e ON b.dosis_satuan = e.id_satuan
@@ -1961,7 +1963,12 @@ class DashboardKandangController extends Controller
             WHERE a.kategori = 'obat_pakan' AND b.debit != 0
             GROUP BY a.id_produk
         ) AS d ON d.id_produk = a.id_produk
-        WHERE b.kategori = 'obat_pakan' AND a.id_kandang = '$id_kandang' ORDER BY a.tgl DESC");
+        left join stok_produk_perencanaan as z on z.id_pakan = a.id_produk and a.tgl = z.tgl and z.h_opname != 'Y' and z.id_kandang = '$id_kandang'
+        WHERE b.kategori = 'obat_pakan' AND a.id_kandang = '$id_kandang' ORDER BY a.tgl ASC");
+
+        $knd =  DB::table('kandang')->where('id_kandang', $id_kandang)->first();
+        $response = Http::get("https://agrilaras.putrirembulan.com/kirim/vitamin_api?id=$knd->nm_kandang");
+        $obat_pakan_lama = json_decode($response, TRUE);
 
         $spreadsheet->createSheet();
         $spreadsheet->setActiveSheetIndex(1);
@@ -1977,6 +1984,17 @@ class DashboardKandangController extends Controller
             ->setCellValue('H1', 'Cost');
 
         $kolom = 2;
+        foreach ($obat_pakan_lama['data']['obat_pakan'] as $d) {
+            $sheet2->setCellValue("A$kolom", date('Y-m-d', strtotime($d['tgl'])))
+                ->setCellValue("B$kolom", $d['nm_obat'])
+                ->setCellValue("C$kolom", $d['dosis'])
+                ->setCellValue("D$kolom", $d['satuan'])
+                ->setCellValue("E$kolom", $d['campuran'])
+                ->setCellValue("F$kolom", $d['satuan2'])
+                ->setCellValue("G$kolom", $d['dosis_obat'])
+                ->setCellValue("H$kolom", $d['cost']);
+            $kolom++;
+        }
         foreach ($obat_pakan as $d) {
             $sheet2->setCellValue("A$kolom", date('Y-m-d', strtotime($d->tgl)))
                 ->setCellValue("B$kolom", $d->nm_produk)
@@ -1985,7 +2003,7 @@ class DashboardKandangController extends Controller
                 ->setCellValue("E$kolom", $d->campuran)
                 ->setCellValue("F$kolom", $d->campuran_satuan)
                 ->setCellValue("G$kolom", $d->dosis_obat)
-                ->setCellValue("H$kolom", $d->debit);
+                ->setCellValue("H$kolom", $d->total_rp);
             $kolom++;
         }
 
@@ -1995,6 +2013,14 @@ class DashboardKandangController extends Controller
 
         // obat air -------------------------
         $obat_air = $this->getProdukObat($id_kandang, 'obat_air');
+        $knd =  DB::table('kandang')->where('id_kandang', $id_kandang)->first();
+
+        $response = Http::get("https://agrilaras.putrirembulan.com/kirim/vitamin_api?id=$knd->nm_kandang");
+        $obat_air_lama = json_decode($response, TRUE);
+
+
+
+
 
         $spreadsheet->createSheet();
         $spreadsheet->setActiveSheetIndex(2);
@@ -2011,6 +2037,18 @@ class DashboardKandangController extends Controller
             ->setCellValue('I1', 'Cost');
 
         $kolom = 2;
+        foreach ($obat_air_lama['data']['obat_air'] as $d) {
+            $sheet3->setCellValue('A' . $kolom, date('Y-m-d', strtotime($d['tgl'])))
+                ->setCellValue('B' . $kolom, $d['nm_obat'])
+                ->setCellValue("C$kolom", $d['dosis'])
+                ->setCellValue("D$kolom", $d['satuan'])
+                ->setCellValue("E$kolom", $d['campuran'])
+                ->setCellValue("F$kolom", $d['satuan2'])
+                ->setCellValue('G' . $kolom, $d['waktu'])
+                ->setCellValue('H' . $kolom, $d['cara'])
+                ->setCellValue('I' . $kolom, round($d['cost'], 0));
+            $kolom++;
+        }
         foreach ($obat_air as $d) {
             $sheet3->setCellValue('A' . $kolom, date('Y-m-d', strtotime($d->tgl)))
                 ->setCellValue('B' . $kolom, $d->nm_produk)
@@ -2020,7 +2058,7 @@ class DashboardKandangController extends Controller
                 ->setCellValue("F$kolom", $d->campuran_satuan)
                 ->setCellValue('G' . $kolom, $d->waktu)
                 ->setCellValue('H' . $kolom, $d->cara)
-                ->setCellValue('I' . $kolom, round($d->debit, 0));
+                ->setCellValue('I' . $kolom, round($d->total_rp, 0));
             $kolom++;
         }
         $batas = $kolom - 1;
