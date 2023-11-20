@@ -26,7 +26,7 @@
             </div>
         </div>
     </h6>
-    <table class="table table-bordered table-hover " id="">
+    <table class="table table-bordered table-hover " id="" style="font-size: 14px;">
         <thead>
             <tr>
                 @php
