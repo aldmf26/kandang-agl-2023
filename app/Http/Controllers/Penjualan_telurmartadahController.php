@@ -275,7 +275,6 @@ class Penjualan_telurmartadahController extends Controller
 
     public function save_edit_telur(Request $r)
     {
-        dd($r->all());
         $max = DB::table('invoice_telur')->latest('urutan')->where('lokasi', 'mtd')->first();
 
         if (empty($max)) {
