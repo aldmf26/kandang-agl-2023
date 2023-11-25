@@ -121,15 +121,15 @@
                                 <td align="right">
                                     <input type="text" class="form-control kg_pcs kg_pcs{{ $no + 1 }}"
                                         count="{{ $no + 1 }}" style="text-align: right; font-size: 12px;"
-                                        value="{{ $i->kg_pcs }}">
-                                    <input type="hidden" class="form-control  kg_pcs_biasa{{ $no + 1 }}" name="kg_pcs[]"
+                                        value="{{ $i->kg_pcs }}" name="kg_pcs[]">
+                                    <input type="text" class="form-control  kg_pcs_biasa{{ $no + 1 }}"
                                         value="{{ $i->kg_pcs }}">
                                 </td>
                                 <td align="right">
                                     <input type="text" class="form-control rp_pcs pcs{{ $no + 1 }}"
                                         count="{{ $no + 1 }}" style="text-align: right;font-size: 12px;"
                                         value="{{ $i->rp_pcs }}">
-                                    <input type="hidden" class="form-control rp_pcs_biasa rp_pcs_biasa{{ $no + 1 }}"
+                                    <input type="text" class="form-control rp_pcs_biasa rp_pcs_biasa{{ $no + 1 }}"
                                         name="rp_pcs[]" value="{{ $i->rp_pcs }}">
                                     <input type="hidden" class="ttl_rp_pcs{{ $no + 1 }}"
                                         value="{{ $i->pcs_pcs * $i->rp_pcs }}">
