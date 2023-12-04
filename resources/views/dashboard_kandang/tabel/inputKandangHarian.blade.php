@@ -8,7 +8,7 @@
         $font = DB::table('font_size')->first()->font;
 
     @endphp
-    <form action="">
+    <form action="{{ route('dashboard_kandang.set_font') }}" method="post">
     <table>
         <tr>
             <td><label for="" class="text-primary">Font Size</label></td>

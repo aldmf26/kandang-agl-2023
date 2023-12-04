@@ -2455,4 +2455,10 @@ class DashboardKandangController extends Controller
         ];
         return view('dashboard_kandang.penjualan_ayam.cek_invoice', $data);
     }
+    public function set_font(Requet $r)
+    {
+        DB::table('font_size')->where('id_font', 1)->update(['font' => $r->font]);
+        return redirect()->route('dashboard_kandang.index   ')->with('Font Table Kandang diubah');
+
+    }
 }
