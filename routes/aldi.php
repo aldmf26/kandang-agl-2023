@@ -397,6 +397,7 @@ Route::middleware('auth')->group(function () {
         ->prefix('dashboard_kandang')
         ->name('dashboard_kandang.')
         ->group(function () {
+            Route::get('/set_font', 'set_font')->name('set_font');
             Route::get('/penjualan_telur', 'penjualan_telur')->name('penjualan_telur');
             Route::get('/penjualan_telur_export/{tgl1}/{tgl2}', 'penjualan_telur_export')->name('penjualan_telur_export');
             Route::get('/tambah_baris_jual_mtd', 'tambah_baris_jual_mtd')->name('tambah_baris_jual_mtd');
