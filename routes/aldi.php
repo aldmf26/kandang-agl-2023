@@ -313,6 +313,7 @@ Route::middleware('auth')->group(function () {
         ->name('dashboard_kandang.')
         ->group(function () {
             Route::get('/rumus', 'rumus')->name('rumus');
+            Route::post('/set_font', 'set_font')->name('set_font');
             Route::get('/', 'index')->name('index');
             Route::post('/tambah_telur', 'tambah_telur')->name('tambah_telur');
             Route::post('/export_telur', 'export_telur')->name('export_telur');
@@ -397,7 +398,6 @@ Route::middleware('auth')->group(function () {
         ->prefix('dashboard_kandang')
         ->name('dashboard_kandang.')
         ->group(function () {
-            Route::post('/set_font', 'set_font')->name('set_font');
             Route::get('/penjualan_telur', 'penjualan_telur')->name('penjualan_telur');
             Route::get('/penjualan_telur_export/{tgl1}/{tgl2}', 'penjualan_telur_export')->name('penjualan_telur_export');
             Route::get('/tambah_baris_jual_mtd', 'tambah_baris_jual_mtd')->name('tambah_baris_jual_mtd');
