@@ -5,7 +5,7 @@
 </style>
 <div class="col-lg-8">
     @php
-        $font = request()->get('font') ?? 14;
+        $font = DB::table('font_size')->first()->font;
 
     @endphp
     <form action="">
