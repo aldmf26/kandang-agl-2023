@@ -2458,7 +2458,7 @@ class DashboardKandangController extends Controller
     public function set_font(Request $r)
     {
         DB::table('font_size')->where('id_font', 1)->update(['font' => $r->font]);
-        return redirect()->route('dashboard_kandang.index   ')->with('Font Table Kandang diubah');
+        return redirect()->route('dashboard_kandang.index')->with('Font Table Kandang diubah');
 
     }
 }
