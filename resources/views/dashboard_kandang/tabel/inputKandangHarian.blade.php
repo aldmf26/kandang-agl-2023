@@ -9,6 +9,7 @@
 
     @endphp
     <form action="{{ route('dashboard_kandang.set_font') }}" method="post">
+        @csrf
     <table>
         <tr>
             <td><label for="" class="text-primary">Font Size</label></td>
