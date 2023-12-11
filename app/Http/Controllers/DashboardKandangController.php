@@ -1967,8 +1967,8 @@ class DashboardKandangController extends Controller
         WHERE b.kategori = 'obat_pakan' AND a.id_kandang = '$id_kandang' ORDER BY a.tgl ASC");
 
         $knd =  DB::table('kandang')->where('id_kandang', $id_kandang)->first();
-        $response = Http::get("https://agrilaras.putrirembulan.com/kirim/vitamin_api?id=$knd->nm_kandang");
-        $obat_pakan_lama = json_decode($response, TRUE);
+        // $response = Http::get("https://agrilaras.putrirembulan.com/kirim/vitamin_api?id=$knd->nm_kandang");
+        // $obat_pakan_lama = json_decode($response, TRUE);
 
         $spreadsheet->createSheet();
         $spreadsheet->setActiveSheetIndex(1);
@@ -1984,17 +1984,17 @@ class DashboardKandangController extends Controller
             ->setCellValue('H1', 'Cost');
 
         $kolom = 2;
-        foreach ($obat_pakan_lama['data']['obat_pakan'] as $d) {
-            $sheet2->setCellValue("A$kolom", date('Y-m-d', strtotime($d['tgl'])))
-                ->setCellValue("B$kolom", $d['nm_obat'])
-                ->setCellValue("C$kolom", $d['dosis'])
-                ->setCellValue("D$kolom", $d['satuan'])
-                ->setCellValue("E$kolom", $d['campuran'])
-                ->setCellValue("F$kolom", $d['satuan2'])
-                ->setCellValue("G$kolom", $d['dosis_obat'])
-                ->setCellValue("H$kolom", $d['cost']);
-            $kolom++;
-        }
+        // foreach ($obat_pakan_lama['data']['obat_pakan'] as $d) {
+        //     $sheet2->setCellValue("A$kolom", date('Y-m-d', strtotime($d['tgl'])))
+        //         ->setCellValue("B$kolom", $d['nm_obat'])
+        //         ->setCellValue("C$kolom", $d['dosis'])
+        //         ->setCellValue("D$kolom", $d['satuan'])
+        //         ->setCellValue("E$kolom", $d['campuran'])
+        //         ->setCellValue("F$kolom", $d['satuan2'])
+        //         ->setCellValue("G$kolom", $d['dosis_obat'])
+        //         ->setCellValue("H$kolom", $d['cost']);
+        //     $kolom++;
+        // }
         foreach ($obat_pakan as $d) {
             $sheet2->setCellValue("A$kolom", date('Y-m-d', strtotime($d->tgl)))
                 ->setCellValue("B$kolom", $d->nm_produk)
@@ -2015,8 +2015,8 @@ class DashboardKandangController extends Controller
         $obat_air = $this->getProdukObat($id_kandang, 'obat_air');
         $knd =  DB::table('kandang')->where('id_kandang', $id_kandang)->first();
 
-        $response = Http::get("https://agrilaras.putrirembulan.com/kirim/vitamin_api?id=$knd->nm_kandang");
-        $obat_air_lama = json_decode($response, TRUE);
+        // $response = Http::get("https://agrilaras.putrirembulan.com/kirim/vitamin_api?id=$knd->nm_kandang");
+        // $obat_air_lama = json_decode($response, TRUE);
 
 
 
@@ -2037,18 +2037,18 @@ class DashboardKandangController extends Controller
             ->setCellValue('I1', 'Cost');
 
         $kolom = 2;
-        foreach ($obat_air_lama['data']['obat_air'] as $d) {
-            $sheet3->setCellValue('A' . $kolom, date('Y-m-d', strtotime($d['tgl'])))
-                ->setCellValue('B' . $kolom, $d['nm_obat'])
-                ->setCellValue("C$kolom", $d['dosis'])
-                ->setCellValue("D$kolom", $d['satuan'])
-                ->setCellValue("E$kolom", $d['campuran'])
-                ->setCellValue("F$kolom", $d['satuan2'])
-                ->setCellValue('G' . $kolom, $d['waktu'])
-                ->setCellValue('H' . $kolom, $d['cara'])
-                ->setCellValue('I' . $kolom, round($d['cost'], 0));
-            $kolom++;
-        }
+        // foreach ($obat_air_lama['data']['obat_air'] as $d) {
+        //     $sheet3->setCellValue('A' . $kolom, date('Y-m-d', strtotime($d['tgl'])))
+        //         ->setCellValue('B' . $kolom, $d['nm_obat'])
+        //         ->setCellValue("C$kolom", $d['dosis'])
+        //         ->setCellValue("D$kolom", $d['satuan'])
+        //         ->setCellValue("E$kolom", $d['campuran'])
+        //         ->setCellValue("F$kolom", $d['satuan2'])
+        //         ->setCellValue('G' . $kolom, $d['waktu'])
+        //         ->setCellValue('H' . $kolom, $d['cara'])
+        //         ->setCellValue('I' . $kolom, round($d['cost'], 0));
+        //     $kolom++;
+        // }
         foreach ($obat_air as $d) {
             $sheet3->setCellValue('A' . $kolom, date('Y-m-d', strtotime($d->tgl)))
                 ->setCellValue('B' . $kolom, $d->nm_produk)
