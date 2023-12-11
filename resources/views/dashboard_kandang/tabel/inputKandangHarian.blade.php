@@ -4,8 +4,22 @@
     }
 </style>
 <div class="col-lg-8">
+    @php
+        $font = DB::table('font_size')->first()->font;
+
+    @endphp
+    <form action="{{ route('dashboard_kandang.set_font') }}" method="post">
+        @csrf
+    <table>
+        <tr>
+            <td><label for="" class="text-primary">Font Size</label></td>
+            <td><input name="font" value="{{ $font }}" style="width: 65px" type="number" min="10" class="form-control float-end"></td>
+            <td><button type="submit" class="btn btn-sm btn-primary">Save</button></td>
+        </tr>
+    </table>
+</form>
     <h6>
-        Input Kandang Harian ~ {{ tanggal(date('Y-m-d')) }}
+        Input Kandang Harian ~ {{ tanggal(date('Y-m-d')) }} 
         <div class="btn-group dropup me-1 mb-2 float-end">
             <button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-bs-toggle="dropdown"
                 aria-haspopup="true" aria-expanded="false">
@@ -24,9 +38,21 @@
                 {{-- <a data-bs-toggle="modal" data-bs-target="#week_layer" class="text-white dropdown-item hoverbtn"
                     href="#"> Week Layer</a> --}}
             </div>
+            
         </div>
+        
+        {{-- <div class="float-end">
+            <form action="">
+                <div class="form-group">
+                    <label for="">Font Size</label>
+                    <input type="text" name="example" class="form-control">
+                </div>
+            </form>
+        </div> --}}
+        
     </h6>
-    <table class="table table-bordered table-hover " id="" style="font-size: 14px;">
+    
+    <table class="table table-bordered table-hover " id="" style="font-size: {{$font}}px;">
         <thead>
             <tr>
                 @php
@@ -35,7 +61,7 @@
                 <th rowspan="2" width="1%" class="text-center dhead">Kdg</th>
                 <th style="background-color: {{ $bgZona }} !important" colspan="3" class="text-center  putih">
                     Populasi</th>
-                <th colspan="7" class="text-center abu"> Telur </th>
+                <th colspan="8" class="text-center abu"> Telur </th>
                 <th style="background-color: {{ $bgZona }} !important" colspan="2" class="text-center putih">
                     pakan</th>
                 <th width="2%" class="text-center dhead" rowspan="2">Aksi</th>
@@ -51,6 +77,7 @@
                         rumus="ttlPcs" style="cursor: pointer"></i></th>
                 <th width="4%" class="dhead text-center">Ttl Kg <i class="fas text-white fa-question-circle rumus"
                         rumus="ttlKg" style="cursor: pointer"></i></th>
+                <th width="4%" class="dhead text-center">Gr pcs </th>
                 @php
                     $telur = DB::table('telur_produk')->get();
                 @endphp
@@ -73,6 +100,7 @@
                 $total_kilo = 0;
                 $total_kilo_kemaren = 0;
                 $total_kg_pakan = 0;
+                $totalGrPcs = 0; 
             @endphp
             @foreach ($kandang as $no => $d)
                 <tr>
@@ -154,6 +182,10 @@
                         class="tambah_telur {{ $kelasTtKgTelur }}" data-bs-target="#tambah_telur">
                         {{ number_format($ttlKg, 1) }} ({{ number_format($ttlKg - $ttlKgKemarin, 1) }})
                     </td>
+                    <td data-bs-toggle="modal" id_kandang="{{ $d->id_kandang }}" nm_kandang="{{ $d->nm_kandang }}"
+                        class="tambah_telur {{ $kelasTtKgTelur }}" data-bs-target="#tambah_telur">
+                        {{ number_format(empty($ttlKg) ? 0 : ($ttlKg * 1000) / $ttlPcs, 1) }}
+                    </td>
 
                     @foreach ($telur as $t)
                         @php
@@ -224,6 +256,7 @@
                     $total_kilo += $ttlKg;
                     $total_kilo_kemaren += $ttlKgKemarin;
                     $total_kg_pakan += empty($gr_pakan) ? 0 : $gr_pakan->ttl / 1000;
+                    $totalGrPcs += empty($ttlKg) ? 0 : ($ttlKg * 1000) / $ttlPcs;
                 @endphp
             @endforeach
         </tbody>
@@ -250,6 +283,7 @@
                 ({{ number_format($total_pcs - $total_kemarin_pcs, 0) }})</th>
             <th class="text-end">{{ number_format($total_kilo, 1) }}
                 ({{ number_format($total_kilo - $total_kilo_kemaren, 0) }})</th>
+            <th class="text-end">{{ number_format($totalGrPcs, 1) }}</th>
 
             @foreach ($telur as $t)
                 @php
