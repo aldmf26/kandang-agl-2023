@@ -1793,7 +1793,11 @@ class DashboardKandangController extends Controller
         FROM tb_pakan_perencanaan as a
         LEFT JOIN kandang as b ON a.id_kandang = b.id_kandang
         LEFT JOIN populasi as c ON c.id_kandang = a.id_kandang AND c.tgl = a.tgl
-        LEFT JOIN stok_telur as d ON d.id_kandang = a.id_kandang AND d.tgl = a.tgl
+        LEFT JOIN (
+            SELECT d.tgl, d.id_kandang, sum(d.pcs) as pcs, sum(d.kg) as kg
+            FROM stok_telur as d
+            group by d.tgl, d.id_kandang
+        ) as d ON d.id_kandang = a.id_kandang AND d.tgl = a.tgl
         LEFT JOIN (
             SELECT a.tgl,a.id_kandang, sum(a.pcs) as normalPcs, sum(a.kg) as normalKg FROM stok_telur as a
             WHERE a.id_telur = 1 AND a.id_kandang = '$id_kandang'
@@ -2459,6 +2463,5 @@ class DashboardKandangController extends Controller
     {
         DB::table('font_size')->where('id_font', 1)->update(['font' => $r->font]);
         return redirect()->route('dashboard_kandang.index')->with('Font Table Kandang diubah');
-
     }
 }
