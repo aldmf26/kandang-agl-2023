@@ -1898,9 +1898,9 @@ class DashboardKandangController extends Controller
                 ->setCellValue("N$kolom", $pop > 0 ? number_format((($abnor + $normal) / ($populasi - $kum)) * 100, 2) : 0)
                 ->setCellValue("O$kolom", $cum_ttlpcs);
             $ttlPcs = $d->normalPcs ?? 0 + $d->abnormalPcs ?? 0;
-            $weightKg = empty($d->ttl_kg) || empty($ttlPcs) ? 0 : $d->ttl_kg - ($ttlPcs / 180);
+            $weightKg = empty($d->kg) ? 0 : $d->kg - ($d->pcs / 180);
             $kg_pakan = empty($d->kg_pakan) ? 0 : $d->kg_pakan / 1000;
-            $sheet1->setCellValue("P$kolom", number_format($weightKg, 2))
+            $sheet1->setCellValue("P$kolom", $weightKg)
                 ->setCellValue("Q$kolom", number_format($cum_ttlkg - ($cum_ttlpcs / 180), 2))
                 ->setCellValue("R$kolom", empty($d->normalPcs) ? 0 : number_format(($weightKg / $d->normalPcs ?? 0) * 1000, 2))
                 ->setCellValue("S$kolom", number_format($weightKg == 0 ? 0 : $kg_pakan  / $weightKg, 2))
