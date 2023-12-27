@@ -4,12 +4,13 @@
         <form action="{{ route('dashboard_kandang.save_penjualan_telur') }}" method="post">
             <div class="col-lg-12">
                 <div class="row">
-                    <div class="col-lg-6">
+                    <div class="col-lg-8">
                         <table class="table">
                             <tr>
                                 <th class="dhead">Tanggal</th>
                                 <th class="dhead">No Nota</th>
                                 <th class="dhead">Customer</th>
+                                <th class="dhead">Customer2</th>
                                 <th class="dhead">HP</th>
                             </tr>
                             <tr>
@@ -18,11 +19,19 @@
                                         value="{{ date('Y-m-d') }}">
                                 </td>
                                 <td>
-                                    <input type="text" class="form-control nota_bk" name="no_nota" value="TM{{ $nota }}"
-                                        readonly>
+                                    <input type="text" class="form-control nota_bk" name="no_nota"
+                                        value="TM{{ $nota }}" readonly>
                                 </td>
                                 <td>
                                     <input type="text" class="form-control" name="customer" required>
+                                </td>
+                                <td>
+                                    <select name="id_customer2" id="" class="select2_add">
+                                        <option value="">-Pilih Customer-</option>
+                                        @foreach ($customer as $c)
+                                            <option value="{{ $c->id_customer }}">{{ $c->nm_customer }}</option>
+                                        @endforeach
+                                    </select>
                                 </td>
                                 <td>
                                     <input type="hidden" name="tipe" value="kg">
@@ -47,8 +56,10 @@
                             <tr>
                                 <th class="dhead" width="10%" rowspan="2">Produk </th>
                                 <th style="text-align: center" class="dhead abu" colspan="3">Penjualan per pcs</th>
-                                <th style="text-align: center" class="dhead putih" colspan="3">Penjualan per ikat</th>
-                                <th style="text-align: center" class="dhead abuGelap" colspan="4">Penjualan per rak</th>
+                                <th style="text-align: center" class="dhead putih" colspan="3">Penjualan per ikat
+                                </th>
+                                <th style="text-align: center" class="dhead abuGelap" colspan="4">Penjualan per rak
+                                </th>
                                 <th rowspan="2" class="dhead" width="10%"
                                     style="text-align: center; white-space: nowrap;">Total
                                     Rp
@@ -67,7 +78,8 @@
 
                                 <th class="dhead abuGelap" width="7%" style="text-align: center;">Pcs</th>
                                 <th class="dhead abuGelap" width="7%" style="text-align: center;">Kg Kotor</th>
-                                <th class="dhead abuGelap" width="7%" style="text-align: center;">Kg Bersih <br> potong
+                                <th class="dhead abuGelap" width="7%" style="text-align: center;">Kg Bersih <br>
+                                    potong
                                     rak
                                 </th>
                                 {{-- <th class="dhead abuGelap" width="7%" style="text-align: center;">Rak</th> --}}
@@ -83,14 +95,15 @@
                                     <select name="id_produk[]" class="select2_add" required>
                                         <option value="">-Pilih Produk-</option>
                                         @foreach ($produk as $p)
-                                        <option value="{{ $p->id_produk_telur }}">{{ $p->nm_telur }}</option>
+                                            <option value="{{ $p->id_produk_telur }}">{{ $p->nm_telur }}</option>
                                         @endforeach
                                     </select>
                                 </td>
                                 <td align="right">
                                     <input type="text" class="form-control pcs pcs1" count="1"
                                         style="text-align: right; font-size: 12px;">
-                                    <input type="hidden" class="form-control  pcs_biasa1" name="pcs_pcs[]" value="0">
+                                    <input type="hidden" class="form-control  pcs_biasa1" name="pcs_pcs[]"
+                                        value="0">
                                 </td>
                                 <td align="right">
 
@@ -100,8 +113,8 @@
                                 <td align="right">
                                     <input type="text" class="form-control rp_pcs pcs1" count="1"
                                         style="text-align: right;font-size: 12px;">
-                                    <input type="hidden" class="form-control rp_pcs_biasa rp_pcs_biasa1" name="rp_pcs[]"
-                                        value="0">
+                                    <input type="hidden" class="form-control rp_pcs_biasa rp_pcs_biasa1"
+                                        name="rp_pcs[]" value="0">
                                     <input type="hidden" class="ttl_rp_pcs1" value="0">
                                 </td>
                                 <!-- Jual Ikat -->
@@ -128,7 +141,8 @@
                                 </td>
                                 <td align="right">
                                     <input type="text" class="form-control" count="1"
-                                        style="text-align: right;font-size: 12px;" value="0" name="kg_kg_kotor[]">
+                                        style="text-align: right;font-size: 12px;" value="0"
+                                        name="kg_kg_kotor[]">
                                 </td>
                                 <td align="right">
                                     <input type="text" class="form-control kg_kg kg_kg1" count="1"
@@ -141,8 +155,8 @@
                                 <td align="right">
                                     <input type="text" class="form-control rp_kg rp_kg1" count="1"
                                         style="text-align: right;font-size: 12px;">
-                                    <input type="hidden" class="form-control  rp_kg_biasa rp_kg_biasa1" name="rp_kg[]"
-                                        value="0">
+                                    <input type="hidden" class="form-control  rp_kg_biasa rp_kg_biasa1"
+                                        name="rp_kg[]" value="0">
                                     <input type="hidden" class="ttl_rp_kg1" value="0">
                                 </td>
                                 <!-- Jual Kg -->
@@ -184,8 +198,8 @@
         </form>
     </section>
     @section('scripts')
-    <script>
-        $(document).ready(function() {
+        <script>
+            $(document).ready(function() {
                 $(document).on("keyup", ".pcs", function() {
                     var count = $(this).attr("count");
                     var input = $(this).val();
@@ -255,9 +269,9 @@
                     $('.ttl_rp' + count).text(total_rupiah);
                 });
             });
-    </script>
-    <script>
-        $(document).ready(function() {
+        </script>
+        <script>
+            $(document).ready(function() {
                 $(document).on("keyup", ".ikat", function() {
                     var count = $(this).attr("count");
                     var ikat = $('.ikat' + count).val();
@@ -340,9 +354,9 @@
                     $('.ttl_rp' + count).text(total_rupiah);
                 });
             });
-    </script>
-    <script>
-        $(document).ready(function() {
+        </script>
+        <script>
+            $(document).ready(function() {
                 $(document).on("keyup", ".kg_kg", function() {
                     var count = $(this).attr("count");
                     var kg = $('.kg_kg' + count).val();
@@ -433,9 +447,9 @@
                 });
 
             });
-    </script>
-    <script>
-        $(document).ready(function() {
+        </script>
+        <script>
+            $(document).ready(function() {
                 var count = 2;
                 $(document).on("click", ".tbh_baris_mtd", function() {
                     count = count + 1;
@@ -510,6 +524,6 @@
                     }
                 });
             });
-    </script>
+        </script>
     @endsection
 </x-theme.app>

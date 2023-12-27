@@ -48,9 +48,10 @@ class Penjualan_telurmartadahController extends Controller
     {
         $tgl1 =  $this->tgl1;
         $tgl2 =  $this->tgl2;
-        $transfer = DB::select("SELECT a.void, a.cek, a.tgl, a.no_nota, a.customer,  b.nm_telur,  sum(a.total_rp) as ttl_rp , a.admin, a.admin_cek
+        $transfer = DB::select("SELECT a.void, a.cek, a.tgl, a.no_nota, a.customer,  b.nm_telur,  sum(a.total_rp) as ttl_rp , a.admin, a.admin_cek, c.nm_customer
         FROM invoice_telur as a 
         left join telur_produk as b on b.id_produk_telur = a.id_produk
+        left join customer as c on c.id_customer = a.id_customer2
         WHERE a.lokasi = 'mtd' and a.tgl between '$tgl1' and '$tgl2'
         GROUP by a.no_nota
         order by a.no_nota DESC
@@ -194,6 +195,7 @@ class Penjualan_telurmartadahController extends Controller
             $data = [
                 'tgl' => $r->tgl,
                 'customer' => $r->customer,
+                'id_customer2' => $r->id_customer2,
                 'no_nota' => 'TM' . $nota_t,
                 'id_produk' => $r->id_produk[$x],
                 'pcs' => $total_pcs,
