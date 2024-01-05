@@ -10,16 +10,17 @@
     @endphp
     <form action="{{ route('dashboard_kandang.set_font') }}" method="post">
         @csrf
-    <table>
-        <tr>
-            <td><label for="" class="text-primary">Font Size</label></td>
-            <td><input name="font" value="{{ $font }}" style="width: 65px" type="number" min="10" class="form-control float-end"></td>
-            <td><button type="submit" class="btn btn-sm btn-primary">Save</button></td>
-        </tr>
-    </table>
-</form>
+        <table>
+            <tr>
+                <td><label for="" class="text-primary">Font Size</label></td>
+                <td><input name="font" value="{{ $font }}" style="width: 65px" type="number" min="10"
+                        class="form-control float-end"></td>
+                <td><button type="submit" class="btn btn-sm btn-primary">Save</button></td>
+            </tr>
+        </table>
+    </form>
     <h6>
-        Input Kandang Harian ~ {{ tanggal(date('Y-m-d')) }} 
+        Input Kandang Harian ~ {{ tanggal(date('Y-m-d')) }}
         <div class="btn-group dropup me-1 mb-2 float-end">
             <button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-bs-toggle="dropdown"
                 aria-haspopup="true" aria-expanded="false">
@@ -38,9 +39,9 @@
                 {{-- <a data-bs-toggle="modal" data-bs-target="#week_layer" class="text-white dropdown-item hoverbtn"
                     href="#"> Week Layer</a> --}}
             </div>
-            
+
         </div>
-        
+
         {{-- <div class="float-end">
             <form action="">
                 <div class="form-group">
@@ -49,10 +50,10 @@
                 </div>
             </form>
         </div> --}}
-        
+
     </h6>
-    
-    <table class="table table-bordered table-hover " id="" style="font-size: {{$font}}px;">
+
+    <table class="table table-bordered table-hover " id="" style="font-size: {{ $font }}px;">
         <thead>
             <tr>
                 @php
@@ -61,7 +62,7 @@
                 <th rowspan="2" width="1%" class="text-center dhead">Kdg</th>
                 <th style="background-color: {{ $bgZona }} !important" colspan="3" class="text-center  putih">
                     Populasi</th>
-                <th colspan="8" class="text-center abu"> Telur </th>
+                <th colspan="9" class="text-center abu"> Telur </th>
                 <th style="background-color: {{ $bgZona }} !important" colspan="2" class="text-center putih">
                     pakan</th>
                 <th width="2%" class="text-center dhead" rowspan="2">Aksi</th>
@@ -100,7 +101,7 @@
                 $total_kilo = 0;
                 $total_kilo_kemaren = 0;
                 $total_kg_pakan = 0;
-                $totalGrPcs = 0; 
+                $totalGrPcs = 0;
             @endphp
             @foreach ($kandang as $no => $d)
                 <tr>
