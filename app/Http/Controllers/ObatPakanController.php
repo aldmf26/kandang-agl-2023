@@ -43,6 +43,16 @@ class ObatPakanController extends Controller
         return view('stok_pakan.stok', $data);
     }
 
+    public function history_pakan(Request $r)
+    {
+        $data = [
+            'datas' => DB::select("SELECT b.nm_produk,a.pcs,a.total_rp,a.biaya_dll,a.tgl,a.admin,a.no_nota FROM `stok_produk_perencanaan` as a 
+            JOIN tb_produk_perencanaan as b on a.id_pakan = b.id_produk
+            WHERE a.pcs != 0")
+        ];
+        return view('stok_pakan.history',$data);
+    }
+
     public function history_stok(Request $r)
     {
         $tgl1 = $r->tgl1 ?? date('Y-m-01');

@@ -434,6 +434,8 @@ Route::middleware('auth')->group(function () {
             Route::get('/history_stok', 'history_stok')->name('history_stok');
             Route::get('/get_satuan_vitmin_mtd', 'get_satuan')->name('get_satuan_vitmin_mtd');
             Route::get('/history_pakvit', 'history_pakvit')->name('history_pakvit');
+            Route::get('/history_pakan', 'history_pakan')->name('history_pakan');
+            Route::get('/history_pakvit', 'history_pakvit')->name('history_pakvit');
             Route::get('/print_opname/{no_nota}/{print?}', 'print_opname')->name('print_opname');
             Route::get('/search_history_pakvit', 'history_pakvit')->name('search_history_pakvit');
             Route::post('/save_opname_pakan', 'save_opname_pakan')->name('save_opname_pakan');

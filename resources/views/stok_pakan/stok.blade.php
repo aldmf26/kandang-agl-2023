@@ -29,10 +29,10 @@
 
                         <a onclick="event.preventDefault();" class="text-white opnme_pakan dropdown-item hoverbtn"
                             href="#">Opname</a>
-                        <a onclick="event.preventDefault();" data-bs-toggle="modal" data-bs-target="#history_pakvit"
-                            class="text-white history_pakvit dropdown-item hoverbtn" href="#"
+                        <a onclick="event.preventDefault();" jenis="masuk"
+                            class="text-white history_pakan dropdown-item hoverbtn" href="#"
                             jenis="pakan">History
-                            Masuk Keluar</a>
+                            Masuk</a>
                         <a onclick="event.preventDefault();" data-bs-toggle="modal" data-bs-target="#history_pakvit"
                             class="text-white history_pakvit dropdown-item hoverbtn" href="#"
                             jenis="pakan_opname">History Opname</a>
@@ -172,3 +172,8 @@
     </div>
 
 </div>
+
+<x-theme.modal title="History Masuk" idModal="history_pakan" size="modal-lg">
+
+    <div id="load_history_pakan"></div>
+</x-theme.modal>

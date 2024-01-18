@@ -736,6 +736,24 @@
         </script>
 
         <script>
+            $(document).on('click', '.history_pakan', function(){
+                var val = $(this).attr('jenis')
+                $('#history_pakan').modal('show')
+                $.ajax({
+                    type: "GET",
+                    url: "{{route('dashboard_kandang.history_pakan')}}?jenis="+val,
+                    success: function (r) {
+                        $("#load_history_pakan").html(r);
+                        $('#tblPakanHistory').DataTable({
+                            "paging": true,
+                            "pageLength": 10,
+                            "lengthChange": true,
+                            "stateSave": true,
+                            "searching": true,
+                        });
+                    }
+                });
+            })
             function load_stok_pakan() {
                 $.ajax({
                     type: "GET",
