@@ -48,7 +48,7 @@ class ObatPakanController extends Controller
         $data = [
             'datas' => DB::select("SELECT b.nm_produk,a.pcs,a.total_rp,a.biaya_dll,a.tgl,a.admin,a.no_nota FROM `stok_produk_perencanaan` as a 
             JOIN tb_produk_perencanaan as b on a.id_pakan = b.id_produk
-            WHERE a.pcs != 0")
+            WHERE a.pcs != 0 AND b.kategori = 'pakan'")
         ];
         return view('stok_pakan.history',$data);
     }
