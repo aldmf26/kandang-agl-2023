@@ -1,6 +1,7 @@
 <x-theme.app title="{{ $title }}" table="Y" sizeCard="8">
 
     <x-slot name="cardHeader">
+       
         <div class="row justify-content-end">
             <div class="col-lg-12">
                 <h6 class="float-start">{{ $title }}</h6>

@@ -50,7 +50,7 @@ class ObatPakanController extends Controller
             JOIN tb_produk_perencanaan as b on a.id_pakan = b.id_produk
             WHERE a.pcs != 0 AND b.kategori = 'pakan'")
         ];
-        return view('stok_pakan.history',$data);
+        return view('stok_pakan.history', $data);
     }
 
     public function history_stok(Request $r)
@@ -106,60 +106,68 @@ class ObatPakanController extends Controller
 
     public function save_opname_pakan(Request $r)
     {
-        $notaTerakhir = DB::table('stok_produk_perencanaan as a')
-            ->join('tb_produk_perencanaan as b', 'a.id_pakan', 'b.id_produk')
-            ->where([
-                ['a.no_nota', 'LIKE', "%PAKVITOPN-%"]
-            ])
-            ->orderBy('id_stok_telur', 'DESC')
-            ->groupBy('a.no_nota')
-            ->first();
-        $no_nota = empty($notaTerakhir) ? 1000 : str()->remove("PAKVITOPN-", $notaTerakhir->no_nota) + 1;
-        for ($x = 0; $x < count($r->id_pakan); $x++) {
-            DB::table('stok_produk_perencanaan')->where(['id_pakan' => $r->id_pakan[$x], 'opname' => 'T'])->update(['opname' => 'Y']);
-            $id_pakan = $r->id_pakan[$x];
+        DB::beginTransaction();
+        try {
+            $notaTerakhir = DB::table('stok_produk_perencanaan as a')
+                ->join('tb_produk_perencanaan as b', 'a.id_pakan', 'b.id_produk')
+                ->where([
+                    ['a.no_nota', 'LIKE', "%PAKVITOPN-%"]
+                ])
+                ->orderBy('id_stok_telur', 'DESC')
+                ->groupBy('a.no_nota')
+                ->first();
+            $no_nota = empty($notaTerakhir) ? 1000 : str()->remove("PAKVITOPN-", $notaTerakhir->no_nota) + 1;
+            for ($x = 0; $x < count($r->id_pakan); $x++) {
+                DB::table('stok_produk_perencanaan')->where(['id_pakan' => $r->id_pakan[$x], 'opname' => 'T'])->update(['opname' => 'Y']);
+                $id_pakan = $r->id_pakan[$x];
 
-            $selisih = $r->stk_program[$x] - $r->stk_aktual[$x];
-            if ($r->selisih[$x] != 0) {
-                if ($selisih < 0) {
-                    $qty_selisih = $selisih * -1;
+                $selisih = $r->stk_program[$x] - $r->stk_aktual[$x];
+                if ($r->selisih[$x] != 0) {
+                    if ($selisih < 0) {
+                        $qty_selisih = $selisih * -1;
 
-                    $datas = [
-                        'pcs' => $r->stk_aktual[$x],
-                        'id_pakan' => $r->id_pakan[$x],
-                        'opname' => 'T',
-                        'tgl' => $r->tgl,
-                        'admin' => auth()->user()->name,
-                        'no_nota' => "PAKVITOPN-" . $no_nota,
-                        'h_opname' => 'Y',
-                        'pcs' => $qty_selisih,
-                        'pcs_kredit' => 0,
-                        'pcs_selisih' => $r->selisih[$x],
-                        'total_rp' => 0
-                    ];
-                    DB::table('stok_produk_perencanaan')->insert($datas);
+                        $datas = [
+                            'pcs' => $r->stk_aktual[$x],
+                            'id_pakan' => $r->id_pakan[$x],
+                            'opname' => 'T',
+                            'tgl' => $r->tgl,
+                            'admin' => auth()->user()->name,
+                            'no_nota' => "PAKVITOPN-" . $no_nota,
+                            'h_opname' => 'Y',
+                            'pcs' => $qty_selisih,
+                            'pcs_kredit' => 0,
+                            'pcs_selisih' => $r->selisih[$x],
+                            'total_rp' => 0
+                        ];
+                        DB::table('stok_produk_perencanaan')->insert($datas);
+                    } else {
+                        $qty_selisih = $selisih;
+
+                        $datas = [
+                            'pcs' => $r->stk_aktual[$x],
+                            'id_pakan' => $r->id_pakan[$x],
+                            'opname' => 'T',
+                            'tgl' => $r->tgl,
+                            'admin' => auth()->user()->name,
+                            'no_nota' => "PAKVITOPN-" . $no_nota,
+                            'h_opname' => 'Y',
+                            'pcs' => 0,
+                            'pcs_kredit' => $qty_selisih,
+                            'pcs_selisih' => $r->selisih[$x],
+                            'total_rp' => 0
+                        ];
+                        DB::table('stok_produk_perencanaan')->insert($datas);
+                    }
                 } else {
-                    $qty_selisih = $selisih;
-
-                    $datas = [
-                        'pcs' => $r->stk_aktual[$x],
-                        'id_pakan' => $r->id_pakan[$x],
-                        'opname' => 'T',
-                        'tgl' => $r->tgl,
-                        'admin' => auth()->user()->name,
-                        'no_nota' => "PAKVITOPN-" . $no_nota,
-                        'h_opname' => 'Y',
-                        'pcs' => 0,
-                        'pcs_kredit' => $qty_selisih,
-                        'pcs_selisih' => $r->selisih[$x],
-                        'total_rp' => 0
-                    ];
-                    DB::table('stok_produk_perencanaan')->insert($datas);
+                    continue;
                 }
-                return redirect()->route('dashboard_kandang.print_opname', "PAKVITOPN-" . $no_nota)->with('sukses', 'Data berhasil di simpan');
-            } else {
-                continue;
+
             }
+            DB::commit();
+            return redirect()->route('dashboard_kandang.print_opname', "PAKVITOPN-" . $no_nota)->with('sukses', 'Data berhasil di simpan');
+        } catch (\Exception $e) {
+            DB::rollback();
+            return redirect()->route('dashboard_kandang.index')->with('error', $e->getMessage());
         }
     }
 
