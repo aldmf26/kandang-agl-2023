@@ -315,7 +315,6 @@ class ObatPakanController extends Controller
         $jenis = $r->jenis;
         $tgl1 = $r->tgl1 ?? date('Y-m-01');
         $tgl2 = $r->tgl2 ?? date('Y-m-d');
-
         $jenisMapping = [
             'pakan' => "'pakan'",
             'pakan_opname' => "'pakan'",
@@ -337,7 +336,7 @@ class ObatPakanController extends Controller
                     WHERE a.h_opname = 'T' AND a.pcs != 0 and  a.admin not in('import','nanda')
                     GROUP BY a.id_pakan
         ) as d on a.id_pakan = d.id_pakan
-        WHERE b.kategori IN ($jenisQ) AND a.tgl BETWEEN '2023-08-15' AND '$tgl2' AND a.h_opname = 'Y'
+        WHERE b.kategori IN ($jenisQ) AND a.tgl BETWEEN '$tgl1' AND '$tgl2' AND a.h_opname = 'Y'
         ORDER BY a.pcs DESC;");
 
         $history = DB::select("SELECT a.no_nota,a.h_opname,a.admin,a.tgl,a.id_pakan, b.nm_produk, a.pcs, a.pcs_kredit, c.nm_satuan, a.total_rp
