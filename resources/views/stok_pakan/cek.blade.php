@@ -73,7 +73,7 @@
                                 @php
                                     $stokProgram = $d->stok - $d->pcs + $d->pcs_kredit;
                                     $selisih = $d->stok - $stokProgram;
-                                    $hargaSatuan = $d->sum_ttl_rp / $d->pcs_sum_ttl_rp;
+                                    $hargaSatuan = $d->sum_ttl_rp == 0 ? 0 : $d->sum_ttl_rp / $d->pcs_sum_ttl_rp;
                                     
                                     $selisihRupiah = $hargaSatuan * $selisih;
                                     $ttlRp += $selisih < 0 ? $selisihRupiah * -1 : $selisihRupiah;
