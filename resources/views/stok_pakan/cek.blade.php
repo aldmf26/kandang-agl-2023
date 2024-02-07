@@ -1,6 +1,7 @@
 <x-theme.app title="{{ $title }}" table="Y" sizeCard="8">
 
     <x-slot name="cardHeader">
+       
         <div class="row justify-content-end">
             <div class="col-lg-12">
                 <h6 class="float-start">{{ $title }}</h6>
@@ -72,7 +73,7 @@
                                 @php
                                     $stokProgram = $d->stok - $d->pcs + $d->pcs_kredit;
                                     $selisih = $d->stok - $stokProgram;
-                                    $hargaSatuan = $d->sum_ttl_rp / $d->pcs_sum_ttl_rp;
+                                    $hargaSatuan = $d->sum_ttl_rp == 0 ? 0 : $d->sum_ttl_rp / $d->pcs_sum_ttl_rp;
                                     
                                     $selisihRupiah = $hargaSatuan * $selisih;
                                     $ttlRp += $selisih < 0 ? $selisihRupiah * -1 : $selisihRupiah;
