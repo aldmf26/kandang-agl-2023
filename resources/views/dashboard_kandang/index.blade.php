@@ -27,8 +27,8 @@
         <div class="row justify-content-end">
 
             <div class="col-lg-12">
-                <a href="#" class="btn btn-sm btn-primary float-end">Perencanaan Chick In - Out</a>
-                <a href="{{ route('data_kandang.index') }}" class="me-2 btn btn-sm btn-primary float-end">Data Chick In - Out</a>
+                <a href="{{ route('data_kandang.index') }}" class="btn btn-sm btn-primary float-end">Perencanaan Chick In - Out</a>
+                <a href="{{ route('data_chickin.index') }}" class="me-2 btn btn-sm btn-primary float-end">Data Chick In - Out</a>
              
             </div>
         </div>
