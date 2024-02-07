@@ -27,17 +27,9 @@
         <div class="row justify-content-end">
 
             <div class="col-lg-12">
-                <div class="btn-group border-1 float-end" role="group">
-                    <span class="btn btn-sm" data-bs-toggle="dropdown">
-                        <i class="fas fa-plus-circle text-primary"></i> Tambah
-                    </span>
-                    <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1">
-                        <li>
-                            <a class="dropdown-item text-info" href="{{ route('data_kandang.index') }}"><i
-                                    class="me-2 fas fa-border-all"></i>kandang</a>
-                        </li>
-                    </ul>
-                </div>
+                <a href="{{ route('data_kandang.index') }}" class="btn btn-sm btn-primary float-end">Data Chick In - Out</a>
+                <a href="#" class="btn btn-sm btn-primary float-end me-2">Perencanaan Chick In - Out</a>
+             
             </div>
         </div>
 

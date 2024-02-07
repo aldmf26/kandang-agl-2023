@@ -44,7 +44,10 @@
         },
         false
     );
-
+    $(document).on('click', '.selectAll', function() {
+        this.select()
+    })
+    
     $(document).on('click', '.akses_h', function() {
         var id_user = $(this).attr('id_user');
         if ($('.akses_h' + id_user).prop("checked") == true) {

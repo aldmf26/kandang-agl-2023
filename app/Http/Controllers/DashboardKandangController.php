@@ -162,6 +162,7 @@ class DashboardKandangController extends Controller
                 'id_kandang' => $r->id_kandang[$x],
                 'mati' => $r->mati[$x],
                 'jual' => $r->jual[$x],
+                'afkir' => $r->afkir[$x],
                 'tgl' => $r->tgl[$x],
                 'admin' => auth()->user()->name
             ]);

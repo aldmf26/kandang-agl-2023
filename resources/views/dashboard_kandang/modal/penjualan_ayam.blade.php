@@ -38,10 +38,10 @@
                 <thead>
                     <th>No</th>
                     <th>Tanggal</th>
+                    <th>Keterangan</th>
                     <th class="text-end">Stok Masuk</th>
                     <th class="text-end">Stok Keluar</th>
                     <th class="text-end">Saldo</th>
-                    <th>Keterangan</th>
                 </thead>
                 <tbody>
                     @php
@@ -54,10 +54,10 @@
                     <tr>
                         <td>{{ $no + 1 }}</td>
                         <td style="white-space: nowrap">{{ tanggal($h->tgl) }}</td>
+                        <td>{{ $h->kredit == 0 ? 'Ayam Masuk' : ($h->no_nota != '' ? 'Penjualan' : 'Transfer') }}
                         <td align="right">{{ $h->debit }}</td>
                         <td align="right">{{ $h->kredit }}</td>
                         <td align="right">{{ $saldo }}</td>
-                        <td>{{ $h->kredit == 0 ? 'Ayam Masuk' : ($h->no_nota != '' ? 'Penjualan' : 'Transfer') }}
                         </td>
                     </tr>
                     @endforeach
