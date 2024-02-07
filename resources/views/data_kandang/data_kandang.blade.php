@@ -22,7 +22,7 @@
                         <th class="text-end">Chick Out</th>
                         <th class="text-end">Chick In2</th>
                         <th>Strain</th>
-                        <th class="text-end">Ayam Awal</th>
+                        <th class="text-end">Pop Awal</th>
                         <th class="text-end">Rupiah</th>
 
                         <th class="text-center">Aksi</th>
@@ -31,12 +31,16 @@
 
                 <tbody>
                     @foreach ($kandang as $no => $a)
+                        @php
+                            $tgl = date('Y-m-d', strtotime('-3 months', strtotime($a->tgl_masuk)));
+                        @endphp
                         <tr>
                             <td>{{ $no + 1 }}</td>
                             <td class="text-center">{{ ucwords($a->nm_kandang) }}</td>
                             <td align="right">{{ tanggal($a->chick_in) }}</td>
                             <td align="right">{{ tanggal($a->chick_out) }}</td>
-                            <td align="right">{{ tanggal($a->tgl_masuk) }}</td>
+                            <td align="right" class="{{ date('Y-m-d') >= $tgl ? 'text-danger' : '' }}">
+                                {{ tanggal($a->tgl_masuk) }} </td>
                             <td>{{ ucwords($a->nm_strain) }}</td>
                             <td class="text-end">
                                 {{ $a->stok_awal }}

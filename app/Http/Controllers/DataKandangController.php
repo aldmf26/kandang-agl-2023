@@ -10,7 +10,7 @@ class DataKandangController extends Controller
     public function index()
     {
         $data = [
-            'title' => 'Data Kandang',
+            'title' => 'Perencanaan Chick in / out',
             'kandang' => DB::table('kandang as a')->join('strain as b', 'a.id_strain', 'b.id_strain')->get()
         ];
         return view('data_kandang.data_kandang', $data);
