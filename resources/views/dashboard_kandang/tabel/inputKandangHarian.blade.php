@@ -78,15 +78,15 @@
             </tr>
 
             <tr>
-                <th width="3%" class="dhead text-center">Mgg (85)<br> 
+                <th width="3%" class="dhead text-center">Mgg (85)<br>
                 </th>
                 <th width="3%" class="dhead text-center">D <br>C <br>Week<br>
                 </th>
                 <th width="1%" class="dhead text-center">pop <br>awal <br> akhir</th>
-                <th width="4%" class="dhead text-center">kg bersih <br> butir <br> kg kotor 
-                   </th>
+                <th width="4%" class="dhead text-center">kg bersih <br> butir <br> kg kotor
+                </th>
                 <th width="4%" class="dhead text-center">gr / p <br> (butir) <br>
-                    </th>
+                </th>
                 <th width="4%" class="dhead text-center">selisih <br> kg <br> butir<br></th>
                 @php
                     $telur = DB::table('telur_produk')->get();
@@ -170,15 +170,16 @@
                     <td style="background-color: {{ $bgZona }} !important" align="center" data-bs-toggle="modal"
                         id_kandang="{{ $d->id_kandang }}" nm_kandang="{{ $d->nm_kandang }}"
                         class="tambah_populasi {{ $kelas }}" data-bs-target="#tambah_populasi">
-                        &nbsp; <br>
-                        {{ empty($d->mati) ? '0' : $d->mati }} <br> {{ empty($d->jual) ? '0' : $d->jual }}
-                        <br>
-                        {{ $d->mati_week + $d->jual_week }}
+                        <a href="javascript:void(0);" style="font-weight: bold">
+                            &nbsp; <br>
+                            {{ empty($d->mati) ? '0' : $d->mati }} <br> {{ empty($d->jual) ? '0' : $d->jual }}
+                            <br>
+                            {{ $d->mati_week + $d->jual_week }}
+                        </a>
                     </td>
                     {{-- end mati dan jual --}}
 
-                    <td style="background-color: {{ $bgZona }} !important" data-bs-toggle="modal"
-                        id_kandang="{{ $d->id_kandang }}" nm_kandang="{{ $d->nm_kandang }}"
+                    <td style="background-color: {{ $bgZona }} !important"
                         class="tambah_populasi putih text-center" data-bs-target="#tambah_populasi">
                         &nbsp; <br>{{ $d->stok_awal }} <br> {{ $d->stok_awal - $d->pop_kurang }} <br>
                         {{ number_format((($d->stok_awal - $d->pop_kurang) / $d->stok_awal) * 100, 1) }}%
@@ -237,16 +238,16 @@
                     <td data-bs-toggle="modal" id_kandang="{{ $d->id_kandang }}" nm_kandang="{{ $d->nm_kandang }}"
                         class="tambah_telur " data-bs-target="#tambah_telur">
                         @php
-                                    $kg = $d->kg - $d->pcs / 180 - ($d->kg_past - $d->pcs_past / 180);
-                                @endphp
-                                <p style="margin: 0; padding: 0;">&nbsp;</p>
-                                <p style="margin: 0; padding: 0;" class="{{ $kg < 0 ? 'text-danger fw-bold' : '' }}">
-                                    {{ number_format($kg, 1) }}
-                                </p>
-                                <p style="margin: 0; padding: 0;"
-                                    class="{{ $d->pcs - $d->pcs_past < 0 ? 'text-danger fw-bold' : '' }}">
-                                    {{ number_format($d->pcs - $d->pcs_past, 0) }}</p>
-                                <p style="margin: 0; padding: 0;">&nbsp;</p>
+                            $kg = $d->kg - $d->pcs / 180 - ($d->kg_past - $d->pcs_past / 180);
+                        @endphp
+                        <p style="margin: 0; padding: 0;">&nbsp;</p>
+                        <p style="margin: 0; padding: 0;" class="{{ $kg < 0 ? 'text-danger fw-bold' : '' }}">
+                            {{ number_format($kg, 1) }}
+                        </p>
+                        <p style="margin: 0; padding: 0;"
+                            class="{{ $d->pcs - $d->pcs_past < 0 ? 'text-danger fw-bold' : '' }}">
+                            {{ number_format($d->pcs - $d->pcs_past, 0) }}</p>
+                        <p style="margin: 0; padding: 0;">&nbsp;</p>
                     </td>
 
                     @foreach ($telur as $t)

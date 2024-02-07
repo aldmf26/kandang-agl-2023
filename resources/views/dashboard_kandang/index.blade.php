@@ -27,9 +27,11 @@
         <div class="row justify-content-end">
 
             <div class="col-lg-12">
-                <a href="{{ route('data_kandang.index') }}" class="btn btn-sm btn-primary float-end">Perencanaan Chick In - Out</a>
-                <a href="{{ route('data_chickin.index') }}" class="me-2 btn btn-sm btn-primary float-end">Data Chick In - Out</a>
-             
+                <a href="{{ route('data_kandang.index') }}" class="btn btn-sm btn-primary float-end">Perencanaan Chick In
+                    - Out</a>
+                <a href="{{ route('data_chickin.index') }}" class="me-2 btn btn-sm btn-primary float-end">Data Chick In
+                    - Out</a>
+
             </div>
         </div>
 
@@ -728,13 +730,13 @@
         </script>
 
         <script>
-            $(document).on('click', '.history_pakan', function(){
+            $(document).on('click', '.history_pakan', function() {
                 var val = $(this).attr('jenis')
                 $('#history_pakan').modal('show')
                 $.ajax({
                     type: "GET",
-                    url: "{{route('dashboard_kandang.history_pakan')}}?jenis="+val,
-                    success: function (r) {
+                    url: "{{ route('dashboard_kandang.history_pakan') }}?jenis=" + val,
+                    success: function(r) {
                         $("#load_history_pakan").html(r);
                         $('#tblPakanHistory').DataTable({
                             "paging": true,
@@ -746,6 +748,7 @@
                     }
                 });
             })
+
             function load_stok_pakan() {
                 $.ajax({
                     type: "GET",
