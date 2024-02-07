@@ -105,9 +105,21 @@
         <script>
             $(document).on('click', '.detailPop', function(e){
                 e.preventDefault();
-                const tgl 
+                const tgl = $(this).attr('tgl')
+                $('#detailPop').modal('show')
+                $.ajax({
+                    type: "GET",
+                    url: "{{route('dashboard_kandang.detail_pop')}}?tgl="+tgl,
+                    success: function (r) {
+                        $("#loadDetailPop").html(r);
+                    }
+                });
             })
         </script>
     @endsection
+</x-theme.modal>
+
+<x-theme.modal btnSave="T" title="History Populasi" idModal="detailPop">
+<div id="loadDetailPop"></div>
 </x-theme.modal>
 {{-- end modal --}}

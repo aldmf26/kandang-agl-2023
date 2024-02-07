@@ -313,6 +313,7 @@ Route::middleware('auth')->group(function () {
         ->name('dashboard_kandang.')
         ->group(function () {
             Route::get('/rumus', 'rumus')->name('rumus');
+            Route::get('/detail_pop', 'detail_pop')->name('detail_pop');
             Route::post('/set_font', 'set_font')->name('set_font');
             Route::get('/', 'index')->name('index');
             Route::post('/tambah_telur', 'tambah_telur')->name('tambah_telur');

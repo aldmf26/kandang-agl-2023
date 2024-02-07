@@ -108,10 +108,21 @@ class DashboardKandangController extends Controller
             'stok_karung' => DB::selectOne("SELECT sum(a.debit - a.kredit) as saldo_karung FROM stok_ayam as a where a.id_gudang = '1' and a.jenis = 'karung'"),
 
             'stok_pupuk' => DB::selectOne("SELECT sum(a.debit - a.kredit) as saldo_pupuk FROM stok_ayam as a where a.id_gudang = '1' and a.jenis = 'pupuk'"),
-            'history_ayam' => DB::table('stok_ayam')->where('jenis', 'ayam')->where('id_gudang', '1')->get(),
+            'history_ayam' => DB::table('stok_ayam')->where('jenis', 'ayam')->where('id_gudang', '1')->orderBy('tgl', 'DESC')->get(),
             'history_karung' => DB::table('stok_ayam')->where('jenis', 'karung')->where('id_gudang', '1')->get()
         ];
         return view('dashboard_kandang.index', $data);
+    }
+
+    public function detail_pop(Request $r)
+    {
+        $data = [
+            'pop' => DB::table('populasi as a')
+                        ->join('kandang as b', 'a.id_kandang', 'b.id_kandang')
+                        ->where('a.tgl', $r->tgl)
+                        ->get()
+        ];
+        return view('dashboard_kandang.modal.detail_pop',$data);
     }
 
     public function kandang_selesai($id_kandang)
