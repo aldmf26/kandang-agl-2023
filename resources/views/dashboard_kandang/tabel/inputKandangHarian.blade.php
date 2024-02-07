@@ -325,7 +325,7 @@
                 @endphp
             @endforeach
         </tbody>
-        <tfoot>
+        {{-- <tfoot>
             @php
                 $total_pcs = 0;
                 $total_kemarin_pcs = 0;
@@ -363,7 +363,7 @@
                 {{ number_format($total_kg_pakan, 1) }}</th>
             <th style="background-color: {{ $bgZona }} !important"></th>
             <th></th>
-        </tfoot>
+        </tfoot> --}}
     </table>
 </div>
 <x-theme.modal title="Rumus" btnSave='T' idModal="rumus">
