@@ -61,7 +61,13 @@
                 @php
                     $bgZona = '#f6f0f0';
                 @endphp
-                <th rowspan="2" width="1%" class="text-center dhead">Kdg</th>
+                <th rowspan="2" width="1%" class="text-center dhead">
+                    Kdg <br> chick in <br>
+                            Afkir <br>
+                            chick in2
+                            <br>
+                            {{ date('d/m/y') }}
+                </th>
                 <th style="background-color: {{ $bgZona }} !important" colspan="3" class="text-center  putih">
                     Populasi</th>
                 <th colspan="9" class="text-center abu"> Telur </th>
