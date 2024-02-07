@@ -53,7 +53,7 @@
                     @endphp
                     <tr>
                         <td>{{ $no + 1 }}</td>
-                        <td style="white-space: nowrap"><a href="#" class="detailPop" tgl="{{ $tgl }}">{{ tanggal($h->tgl) }}</a></td>
+                        <td style="white-space: nowrap"><a href="#" class="detailPop" tgl="{{ $h->tgl }}">{{ tanggal($h->tgl) }}</a></td>
                         <td>{{ $h->kredit == 0 ? 'Ayam Masuk' : ($h->no_nota != '' ? 'Penjualan' : 'Transfer') }}
                         <td align="right">{{ $h->debit }}</td>
                         <td align="right">{{ $h->kredit }}</td>
@@ -100,5 +100,14 @@
             </table>
         </div>
     </div>
+
+    @section('scripts')
+        <script>
+            $(document).on('click', '.detailPop', function(e){
+                e.preventDefault();
+                const tgl 
+            })
+        </script>
+    @endsection
 </x-theme.modal>
 {{-- end modal --}}
