@@ -120,7 +120,8 @@ class DashboardKandangController extends Controller
             'pop' => DB::table('populasi as a')
                         ->join('kandang as b', 'a.id_kandang', 'b.id_kandang')
                         ->where('a.tgl', $r->tgl)
-                        ->get()
+                        ->get(),
+                        'tgl' => $r->tgl
         ];
         return view('dashboard_kandang.modal.detail_pop',$data);
     }

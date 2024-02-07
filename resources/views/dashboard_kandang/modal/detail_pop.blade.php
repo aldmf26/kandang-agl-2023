@@ -1,5 +1,5 @@
 <div class="row">
-    <h6>Tanggl : <span>{{ tanggal($pop[0]->tgl) }}</span></h6>
+    <h6>Tanggl : <span>{{ tanggal($tgl) }}</span></h6>
     <div class="col-lg-12">
         <table class="table table-bordered">
             <thead>
