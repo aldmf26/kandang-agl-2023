@@ -37,10 +37,10 @@
             <table class="table table-bordered" id="table" width="100%">
                 <thead>
                     <th>No</th>
-                    <th>Tanggal</th>
-                    <th>Keterangan</th>
-                    <th class="text-end">Stok Masuk</th>
-                    <th class="text-end">Stok Keluar</th>
+                    <th>Tgl</th>
+                    <th>Ket</th>
+                    <th class="text-end">Stk Masuk</th>
+                    <th class="text-end">Stk Keluar</th>
                     <th class="text-end">Saldo</th>
                 </thead>
                 <tbody>
@@ -53,7 +53,7 @@
                     @endphp
                     <tr>
                         <td>{{ $no + 1 }}</td>
-                        <td style="white-space: nowrap">{{ tanggal($h->tgl) }}</td>
+                        <td style="white-space: nowrap"><a href="#" class="detailPop" tgl="{{ $tgl }}">{{ tanggal($h->tgl) }}</a></td>
                         <td>{{ $h->kredit == 0 ? 'Ayam Masuk' : ($h->no_nota != '' ? 'Penjualan' : 'Transfer') }}
                         <td align="right">{{ $h->debit }}</td>
                         <td align="right">{{ $h->kredit }}</td>

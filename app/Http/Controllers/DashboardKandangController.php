@@ -52,13 +52,53 @@ class DashboardKandangController extends Controller
     public function index()
     {
         $tgl = date('Y-m-d');
+        $tgl_kemarin = date("Y-m-d", strtotime($tgl . " -1 days"));
+        $tgl_sebelumnya = date("Y-m-d", strtotime($tgl . " -6 days"));
+
         $data = [
             'title' => 'Dashboard Kandang',
-            'kandang' => DB::table('kandang as a')
-                ->select(DB::raw("FLOOR(DATEDIFF('$tgl', a.chick_in) / 7) AS mgg"), 'a.*')
-                ->where('selesai', 'T')
-                ->orderBy('a.nm_kandang', 'ASC')
-                ->get(),
+            'kandang' => DB::select("SELECT 
+            CEIL(DATEDIFF('$tgl', a.chick_in) / 7) AS mgg,
+             a.*,
+            CEIL(DATEDIFF(a.chick_out, a.chick_in) / 7) AS mgg_afkir,
+            aa.ttl_gjl,
+            w.mati_week,
+            w.jual_week,
+            b.pop_kurang,
+            h.kg,
+            h.pcs,
+            i.pcs_past,
+            i.kg_past
+            FROM kandang AS a
+            left join(SELECT b.id_kandang, sum(b.mati+b.jual) as pop_kurang 
+            FROM populasi as b 
+            where b.tgl between '2020-01-01' and '$tgl'
+            group by b.id_kandang ) as b on b.id_kandang = a.id_kandang
+            left join (
+                SELECT a.id_kandang, a.nm_kandang, count(b.total) as ttl_gjl
+                FROM kandang as a 
+                left join (
+                SELECT a.id_kandang, count(a.id_kandang) as total
+                FROM stok_produk_perencanaan as a 
+                left join tb_produk_perencanaan as b on a.id_pakan = b.id_produk
+                where b.kategori = 'pakan' and a.pcs_kredit != 0
+                group by a.tgl,  a.id_kandang
+                ) as b on b.id_kandang = a.id_kandang
+                GROUP by a.id_kandang
+            ) as aa on aa.id_kandang = a.id_kandang
+
+            left join (SELECT h.id_kandang , sum(h.pcs) as pcs, sum(h.kg) as kg FROM stok_telur as h  where h.tgl = '$tgl' group by h.id_kandang) as h on h.id_kandang = a.id_kandang
+
+            left join (SELECT h.id_kandang , sum(h.pcs) as pcs_past, sum(h.kg) as kg_past FROM stok_telur as h  where h.tgl = '$tgl_kemarin' group by h.id_kandang) as i on i.id_kandang = a.id_kandang
+
+            left join (
+                SELECT w.id_kandang , sum(w.mati) as mati_week , sum(w.jual) as jual_week
+                    FROM populasi as w 
+                    where w.tgl between '$tgl_sebelumnya' and '$tgl'
+                group by w.id_kandang
+            ) as w on w.id_kandang = a.id_kandang
+            WHERE a.selesai = 'T'
+            ORDER BY a.nm_kandang ASC;"),
             'telur' => DB::table('telur_produk')->get(),
             'produkPakan' => DB::table('tb_produk_perencanaan')->where('kategori', 'pakan')->get(),
             'produk' => $this->produk,

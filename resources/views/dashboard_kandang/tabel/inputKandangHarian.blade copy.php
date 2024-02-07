@@ -78,16 +78,16 @@
             </tr>
 
             <tr>
-                <th width="3%" class="dhead text-center">Mgg (85)<br> 
-                </th>
-                <th width="3%" class="dhead text-center">D <br>C <br>Week<br>
-                </th>
-                <th width="1%" class="dhead text-center">pop <br>awal <br> akhir</th>
-                <th width="4%" class="dhead text-center">kg bersih <br> butir <br> kg kotor 
-                   </th>
-                <th width="4%" class="dhead text-center">gr / p <br> (butir) <br>
-                    </th>
-                <th width="4%" class="dhead text-center">selisih <br> kg <br> butir<br></th>
+                <th width="3%" class="dhead text-center">Mgg (85)<br> <i
+                        class="fas text-white fa-question-circle rumus" rumus="minggu" style="cursor: pointer"></i></th>
+                <th width="3%" class="dhead text-center">D <br> C <br><i
+                        class="fas text-white fa-question-circle rumus" rumus="mati" style="cursor: pointer"></i></th>
+                <th width="1%" class="dhead text-center">Pop </th>
+                <th width="4%" class="dhead text-center">Ttl Pcs <i class="fas text-white fa-question-circle rumus"
+                        rumus="ttlPcs" style="cursor: pointer"></i></th>
+                <th width="4%" class="dhead text-center">Ttl Kg <i class="fas text-white fa-question-circle rumus"
+                        rumus="ttlKg" style="cursor: pointer"></i></th>
+                <th width="4%" class="dhead text-center">Gr pcs </th>
                 @php
                     $telur = DB::table('telur_produk')->get();
                 @endphp
@@ -150,12 +150,11 @@
                         $kelasMgg = $d->mgg >= 85 ? 'merah' : 'putih';
 
                     @endphp
-                    <td align="center"
-                        class="freeze-cell_td td_layer mgg {{ $d->mgg >= '85' ? 'text-danger fw-bold' : '' }}">
-                        {{ $d->mgg }} <br> {{ $d->mgg_afkir }} <br>
-                        ({{ number_format(($d->mgg / $d->mgg_afkir) * 100, 0) }}%) <br>
-                        {{ number_format($d->ttl_gjl / 7) }}
-                    </td>
+                    <td style="background-color: {{ $bgZona }} !important" align="center" data-bs-toggle="modal"
+                        id_kandang="{{ $d->id_kandang }}" nm_kandang="{{ $d->nm_kandang }}"
+                        class="tambah_populasi {{ $kelasMgg }}" data-bs-target="#tambah_populasi">
+                        {{ $d->mgg }} <br>
+                        ({{ number_format(($d->mgg / 85) * 100, 0) }}%)</td>
 
                     @php
                         $popu = DB::selectOne("SELECT sum(a.mati + a.jual) as pop,b.stok_awal FROM populasi as a
@@ -167,22 +166,15 @@
                     @endphp
 
                     {{-- mati dan jual --}}
-                    <td style="background-color: {{ $bgZona }} !important" align="center" data-bs-toggle="modal"
-                        id_kandang="{{ $d->id_kandang }}" nm_kandang="{{ $d->nm_kandang }}"
+                    <td style="background-color: {{ $bgZona }} !important" align="center"
+                        data-bs-toggle="modal" id_kandang="{{ $d->id_kandang }}" nm_kandang="{{ $d->nm_kandang }}"
                         class="tambah_populasi {{ $kelas }}" data-bs-target="#tambah_populasi">
-                        &nbsp; <br>
-                        {{ empty($d->mati) ? '0' : $d->mati }} <br> {{ empty($d->jual) ? '0' : $d->jual }}
-                        <br>
-                        {{ $d->mati_week + $d->jual_week }}
-                    </td>
+                        {{ $mati ?? 0 }} <br> {{ $jual ?? 0 }}</td>
                     {{-- end mati dan jual --}}
 
                     <td style="background-color: {{ $bgZona }} !important" data-bs-toggle="modal"
                         id_kandang="{{ $d->id_kandang }}" nm_kandang="{{ $d->nm_kandang }}"
-                        class="tambah_populasi putih text-center" data-bs-target="#tambah_populasi">
-                        &nbsp; <br>{{ $d->stok_awal }} <br> {{ $d->stok_awal - $d->pop_kurang }} <br>
-                        {{ number_format((($d->stok_awal - $d->pop_kurang) / $d->stok_awal) * 100, 1) }}%
-                    </td>
+                        class="tambah_populasi putih" data-bs-target="#tambah_populasi">{{ $pop }} </td>
                     @php
                         $telur = DB::table('telur_produk')->get();
                         $ttlKg = 0;
@@ -216,37 +208,16 @@
                     {{-- telur --}}
 
                     <td data-bs-toggle="modal" id_kandang="{{ $d->id_kandang }}" nm_kandang="{{ $d->nm_kandang }}"
-                        class="tambah_telur text-center " data-bs-target="#tambah_telur">
-                        &nbsp; <br>
-                        {{ number_format($d->kg - $d->pcs / 180, 1) }}<br>
-                        {{ number_format($d->pcs, 0) }} <br>
-                        {{ number_format($d->kg, 1) }}
-                    </td>
-                    @php
-                        $gr_butir = empty($d->pcs) ? '0' : number_format((($d->kg - $d->pcs / 180) * 1000) / $d->pcs, 0);
-                    @endphp
-                    <td data-bs-toggle="modal" id_kandang="{{ $d->id_kandang }}" nm_kandang="{{ $d->nm_kandang }}"
-                        class="tambah_telur text-center " data-bs-target="#tambah_telur">
-                        <p style="margin: 0; padding: 0;">&nbsp;</p>
-                        <p style="margin: 0; padding: 0;">&nbsp;</p>
-                        <p style="margin: 0; padding: 0;" class="{{ $gr_butir < 58 ? 'text-danger fw-bold' : '' }}">
-                            {{ $gr_butir }}</p>
-                        <p style="margin: 0; padding: 0;">{{ empty($k->t_peforma) ? 'NA' : $k->t_peforma }}
-                        </p>
+                        class="tambah_telur {{ $kelasTtlPcsTelur }}" data-bs-target="#tambah_telur">
+                        {{ $ttlPcs }} ({{ $ttlPcs - $ttlPcsKemarin }})
                     </td>
                     <td data-bs-toggle="modal" id_kandang="{{ $d->id_kandang }}" nm_kandang="{{ $d->nm_kandang }}"
-                        class="tambah_telur " data-bs-target="#tambah_telur">
-                        @php
-                                    $kg = $d->kg - $d->pcs / 180 - ($d->kg_past - $d->pcs_past / 180);
-                                @endphp
-                                <p style="margin: 0; padding: 0;">&nbsp;</p>
-                                <p style="margin: 0; padding: 0;" class="{{ $kg < 0 ? 'text-danger fw-bold' : '' }}">
-                                    {{ number_format($kg, 1) }}
-                                </p>
-                                <p style="margin: 0; padding: 0;"
-                                    class="{{ $d->pcs - $d->pcs_past < 0 ? 'text-danger fw-bold' : '' }}">
-                                    {{ number_format($d->pcs - $d->pcs_past, 0) }}</p>
-                                <p style="margin: 0; padding: 0;">&nbsp;</p>
+                        class="tambah_telur {{ $kelasTtKgTelur }}" data-bs-target="#tambah_telur">
+                        {{ number_format($ttlKg, 1) }} ({{ number_format($ttlKg - $ttlKgKemarin, 1) }})
+                    </td>
+                    <td data-bs-toggle="modal" id_kandang="{{ $d->id_kandang }}" nm_kandang="{{ $d->nm_kandang }}"
+                        class="tambah_telur {{ $kelasTtKgTelur }}" data-bs-target="#tambah_telur">
+                        {{ number_format(empty($ttlKg) ? 0 : ($ttlKg * 1000) / $ttlPcs, 1) }}
                     </td>
 
                     @foreach ($telur as $t)
