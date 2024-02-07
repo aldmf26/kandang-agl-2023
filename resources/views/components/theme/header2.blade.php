@@ -1,7 +1,7 @@
 <div class="header-top">
     <div class="container">
         <div class="logo text-center">
-            <a href="dashboard"><img src="https://agrilaras.putrirembulan.com/assets/img/logo.png" alt="Logo"></a>
+            <a href="dashboard"><img src="https://ternak.ptagafood.com/assets/login/img/agri_laras2.png" alt="Logo"></a>
             <h5>AGRILARAS</h5>
         </div>
         <div class="header-top-right">
