@@ -6,6 +6,7 @@ use App\Http\Controllers\BukuBesarController;
 use App\Http\Controllers\CashflowController;
 use App\Http\Controllers\ControlflowController;
 use App\Http\Controllers\CrudPermissionController;
+use App\Http\Controllers\DataChickinController;
 use App\Http\Controllers\FakturPenjualanController;
 use App\Http\Controllers\GudangController;
 use App\Http\Controllers\JurnalController;
@@ -354,3 +355,10 @@ Route::controller(OpnamemtdController::class)->group(function () {
     Route::get('/terima_opname', 'terima_opname')->name('terima_opname');
     Route::get('/history_opname_mtd', 'history_opname_mtd')->name('history_opname_mtd');
 });
+
+Route::controller(DataChickinController::class)
+    ->prefix('data_chickin')
+    ->name('data_chickin.')
+    ->group(function () {
+        Route::get('/', 'index')->name('index');
+    });
