@@ -187,7 +187,7 @@
                         class="tambah_populasi {{ $kelas }}" data-bs-target="#tambah_populasi">
                         <a href="javascript:void(0);" style="font-weight: bold">
                             &nbsp; <br>
-                            {{ empty($d->mati) ? '0' : $d->mati }} <br> {{ empty($d->jual) ? '0' : $d->jual }}
+                            {{ empty($mati) ? '0' : $mati }} <br> {{ empty($jual) ? '0' : $jual }}
                             <br>
                             {{ $d->mati_week + $d->jual_week }}
                         </a>
