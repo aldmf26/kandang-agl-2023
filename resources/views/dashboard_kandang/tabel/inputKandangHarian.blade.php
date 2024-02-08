@@ -3,7 +3,7 @@
         background: #263772;
     }
 </style>
-<div class="col-lg-8">
+<div class="col-lg-9">
     @php
         $font = DB::table('font_size')->first()->font;
 
@@ -72,7 +72,7 @@
                 <th style="background-color: {{ $bgZona }} !important" colspan="3" class="text-center  putih">
                     Populasi</th>
                 <th colspan="9" class="text-center abu"> Telur </th>
-                <th style="background-color: {{ $bgZona }} !important" colspan="2" class="text-center putih">
+                <th style="background-color: {{ $bgZona }} !important" colspan="3" class="text-center putih">
                     pakan</th>
                 <th width="2%" class="text-center dhead" rowspan="2">Aksi</th>
             </tr>
@@ -99,17 +99,28 @@
                 <th width="1%" class="dhead text-center">Kg</th>
                 <th width="3%" class="dhead text-center">Gr / Ekor <i
                         class="fas text-white fa-question-circle rumus" rumus="grEkor" style="cursor: pointer"></i></th>
+                <th width="10" class="dhead text-center">Pakan Obat/vit</th>
 
             </tr>
         </thead>
         <tbody class="text-end">
             @php
+                $ayam_awal = 0;
+                $ayam_akhir = 0;
+                $kg = 0;
+                $kg_kotor = 0;
+                $pcs = 0;
+                $kg_today = 0;
+                $butir = 0;
+                $gr_butir = 0;
+
                 $total_populasi = 0;
                 $total_mati = 0;
                 $total_jual = 0;
                 $total_kilo = 0;
                 $total_kilo_kemaren = 0;
                 $total_kg_pakan = 0;
+                $dc_week = 0;
                 $totalGrPcs = 0;
                 $total_pcs_kemarin_dan_hariini = 0;
             @endphp
@@ -121,6 +132,15 @@
                         {{ date('d/m/y', strtotime($d->chick_in)) }} <br>
 
                         @php
+                            $kg += empty($d->pcs) ? '0' : $d->kg - $d->pcs / 180;
+                            $kg_kotor += empty($d->pcs) ? '0' : $d->kg;
+                            $pcs += $d->pcs;
+                            $gr_butir += empty($d->pcs) ? '0' : number_format((($d->kg - $d->pcs / 180) * 1000) / $d->pcs, 0);
+                            $kg_today += $d->kg - $d->pcs / 180 - ($d->kg_past - $d->pcs_past / 180);
+
+                            $dc_week += $d->mati_week + $d->jual_week;
+                            $ayam_awal += $d->stok_awal;
+                            $ayam_akhir += $d->stok_awal - $d->pop_kurang;
                             $chick_in_next = date('Y-m-d', strtotime($d->chick_out . ' +1 month'));
                             $merah = date('Y-m-d', strtotime($chick_in_next . ' -15 weeks'));
                             $tgl_hari_ini = date('Y-m-d');
@@ -298,6 +318,24 @@
                         id_kandang="{{ $d->id_kandang }}" class="{{ $kelas }} tambah_perencanaan"
                         data-bs-target="#tambah_perencanaan">
                         {{ number_format($gr_perekor, 0) }}</td>
+                        <td style="font-size: 11px" class="td_layer" align="center">
+                            @php
+                                $vitamin = DB::select("SELECT a.id_pakan, b.nm_produk, c.nm_satuan, a.id_kandang, a.pcs_kredit, b.kategori
+                                    FROM stok_produk_perencanaan as a
+                                    left JOIN tb_produk_perencanaan as b on b.id_produk = a.id_pakan
+                                    left join tb_satuan as c on c.id_satuan = b.dosis_satuan
+                                    WHERE a.tgl = '$tgl' and a.id_kandang = '$d->id_kandang' and b.kategori in('obat_pakan', 'obat_air');");
+                            @endphp
+
+                            @foreach ($vitamin as $v)
+                                <a href="#" onclick="return false;" data-bs-toggle="modal"
+                                    data-bs-target="#history" class="history" id_produk="{{ $v->id_pakan }}"
+                                    id_kandang="{{ $d->id_kandang }}">
+                                    {{ $v->nm_produk }} :
+                                    {{ number_format($v->pcs_kredit, 1) }}
+                                    {{ $v->nm_satuan }} </a> <br>
+                            @endforeach
+                        </td>
 
                     {{-- end pakan --}}
                     <td align="center">
@@ -311,6 +349,7 @@
                         @else
                         @endif
                     </td>
+
                 </tr>
                 @php
                     $total_populasi += $pop;
@@ -325,7 +364,7 @@
                 @endphp
             @endforeach
         </tbody>
-        {{-- <tfoot>
+        <tfoot>
             @php
                 $total_pcs = 0;
                 $total_kemarin_pcs = 0;
@@ -341,14 +380,24 @@
             @endphp
             <th style="background-color: {{ $bgZona }} !important" colspan="2">Total</th>
             <th style="background-color: {{ $bgZona }} !important" class="text-center">
-                {{ number_format($total_mati, 0) }} <br> {{ number_format($total_jual, 0) }}</th>
+                {{ $mati }} <br> {{ $jual }} <br>
+                {{ $dc_week }}</th>
             <th style="background-color: {{ $bgZona }} !important" class="text-end">
-                {{ number_format($total_populasi, 0) }}</th>
-            <th class="text-end">{{ number_format($total_pcs, 0) }}
-                ({{ number_format($total_pcs_kemarin_dan_hariini, 0) }})</th>
-            <th class="text-end">{{ number_format($total_kilo, 1) }}
-                ({{ number_format($total_kilo - $total_kilo_kemaren, 0) }})</th>
-            <th class="text-end">{{ number_format($totalGrPcs, 1) }}</th>
+                {{ number_format($ayam_awal, 0) }}
+                <br>{{ number_format($ayam_akhir, 0) }} <br>
+                {{ number_format(($ayam_akhir / $ayam_awal) * 100, 0) }} %
+            </th>
+            <th class="text-end">{{ number_format($kg, 2) }}
+                <br>
+                {{ number_format($pcs, 0) }}
+                <br>
+                {{ number_format($kg_kotor, 2) }}
+            </th>
+            <th class="text-end">{{ $gr_butir / 4 }}</th>
+            <th class="text-end">{{ number_format($kg_today, 1) }}
+                <br>
+                {{ number_format($butir, 0) }}
+            </th>
 
             @foreach ($telur as $t)
                 @php
@@ -363,7 +412,7 @@
                 {{ number_format($total_kg_pakan, 1) }}</th>
             <th style="background-color: {{ $bgZona }} !important"></th>
             <th></th>
-        </tfoot> --}}
+        </tfoot>
     </table>
 </div>
 <x-theme.modal title="Rumus" btnSave='T' idModal="rumus">

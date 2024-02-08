@@ -1,15 +1,16 @@
-<div class="col-lg-4">
+<div class="col-lg-3">
     <h6>
         Penjualan Umum
-        <a data-bs-toggle="tooltip" data-bs-placement="top" title="Tambah Penjualan Umum"
-            href="{{ route('dashboard_kandang.add_penjualan_umum') }}" class="badge mb-2 float-end me-2 bg-primary text-sm"><i
+        
+    </h6>
+    <a data-bs-toggle="tooltip" data-bs-placement="top" title="Tambah Penjualan Umum"
+            href="{{ route('dashboard_kandang.add_penjualan_umum') }}" class="badge mb-2 float-start me-2 bg-primary text-sm"><i
                 class="fas fa-plus"></i></a>
         <a data-bs-toggle="tooltip" data-bs-placement="top" title="History Penjualan Umum"
-            href="{{ route('dashboard_kandang.penjualan_umum') }}" class="badge mb-2 float-end me-2 bg-primary text-sm">History</a>
+            href="{{ route('dashboard_kandang.penjualan_umum') }}" class="badge mb-2 float-start me-2 bg-primary text-sm">History</a>
         <a data-bs-toggle="tooltip" data-bs-placement="top" title="Data Produk"
-            href="{{ route('barang_dagangan.index') }}" class="badge mb-2 float-end me-2 bg-primary text-sm"><i class="fas fa-list"></i>
+            href="{{ route('barang_dagangan.index') }}" class="badge mb-2 float-start me-2 bg-primary text-sm"><i class="fas fa-list"></i>
             Produk</a>
-    </h6>
     <table class="table table-bordered table-hover" id="">
         <thead>
             <tr>

@@ -67,6 +67,8 @@ class DashboardKandangController extends Controller
             b.pop_kurang,
             h.kg,
             h.pcs,
+            n.kuml_rp_vitamin,
+            s.kum_ttl_rp_vaksin,
             i.pcs_past,
             i.kg_past
             FROM kandang AS a
@@ -92,11 +94,24 @@ class DashboardKandangController extends Controller
             left join (SELECT h.id_kandang , sum(h.pcs) as pcs_past, sum(h.kg) as kg_past FROM stok_telur as h  where h.tgl = '$tgl_kemarin' group by h.id_kandang) as i on i.id_kandang = a.id_kandang
 
             left join (
+                SELECT d.id_kandang, sum(d.total_rp) as kuml_rp_vitamin
+                FROM stok_produk_perencanaan as d 
+                left join tb_produk_perencanaan as e on e.id_produk = d.id_pakan
+                where d.tgl between '2020-01-01' and '$tgl' and e.kategori in('obat_pakan','obat_air') and d.pcs_kredit != '0'
+                group by d.id_kandang
+            ) as n on n.id_kandang = a.id_kandang
+            left join (
+                SELECT s.id_kandang , sum(s.ttl_rp) as kum_ttl_rp_vaksin
+                FROM tb_vaksin_perencanaan as s
+                group by s.id_kandang
+            ) as s on s.id_kandang = a.id_kandang
+            left join (
                 SELECT w.id_kandang , sum(w.mati) as mati_week , sum(w.jual) as jual_week
                     FROM populasi as w 
                     where w.tgl between '$tgl_sebelumnya' and '$tgl'
                 group by w.id_kandang
             ) as w on w.id_kandang = a.id_kandang
+
             WHERE a.selesai = 'T'
             ORDER BY a.nm_kandang ASC;"),
             'telur' => DB::table('telur_produk')->get(),
@@ -219,7 +234,7 @@ class DashboardKandangController extends Controller
                 'admin' => auth()->user()->name
             ]);
             $pesan = $r->mati[$x] > 3 ? 'error' : 'sukses';
-            $jual += $r->jual[$x];
+            $jual += $r->jual[$x] + $r->afkir[$x];
             $tgl = $r->tgl[$x];
         }
         DB::table('stok_ayam')->where([['id_gudang', 1], ['tgl', $tgl], ['transfer',  'T']])->delete();
