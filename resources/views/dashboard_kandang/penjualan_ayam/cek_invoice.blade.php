@@ -12,7 +12,7 @@
                             <hr>
                         </div>
                         <div class="col-lg-5">
-                            <img src="https://agrilaras.putrirembulan.com/assets/img/logo.png" alt="Logo" width="150px">
+                            <img src="https://ternak.ptagafood.com/assets/login/img/agri_laras2.png" alt="Logo" width="150px">
                         </div>
                         <div class="col-lg-7">
                             <table>
@@ -28,6 +28,11 @@
                                             dicopy
                                             di nota manual)</span>
                                     </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 5px">Kandang</td>
+                                    <td style="padding: 5px">:</td>
+                                    <td style="padding: 5px">{{$ayam->nm_kandang}}</td>
                                 </tr>
                                 <tr>
                                     <td style="padding: 5px">Kpd Yth</td>

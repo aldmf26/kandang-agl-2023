@@ -11,6 +11,18 @@
                 <label for="">Customer</label>
                 <input type="text" class="form-control" name="customer">
             </div>
+            <div class="col-lg-4">
+                <label for="">Kandang</label>
+                <select required name="id_kandang" class="form-control" id="">
+                    <option value="">Pilih kandang</option>
+                    @php
+                        $kandang = DB::table('kandang')->where('selesai', 'T')->get();
+                    @endphp
+                    @foreach ($kandang as $ka)
+                    <option value="{{ $ka->id_kandang }}">{{ $ka->nm_kandang }}</option>
+                    @endforeach
+                </select>
+            </div>
             <div class="col-lg-12">
                 <hr>
             </div>

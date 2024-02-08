@@ -14,19 +14,17 @@
                     <h6>Stok BJM <br>{{empty($stok_ayam_bjm->saldo_bjm) ? '0' : $stok_ayam_bjm->saldo_bjm}}</h6>
                 </th>
             </tr>
-            <tr>
-                <th style="text-align: center" colspan="2">
-                    <a href="#" data-bs-toggle="modal" data-bs-target="#transfer_ayam"
-                        class="btn btn-sm btn-primary">Transfer BJM</a>
-                    <a href="#" data-bs-toggle="modal" data-bs-target="#penjualan_ayam"
-                        class="btn btn-sm btn-primary">Penjualan Martadah</a>
-                    <a href="#" data-bs-toggle="modal" data-bs-target="#history_ayam"
-                        class="btn btn-sm btn-primary">History </a>
-                </th>
-            </tr>
+           
 
         </table>
+        <a style="width:145px" href="#" data-bs-toggle="modal" data-bs-target="#transfer_ayam"
+                        class="btn btn-sm btn-primary">Transfer BJM</a>
+                    <a style="width:145px" href="#" data-bs-toggle="modal" data-bs-target="#penjualan_ayam"
+                        class="btn btn-sm btn-primary">Penjualan Martadah</a>
+                    <a style="width:145px" href="#" data-bs-toggle="modal" data-bs-target="#history_ayam"
+                        class="btn btn-sm btn-primary mt-1">History </a>
     </div>
+    
     <div class="col-lg-3">
         <table class="table table-bordered" width="100%">
             <tr>

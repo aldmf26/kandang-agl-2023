@@ -66,8 +66,6 @@
                     Kdg <br> chick in <br>
                     Afkir <br>
                     chick in2
-                    <br>
-                    {{ date('d/m/y') }}
                 </th>
                 <th style="background-color: {{ $bgZona }} !important" colspan="3" class="text-center  putih">
                     Populasi</th>
@@ -155,8 +153,6 @@
                         <span class="{{ $tgl_hari_ini >= $ckin2 ? 'text-danger fw-bold' : '' }}">
                             {{ date('d/m/y', strtotime($d->tgl_masuk)) }}
                         </span>
-                        <br>
-                        {{ date('d/m/y', strtotime($d->tgl_masuk_kandang)) }}
 
                     </td>
                     @php
@@ -174,7 +170,6 @@
                         class="freeze-cell_td td_layer mgg {{ $d->mgg >= '85' ? 'text-danger fw-bold' : '' }}">
                         {{ $d->mgg }} <br> {{ $d->mgg_afkir }} <br>
                         ({{ number_format(($d->mgg / $d->mgg_afkir) * 100, 0) }}%) <br>
-                        {{ number_format($d->ttl_gjl / 7) }}
                     </td>
 
                     @php
@@ -320,6 +315,22 @@
                         {{ number_format($gr_perekor, 0) }}</td>
                         <td style="font-size: 11px" class="td_layer" align="center">
                             @php
+                                    $vitamin = DB::select("SELECT a.id_pakan, b.nm_produk, c.nm_satuan, a.id_kandang, a.pcs_kredit, b.kategori
+                                    FROM stok_produk_perencanaan as a
+                                    left JOIN tb_produk_perencanaan as b on b.id_produk = a.id_pakan
+                                    left join tb_satuan as c on c.id_satuan = b.dosis_satuan
+                                    WHERE a.tgl = '$tgl' and a.id_kandang = '$d->id_kandang' and b.kategori in('pakan');");
+                                @endphp
+
+                                @foreach ($vitamin as $v)
+                                    <a href="#" onclick="return false;" data-bs-toggle="modal"
+                                        data-bs-target="#history" class="history" id_produk="{{ $v->id_pakan }}"
+                                        id_kandang="{{ $d->id_kandang }}">{{ $v->nm_produk }} :
+                                        {{ number_format($v->pcs_kredit / 1000, 1) }}
+                                        Kg</a> <br>
+                                @endforeach
+
+                            @php
                                 $vitamin = DB::select("SELECT a.id_pakan, b.nm_produk, c.nm_satuan, a.id_kandang, a.pcs_kredit, b.kategori
                                     FROM stok_produk_perencanaan as a
                                     left JOIN tb_produk_perencanaan as b on b.id_produk = a.id_pakan
@@ -335,6 +346,7 @@
                                     {{ number_format($v->pcs_kredit, 1) }}
                                     {{ $v->nm_satuan }} </a> <br>
                             @endforeach
+                            
                         </td>
 
                     {{-- end pakan --}}

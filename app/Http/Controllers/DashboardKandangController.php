@@ -2511,6 +2511,7 @@ class DashboardKandangController extends Controller
             'customer' => $r->customer,
             'qty' => $r->qty,
             'h_satuan' => $r->h_satuan,
+            'id_kandang' => $r->id_kandang,
             'admin' =>  auth()->user()->name,
             'urutan' =>  $nota_t
         ];
@@ -2523,7 +2524,9 @@ class DashboardKandangController extends Controller
     {
         $data = [
             'title' => 'Cek invoice ayam',
-            'ayam' => DB::table('invoice_ayam')->where('no_nota', $r->no_nota)->first()
+            'ayam' => DB::table('invoice_ayam as a')
+                        ->join('kandang as b', 'a.id_kandang', 'b.id_kandang')
+                        ->where('a.no_nota', $r->no_nota)->first()
         ];
         return view('dashboard_kandang.penjualan_ayam.cek_invoice', $data);
     }
