@@ -16,7 +16,7 @@
                 <select required name="id_kandang" class="form-control" id="">
                     <option value="">Pilih kandang</option>
                     @php
-                        $kandang = DB::table('kandang')->where('selesai', 'T')->get();
+                        $kandang = DB::table('kandang')->where('selesai', 'T')->orderBy('nm_kandang', 'ASC')->get();
                     @endphp
                     @foreach ($kandang as $ka)
                     <option value="{{ $ka->id_kandang }}">{{ $ka->nm_kandang }}</option>
