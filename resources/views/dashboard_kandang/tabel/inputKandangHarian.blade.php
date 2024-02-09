@@ -187,7 +187,7 @@
                         class="tambah_populasi {{ $kelas }}" data-bs-target="#tambah_populasi">
                         <a href="javascript:void(0);" style="font-weight: bold">
                             &nbsp; <br>
-                            {{ empty($d->mati) ? '0' : $d->mati }} <br> {{ empty($d->jual) ? '0' : $d->jual }}
+                            {{ empty($mati) ? '0' : $mati }} <br> {{ empty($jual) ? '0' : $jual }}
                             <br>
                             {{ $d->mati_week + $d->jual_week }}
                         </a>
@@ -392,7 +392,7 @@
             @endphp
             <th style="background-color: {{ $bgZona }} !important" colspan="2">Total</th>
             <th style="background-color: {{ $bgZona }} !important" class="text-center">
-                {{ $mati }} <br> {{ $jual }} <br>
+                {{ number_format($total_mati, 0) }} <br> {{ number_format($total_jual, 0) }} <br>
                 {{ $dc_week }}</th>
             <th style="background-color: {{ $bgZona }} !important" class="text-end">
                 {{ number_format($ayam_awal, 0) }}
