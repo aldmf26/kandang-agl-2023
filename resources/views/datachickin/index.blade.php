@@ -27,7 +27,7 @@
                 @foreach ($kandang as $no => $k)
                     <tr>
                         <td>{{ $no + 1 }}</td>
-                        <td>{{ tanggal($k->chick_in) }}</td>
+                        <td align="right">{{ tanggal($k->chick_in) }}</td>
                         <td>{{ $k->nm_kandang }}</td>
                         <td class="text-end">{{ number_format($k->stok_awal, 0) }}</td>
                         <td class="text-end">{{ number_format($k->mati, 0) }}</td>

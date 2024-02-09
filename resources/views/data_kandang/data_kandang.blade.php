@@ -19,7 +19,7 @@
                         <th width="5">#</th>
                         <th class="text-center">Kandang</th>
                         <th class="text-end">Chick In</th>
-                        <th class="text-end">Chick Out</th>
+                        <th class="text-end">Afkir</th>
                         <th class="text-end">Chick In2</th>
                         <th>Strain</th>
                         <th class="text-end">Pop Awal</th>
