@@ -1,16 +1,17 @@
 <div class="col-lg-3">
     <h6>
         Penjualan Umum
-        
+
     </h6>
     <a data-bs-toggle="tooltip" data-bs-placement="top" title="Tambah Penjualan Umum"
-            href="{{ route('dashboard_kandang.add_penjualan_umum') }}" class="badge mb-2 float-start me-2 bg-primary text-sm"><i
-                class="fas fa-plus"></i></a>
-        <a data-bs-toggle="tooltip" data-bs-placement="top" title="History Penjualan Umum"
-            href="{{ route('dashboard_kandang.penjualan_umum') }}" class="badge mb-2 float-start me-2 bg-primary text-sm">History</a>
-        <a data-bs-toggle="tooltip" data-bs-placement="top" title="Data Produk"
-            href="{{ route('barang_dagangan.index') }}" class="badge mb-2 float-start me-2 bg-primary text-sm"><i class="fas fa-list"></i>
-            Produk</a>
+        href="{{ route('dashboard_kandang.add_penjualan_umum') }}"
+        class="badge mb-2 float-start me-2 bg-primary text-sm"><i class="fas fa-plus"></i></a>
+    <a data-bs-toggle="tooltip" data-bs-placement="top" title="History Penjualan Umum"
+        href="{{ route('dashboard_kandang.penjualan_umum') }}"
+        class="badge mb-2 float-start me-2 bg-primary text-sm">History</a>
+    <a data-bs-toggle="tooltip" data-bs-placement="top" title="Data Produk" href="{{ route('barang_dagangan.index') }}"
+        class="badge mb-2 float-start me-2 bg-primary text-sm"><i class="fas fa-list"></i>
+        Produk</a>
     <table class="table table-bordered table-hover" id="">
         <thead>
             <tr>
@@ -24,11 +25,13 @@
             @foreach ($produk as $d)
                 @php
                     $datas = DB::selectOne("SELECT GROUP_CONCAT(CONCAT(urutan)) as urutan,count(*) as ttl,
-            sum(total_rp) as ttl_rp FROM penjualan_agl
-            WHERE id_produk = '$d->id_produk' AND cek = 'T' AND lokasi = 'mtd' GROUP BY id_produk");
+                    sum(total_rp) as ttl_rp FROM penjualan_agl
+                    WHERE id_produk = '$d->id_produk' AND cek = 'T' AND lokasi = 'mtd' GROUP BY id_produk");
 
                     if (!empty($datas)) {
                         $urutan = implode(', ', explode(',', $datas->urutan));
+                    } else {
+                        continue;
                     }
                 @endphp
 

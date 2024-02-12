@@ -313,41 +313,47 @@
                         id_kandang="{{ $d->id_kandang }}" class="{{ $kelas }} tambah_perencanaan"
                         data-bs-target="#tambah_perencanaan">
                         {{ number_format($gr_perekor, 0) }}</td>
-                        <td style="font-size: 11px" class="td_layer" align="center">
-                            @php
-                                    $vitamin = DB::select("SELECT a.id_pakan, b.nm_produk, c.nm_satuan, a.id_kandang, a.pcs_kredit, b.kategori
+                    <td style="font-size: 11px" class="td_layer" align="center">
+                        @php
+                            $vitamin = DB::select("SELECT a.id_pakan, b.nm_produk, c.nm_satuan, a.id_kandang, a.pcs_kredit, b.kategori
                                     FROM stok_produk_perencanaan as a
                                     left JOIN tb_produk_perencanaan as b on b.id_produk = a.id_pakan
                                     left join tb_satuan as c on c.id_satuan = b.dosis_satuan
                                     WHERE a.tgl = '$tgl' and a.id_kandang = '$d->id_kandang' and b.kategori in('pakan');");
-                                @endphp
+                        @endphp
 
-                                @foreach ($vitamin as $v)
-                                    <a href="#" onclick="return false;" data-bs-toggle="modal"
-                                        data-bs-target="#history" class="history" id_produk="{{ $v->id_pakan }}"
-                                        id_kandang="{{ $d->id_kandang }}">{{ $v->nm_produk }} :
-                                        {{ number_format($v->pcs_kredit / 1000, 1) }}
-                                        Kg</a> <br>
-                                @endforeach
+                        @foreach ($vitamin as $v)
+                            <a href="#" onclick="return false;" data-bs-toggle="modal"
+                                data-bs-target="#history" class="history" id_produk="{{ $v->id_pakan }}"
+                                id_kandang="{{ $d->id_kandang }}">{{ $v->nm_produk }} :
+                                {{ number_format($v->pcs_kredit / 1000, 1) }}
+                                Kg</a> <br>
+                        @endforeach
 
-                            @php
-                                $vitamin = DB::select("SELECT a.id_pakan, b.nm_produk, c.nm_satuan, a.id_kandang, a.pcs_kredit, b.kategori
-                                    FROM stok_produk_perencanaan as a
-                                    left JOIN tb_produk_perencanaan as b on b.id_produk = a.id_pakan
-                                    left join tb_satuan as c on c.id_satuan = b.dosis_satuan
-                                    WHERE a.tgl = '$tgl' and a.id_kandang = '$d->id_kandang' and b.kategori in('obat_pakan', 'obat_air');");
-                            @endphp
+                        @php
+                            $vitamin = DB::select("SELECT a.id_pakan, b.nm_produk, c.nm_satuan, a.id_kandang, a.pcs_kredit, b.kategori, d.campuran, e.nm_satuan as satuan_campuran
+                            FROM stok_produk_perencanaan as a
+                            left JOIN tb_produk_perencanaan as b on b.id_produk = a.id_pakan
+                            left join tb_satuan as c on c.id_satuan = b.dosis_satuan
+                            left join (
+                                SELECT d.id_produk , d.tgl, d.campuran  
+                                FROM tb_obat_perencanaan as d
+                                where d.tgl = '$tgl' and d.id_kandang = '$d->id_kandang'
+                            ) as d on d.id_produk = a.id_pakan
+                            left join tb_satuan as e on e.id_satuan = b.campuran_satuan
+                            WHERE a.tgl = '$tgl' and a.id_kandang = '$d->id_kandang' and b.kategori in('obat_pakan', 'obat_air');");
+                        @endphp
 
-                            @foreach ($vitamin as $v)
-                                <a href="#" onclick="return false;" data-bs-toggle="modal"
-                                    data-bs-target="#history" class="history" id_produk="{{ $v->id_pakan }}"
-                                    id_kandang="{{ $d->id_kandang }}">
-                                    {{ $v->nm_produk }} :
-                                    {{ number_format($v->pcs_kredit, 1) }}
-                                    {{ $v->nm_satuan }} </a> <br>
-                            @endforeach
-                            
-                        </td>
+                        @foreach ($vitamin as $v)
+                            <a href="#" onclick="return false;" data-bs-toggle="modal"
+                                data-bs-target="#history" class="history" id_produk="{{ $v->id_pakan }}"
+                                id_kandang="{{ $d->id_kandang }}">
+                                {{ $v->nm_produk }} :
+                                {{ number_format($v->pcs_kredit, 1) }}
+                                {{ $v->nm_satuan }} | {{ $v->campuran }} {{ $v->satuan_campuran }} </a> <br>
+                        @endforeach
+
+                    </td>
 
                     {{-- end pakan --}}
                     <td align="center">

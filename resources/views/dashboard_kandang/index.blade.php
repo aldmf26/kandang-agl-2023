@@ -29,8 +29,8 @@
             <div class="col-lg-12">
                 <a href="{{ route('data_kandang.index') }}" class="btn btn-sm btn-primary float-end">Perencanaan Chick In
                     - Out</a>
-                <a href="{{ route('data_chickin.index') }}" class="me-2 btn btn-sm btn-primary float-end">Data Chick In
-                    - Out</a>
+                <a href="{{ route('data_chickin.index') }}" class="me-2 btn btn-sm btn-primary float-end">Laporan Chick
+                    In - Out</a>
 
             </div>
         </div>
