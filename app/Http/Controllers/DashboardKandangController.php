@@ -745,7 +745,7 @@ class DashboardKandangController extends Controller
 
     public function get_populasi(Request $r)
     {
-        $pop = DB::selectOne("SELECT sum(a.mati + a.jual) as pop,b.stok_awal FROM populasi as a
+        $pop = DB::selectOne("SELECT sum(a.mati + a.jual + a.afkir) as pop,b.stok_awal FROM populasi as a
         LEFT JOIN kandang as b ON a.id_kandang = b.id_kandang
         WHERE a.id_kandang = '$r->id_kandang' AND a.tgl BETWEEN '2022-01-01' AND '$r->tgl'");
 
@@ -1525,7 +1525,7 @@ class DashboardKandangController extends Controller
         $obat_ayam = DB::table('tb_produk_perencanaan')->where('kategori', 'obat_ayam')->get();
         $karung = DB::table('tb_karung_perencanaan')->where([['id_kandang', $id_kandang], ['tgl', $tgl]])->first();
         $kandang = DB::table('kandang')->get();
-        $pop = DB::selectOne("SELECT sum(a.mati + a.jual) as pop,b.stok_awal FROM populasi as a
+        $pop = DB::selectOne("SELECT sum(a.mati + a.jual + a.afkir) as pop,b.stok_awal FROM populasi as a
                             LEFT JOIN kandang as b ON a.id_kandang = b.id_kandang
                             WHERE a.id_kandang = '$id_kandang'");
         $populasi = $pop->stok_awal - $pop->pop;
@@ -1776,7 +1776,7 @@ class DashboardKandangController extends Controller
 
         $kolom = 2;
         foreach ($obat_ayam as $no => $d) {
-            $pop = DB::selectOne("SELECT sum(a.mati + a.jual) as pop,b.stok_awal FROM populasi as a
+            $pop = DB::selectOne("SELECT sum(a.mati + a.jual + a.afkir) as pop,b.stok_awal FROM populasi as a
                             LEFT JOIN kandang as b ON a.id_kandang = b.id_kandang
                             WHERE a.id_kandang = '$d->id_kandang'");
             $populasi = $pop->stok_awal - $pop->pop;
@@ -2151,7 +2151,7 @@ class DashboardKandangController extends Controller
             ->setCellValue('F1', 'Cost');
 
         $obat_ayam = $this->getProdukObat($id_kandang, 'obat_ayam');
-        $pop = DB::selectOne("SELECT sum(a.mati + a.jual) as pop,b.stok_awal FROM populasi as a
+        $pop = DB::selectOne("SELECT sum(a.mati + a.jual + a.afkir) as pop,b.stok_awal FROM populasi as a
                             LEFT JOIN kandang as b ON a.id_kandang = b.id_kandang
                             WHERE a.id_kandang = '$id_kandang'");
         $populasi = $pop->stok_awal - $pop->pop;
