@@ -72,7 +72,7 @@ class DashboardKandangController extends Controller
             i.pcs_past,
             i.kg_past
             FROM kandang AS a
-            left join(SELECT b.id_kandang, sum(b.mati+b.jual) as pop_kurang 
+            left join(SELECT b.id_kandang, sum(b.mati+b.jual + b.afkir) as pop_kurang 
             FROM populasi as b 
             where b.tgl between '2020-01-01' and '$tgl'
             group by b.id_kandang ) as b on b.id_kandang = a.id_kandang
