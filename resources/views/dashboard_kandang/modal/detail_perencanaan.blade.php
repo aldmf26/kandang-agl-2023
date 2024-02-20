@@ -1,5 +1,5 @@
 @php
-    $listKandang = DB::table('kandang')->get();
+    $listKandang = DB::table('kandang')->where('selesai', 'T')->get();
 @endphp
 <div class="collapse multi-collapse" id="perencanaan">
     <h6>History Perencanaan</h6>
