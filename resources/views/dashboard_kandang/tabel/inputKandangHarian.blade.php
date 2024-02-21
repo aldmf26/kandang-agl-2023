@@ -173,7 +173,7 @@
                     </td>
 
                     @php
-                        $popu = DB::selectOne("SELECT sum(a.mati + a.jual) as pop,b.stok_awal FROM populasi as a
+                        $popu = DB::selectOne("SELECT sum(a.mati + a.jual + a.afkir) as pop,b.stok_awal FROM populasi as a
                 LEFT JOIN kandang as b ON a.id_kandang = b.id_kandang
                 WHERE a.id_kandang = '$d->id_kandang';");
 
