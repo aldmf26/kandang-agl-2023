@@ -78,7 +78,7 @@
             <tr>
                 <th width="3%" class="dhead text-center">Mgg (85)<br>
                 </th>
-                <th width="3%" class="dhead text-center">D <br>C <br>Week<br>
+                <th width="3%" class="dhead text-center">D <br>C <br> Afkir <br> Week<br>
                 </th>
                 <th width="1%" class="dhead text-center">pop <br>awal <br> akhir</th>
                 <th width="4%" class="dhead text-center">kg bersih <br> butir <br> kg kotor
@@ -115,6 +115,7 @@
                 $total_populasi = 0;
                 $total_mati = 0;
                 $total_jual = 0;
+                $total_ayamAfkir = 0;
                 $total_kilo = 0;
                 $total_kilo_kemaren = 0;
                 $total_kg_pakan = 0;
@@ -162,6 +163,7 @@
 
                         $mati = $populasi->mati ?? 0;
                         $jual = $populasi->jual ?? 0;
+                        $ayamAfkir = $populasi->afkir ?? 0;
                         $kelas = $mati > 3 ? 'merah' : 'putih';
                         $kelasMgg = $d->mgg >= 85 ? 'merah' : 'putih';
 
@@ -187,7 +189,7 @@
                         class="tambah_populasi {{ $kelas }}" data-bs-target="#tambah_populasi">
                         <a href="javascript:void(0);" style="font-weight: bold">
                             &nbsp; <br>
-                            {{ empty($mati) ? '0' : $mati }} <br> {{ empty($jual) ? '0' : $jual }}
+                            {{ empty($mati) ? '0' : $mati }} <br> {{ empty($jual) ? '0' : $jual }} <br> {{ empty($ayamAfkir) ? '0' : $ayamAfkir }}
                             <br>
                             {{ $d->mati_week + $d->jual_week }}
                         </a>
@@ -373,6 +375,7 @@
                     $total_populasi += $pop;
                     $total_mati += $mati;
                     $total_jual += $jual;
+                    $total_ayamAfkir += $ayamAfkir;
                     $total_kilo += $ttlKg;
                     $total_kilo_kemaren += $ttlKgKemarin;
                     $total_kg_pakan += empty($gr_pakan) ? 0 : $gr_pakan->ttl / 1000;
@@ -398,7 +401,7 @@
             @endphp
             <th style="background-color: {{ $bgZona }} !important" colspan="2">Total</th>
             <th style="background-color: {{ $bgZona }} !important" class="text-center">
-                {{ number_format($total_mati, 0) }} <br> {{ number_format($total_jual, 0) }} <br>
+                {{ number_format($total_mati, 0) }} <br> {{ number_format($total_jual, 0) }} <br> {{ number_format($total_ayamAfkir, 0) }} <br>
                 {{ $dc_week }}</th>
             <th style="background-color: {{ $bgZona }} !important" class="text-end">
                 {{ number_format($ayam_awal, 0) }}
