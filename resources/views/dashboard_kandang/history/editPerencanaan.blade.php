@@ -250,13 +250,15 @@
     <div class="row">
         <div class="col-lg-3">
             <div class="form-group">
-                <label for="">Obat</label>
-                <input type="hidden" name="id_obat_ayam" value="{{ $tot->id_obat }}">
+                <label for="">Obat </label>
+                
+                <input type="hidden" name="id_obat_ayam" value="{{ $tot->id_produk }}">
                 <select name="id_obat_ayam" id="obatAyam" class="form-control select2-edit-perencanaan">
                     <option value="">- Pilih Obat -</option>
                     @foreach ($obat_ayam as $o)
-                        <option {{ $o->id_barang == $tot->id_obat ? 'selected' : '' }} value="{{ $o->id_barang }}">
-                            {{ $o->nm_barang }}</option>
+                    
+                        <option {{ $o->id_produk == $tot->id_produk ? 'selected' : '' }} value="{{ $o->id_produk }}">
+                            {{ $o->nm_produk }}</option>
                     @endforeach
                 </select>
             </div>
@@ -264,7 +266,8 @@
         <div class="col-lg-3">
             <div class="form-group">
                 <label for="">Dosis</label>
-                <input type="text" value="{{ $tot->dosis_awal }}" class="form-control" id="ds1"
+               
+                <input type="text" value="{{ $tot->dosis }}" class="form-control" id="ds1"
                     name="dosis_obat_ayam">
             </div>
         </div>
