@@ -251,7 +251,7 @@
         <div class="col-lg-3">
             <div class="form-group">
                 <label for="">Obat</label>
-                <input type="hidden" name="id_obat_ayam" value="{{ $tot->id_obat_ayam }}">
+                <input type="hidden" name="id_obat_ayam" value="{{ $tot->id_obat }}">
                 <select name="id_obat_ayam" id="obatAyam" class="form-control select2-edit-perencanaan">
                     <option value="">- Pilih Obat -</option>
                     @foreach ($obat_ayam as $o)

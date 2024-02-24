@@ -343,7 +343,7 @@
                                 where d.tgl = '$tgl' and d.id_kandang = '$d->id_kandang'
                             ) as d on d.id_produk = a.id_pakan
                             left join tb_satuan as e on e.id_satuan = b.campuran_satuan
-                            WHERE a.tgl = '$tgl' and a.id_kandang = '$d->id_kandang' and b.kategori in('obat_pakan', 'obat_air');");
+                            WHERE a.tgl = '$tgl' and a.id_kandang = '$d->id_kandang' and b.kategori in('obat_pakan', 'obat_air','obat_ayam');");
                         @endphp
 
                         @foreach ($vitamin as $v)
@@ -352,7 +352,13 @@
                                 id_kandang="{{ $d->id_kandang }}">
                                 {{ $v->nm_produk }} :
                                 {{ number_format($v->pcs_kredit, 1) }}
-                                {{ $v->nm_satuan }} | {{ $v->campuran }} {{ $v->satuan_campuran }} </a> <br>
+                                {{ $v->nm_satuan }} | 
+                                @if ($v->kategori == 'obat_ayam')
+                                    {{ number_format($v->pcs_kredit / ($d->stok_awal - $d->pop_kurang) ,1) }} PerAyam
+                                @else
+                                {{ $v->campuran }} {{ $v->satuan_campuran }} 
+                                @endif
+                            </a> <br>
                         @endforeach
 
                     </td>

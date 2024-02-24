@@ -133,12 +133,12 @@ class DashboardKandangController extends Controller
     {
         $data = [
             'pop' => DB::table('populasi as a')
-                        ->join('kandang as b', 'a.id_kandang', 'b.id_kandang')
-                        ->where('a.tgl', $r->tgl)
-                        ->get(),
-                        'tgl' => $r->tgl
+                ->join('kandang as b', 'a.id_kandang', 'b.id_kandang')
+                ->where('a.tgl', $r->tgl)
+                ->get(),
+            'tgl' => $r->tgl
         ];
-        return view('dashboard_kandang.modal.detail_pop',$data);
+        return view('dashboard_kandang.modal.detail_pop', $data);
     }
 
     public function kandang_selesai($id_kandang)
@@ -1390,10 +1390,22 @@ class DashboardKandangController extends Controller
                     }
 
                     if (!empty($r->id_obat_ayam[0])) {
+
+                        $id_obat_ayam = $r->id_obat_ayam;
+
+
+                        $harga = DB::selectOne("SELECT a.id_pakan, sum(a.pcs) as pcs , sum(a.total_rp) as ttl_rp
+                            FROM stok_produk_perencanaan as a
+                            where  a.pcs != 0 and a.admin != 'import'  
+                            and a.tgl between '2023-01-01' and '$tgl' and a.h_opname = 'T' and a.id_pakan = '$id_obat_ayam'
+                            GROUP by a.id_pakan;");
+
+                        $h_satuan = $harga->ttl_rp / $harga->pcs;
+
                         $data1 = [
                             'id_kandang' => $id_kandang,
                             'kategori' => 'obat_ayam',
-                            'id_produk' => $r->id_obat_ayam,
+                            'id_produk' => $id_obat_ayam,
                             'dosis' => $r->dosis_obat_ayam,
                             'campuran' => 0,
                             'tgl' => $tgl,
@@ -1402,15 +1414,14 @@ class DashboardKandangController extends Controller
                         ];
                         DB::table('tb_obat_perencanaan')->insert($data1);
 
-                        $id_obat_ayam = $r->id_obat_ayam;
                         $dataStok = [
                             'id_kandang' => $id_kandang,
                             'id_pakan' => $id_obat_ayam,
                             'tgl' => $tgl,
                             'pcs' => 0,
-                            'total_rp' => 0,
+                            'total_rp' => $h_satuan * $r->dosis_obat_ayam[$i],
                             'no_nota' => $no_nota,
-                            'pcs_kredit' =>  $r->dosis_obat_ayam,
+                            'pcs_kredit' =>  $r->dosis_obat_ayam * $populasi,
                             'admin' => auth()->user()->name
                         ];
                         DB::table('stok_produk_perencanaan')->insert($dataStok);
@@ -2525,8 +2536,8 @@ class DashboardKandangController extends Controller
         $data = [
             'title' => 'Cek invoice ayam',
             'ayam' => DB::table('invoice_ayam as a')
-                        ->join('kandang as b', 'a.id_kandang', 'b.id_kandang')
-                        ->where('a.no_nota', $r->no_nota)->first()
+                ->join('kandang as b', 'a.id_kandang', 'b.id_kandang')
+                ->where('a.no_nota', $r->no_nota)->first()
         ];
         return view('dashboard_kandang.penjualan_ayam.cek_invoice', $data);
     }
