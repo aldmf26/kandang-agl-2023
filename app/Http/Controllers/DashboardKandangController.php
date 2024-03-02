@@ -300,9 +300,16 @@ class DashboardKandangController extends Controller
 
     public function add_transfer_stok(Request $r)
     {
-        $cek = DB::table('invoice_mtd')->where('jenis', 'tf')->orderBy('id_invoice_mtd', 'DESC')->first();
-        $nota_t = empty($cek) ? 1000 + 1 : str()->remove('TF-', $cek->no_nota) + 1;
+        // $cek = DB::table('invoice_mtd')->where('jenis', 'tf')->orderBy('id_invoice_mtd', 'DESC')->first();
+        // $nota_t = empty($cek) ? 1000 + 1 : str()->remove('TF-', $cek->no_nota) + 1;
 
+        $highestNota = DB::table('invoice_mtd')
+            ->where('jenis', 'tf') // Add the condition here
+            ->selectRaw('SUBSTRING_INDEX(no_nota, "-", -1) AS nota_numeric')
+            ->orderByRaw('CAST(nota_numeric AS UNSIGNED) DESC')
+            ->value('nota_numeric');
+
+        $nota_t = empty($highestNota) ? 1000 + 1 : $highestNota + 1;
         $data = [
             'title' => 'Buat Invoice',
             'produk' => DB::table('telur_produk')->get(),
