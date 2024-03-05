@@ -78,7 +78,7 @@
             <tr>
                 <th width="3%" class="dhead text-center">Mgg (85)<br>
                 </th>
-                <th width="3%" class="dhead text-center">D <br>C <br>Week<br>
+                <th width="3%" class="dhead text-center">D <br>C <br> Afkir <br> Week<br>
                 </th>
                 <th width="1%" class="dhead text-center">pop <br>awal <br> akhir</th>
                 <th width="4%" class="dhead text-center">kg bersih <br> butir <br> kg kotor
@@ -115,6 +115,7 @@
                 $total_populasi = 0;
                 $total_mati = 0;
                 $total_jual = 0;
+                $total_ayamAfkir = 0;
                 $total_kilo = 0;
                 $total_kilo_kemaren = 0;
                 $total_kg_pakan = 0;
@@ -135,7 +136,7 @@
                             $pcs += $d->pcs;
                             $gr_butir += empty($d->pcs) ? '0' : number_format((($d->kg - $d->pcs / 180) * 1000) / $d->pcs, 0);
                             $kg_today += $d->kg - $d->pcs / 180 - ($d->kg_past - $d->pcs_past / 180);
-
+                            $butir += $d->pcs - $d->pcs_past;
                             $dc_week += $d->mati_week + $d->jual_week;
                             $ayam_awal += $d->stok_awal;
                             $ayam_akhir += $d->stok_awal - $d->pop_kurang;
@@ -162,6 +163,7 @@
 
                         $mati = $populasi->mati ?? 0;
                         $jual = $populasi->jual ?? 0;
+                        $ayamAfkir = $populasi->afkir ?? 0;
                         $kelas = $mati > 3 ? 'merah' : 'putih';
                         $kelasMgg = $d->mgg >= 85 ? 'merah' : 'putih';
 
@@ -173,7 +175,7 @@
                     </td>
 
                     @php
-                        $popu = DB::selectOne("SELECT sum(a.mati + a.jual) as pop,b.stok_awal FROM populasi as a
+                        $popu = DB::selectOne("SELECT sum(a.mati + a.jual + a.afkir) as pop,b.stok_awal FROM populasi as a
                 LEFT JOIN kandang as b ON a.id_kandang = b.id_kandang
                 WHERE a.id_kandang = '$d->id_kandang';");
 
@@ -187,7 +189,7 @@
                         class="tambah_populasi {{ $kelas }}" data-bs-target="#tambah_populasi">
                         <a href="javascript:void(0);" style="font-weight: bold">
                             &nbsp; <br>
-                            {{ empty($mati) ? '0' : $mati }} <br> {{ empty($jual) ? '0' : $jual }}
+                            {{ empty($mati) ? '0' : $mati }} <br> {{ empty($jual) ? '0' : $jual }} <br> {{ empty($ayamAfkir) ? '0' : $ayamAfkir }}
                             <br>
                             {{ $d->mati_week + $d->jual_week }}
                         </a>
@@ -341,7 +343,7 @@
                                 where d.tgl = '$tgl' and d.id_kandang = '$d->id_kandang'
                             ) as d on d.id_produk = a.id_pakan
                             left join tb_satuan as e on e.id_satuan = b.campuran_satuan
-                            WHERE a.tgl = '$tgl' and a.id_kandang = '$d->id_kandang' and b.kategori in('obat_pakan', 'obat_air');");
+                            WHERE a.tgl = '$tgl' and a.id_kandang = '$d->id_kandang' and b.kategori in('obat_pakan', 'obat_air','obat_ayam');");
                         @endphp
 
                         @foreach ($vitamin as $v)
@@ -350,7 +352,13 @@
                                 id_kandang="{{ $d->id_kandang }}">
                                 {{ $v->nm_produk }} :
                                 {{ number_format($v->pcs_kredit, 1) }}
-                                {{ $v->nm_satuan }} | {{ $v->campuran }} {{ $v->satuan_campuran }} </a> <br>
+                                {{ $v->nm_satuan }} | 
+                                @if ($v->kategori == 'obat_ayam')
+                                    {{ number_format($v->pcs_kredit / ($d->stok_awal - $d->pop_kurang) ,1) }} PerAyam
+                                @else
+                                {{ $v->campuran }} {{ $v->satuan_campuran }} 
+                                @endif
+                            </a> <br>
                         @endforeach
 
                     </td>
@@ -373,6 +381,7 @@
                     $total_populasi += $pop;
                     $total_mati += $mati;
                     $total_jual += $jual;
+                    $total_ayamAfkir += $ayamAfkir;
                     $total_kilo += $ttlKg;
                     $total_kilo_kemaren += $ttlKgKemarin;
                     $total_kg_pakan += empty($gr_pakan) ? 0 : $gr_pakan->ttl / 1000;
@@ -398,7 +407,7 @@
             @endphp
             <th style="background-color: {{ $bgZona }} !important" colspan="2">Total</th>
             <th style="background-color: {{ $bgZona }} !important" class="text-center">
-                {{ number_format($total_mati, 0) }} <br> {{ number_format($total_jual, 0) }} <br>
+                {{ number_format($total_mati, 0) }} <br> {{ number_format($total_jual, 0) }} <br> {{ number_format($total_ayamAfkir, 0) }} <br>
                 {{ $dc_week }}</th>
             <th style="background-color: {{ $bgZona }} !important" class="text-end">
                 {{ number_format($ayam_awal, 0) }}

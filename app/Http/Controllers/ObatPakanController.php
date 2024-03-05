@@ -32,7 +32,7 @@ class ObatPakanController extends Controller
             FROM stok_produk_perencanaan as a 
             left join tb_produk_perencanaan as b on b.id_produk = a.id_pakan
             left join tb_satuan as c on c.id_satuan = b.dosis_satuan
-            where b.kategori in('obat_pakan','obat_air')
+            where b.kategori in('obat_pakan','obat_air','obat_ayam')
             group by a.id_pakan;"),
 
             'total_populasi' => $pop,
