@@ -26,7 +26,7 @@
                                     <input type="text" class="form-control" name="customer" required>
                                 </td>
                                 <td>
-                                    <select name="id_customer2" id="" class="select2_add">
+                                    <select name="id_customer2" id="" class="select2_add" required>
                                         <option value="">-Pilih Customer-</option>
                                         @foreach ($customer as $c)
                                             <option value="{{ $c->id_customer }}">{{ $c->nm_customer }}</option>
