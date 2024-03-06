@@ -21,7 +21,7 @@
     </form>
     <h6>
         @php
-            $tglHariIniNih = date('Y-m-d');
+            $tglHariIniNih = "2024-03-05";
         @endphp
         Input Kandang Harian ~ {{ tanggal($tglHariIniNih) }}
         <div class="btn-group dropup me-1 mb-2 float-end">
