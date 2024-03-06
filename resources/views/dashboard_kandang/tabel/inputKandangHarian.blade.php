@@ -21,7 +21,7 @@
     </form>
     <h6>
         @php
-            $tglHariIniNih = "2024-03-05";
+            $tglHariIniNih = request()->get('tglKandang') ?? date('Y-m-d');
         @endphp
         Input Kandang Harian ~ {{ tanggal($tglHariIniNih) }}
         <div class="btn-group dropup me-1 mb-2 float-end">
