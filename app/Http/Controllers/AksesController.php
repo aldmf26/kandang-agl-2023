@@ -9,7 +9,7 @@ class AksesController extends Controller
 {
     public function index()
     {
-     
+
         $boleh = [
             '1'
         ];
@@ -60,9 +60,9 @@ class AksesController extends Controller
 
     public function addMenu(Request $r)
     {
-        if(!empty($r->navbar)) {
-            if(!empty($r->navbar_edit)) {
-                for ($i=0; $i < count($r->isi); $i++) { 
+        if (!empty($r->navbar)) {
+            if (!empty($r->navbar_edit)) {
+                for ($i = 0; $i < count($r->isi); $i++) {
                     DB::table('navbar')->where('id_navbar', $r->id_navbar[$i])->update([
                         'urutan' => $r->urutan[$i],
                         'nama' => $r->nama[$i],
@@ -71,7 +71,7 @@ class AksesController extends Controller
                     ]);
                 }
             } else {
-                for ($i=0; $i < count($r->isi); $i++) { 
+                for ($i = 0; $i < count($r->isi); $i++) {
                     DB::table('navbar')->insert([
                         'urutan' => $r->urutan[$i],
                         'nama' => $r->nama[$i],
@@ -88,7 +88,7 @@ class AksesController extends Controller
                     'nm_permission' => $r->nm_permission,
                     'url' => $r->url,
                 ]);
-    
+
                 for ($i = 0; $i < count($r->nm_button); $i++) {
                     DB::table('permission_button')->insert([
                         'permission_id' => $id,
@@ -106,7 +106,7 @@ class AksesController extends Controller
                         ]);
                     }
                 }
-    
+
                 if (!empty($r->tambah_row)) {
                     for ($i = 0; $i < count($r->nm_button_row); $i++) {
                         DB::table('permission_button')->insert([
