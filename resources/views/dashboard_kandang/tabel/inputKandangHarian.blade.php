@@ -21,7 +21,7 @@
     </form>
     <h6>
         @php
-            $tglHariIniNih = date('Y-m-d');
+            $tglHariIniNih = '2024-03-05';
         @endphp
         Input Kandang Harian ~ {{ tanggal($tglHariIniNih) }}
         <div class="btn-group dropup me-1 mb-2 float-end">
@@ -106,8 +106,10 @@
                 $ayam_awal = 0;
                 $ayam_akhir = 0;
                 $kg = 0;
+                $kgTtl = 0;
                 $kg_kotor = 0;
                 $pcs = 0;
+                $pcsTtl = 0;
                 $kg_today = 0;
                 $butir = 0;
                 $gr_butir = 0;
@@ -131,9 +133,9 @@
                         {{ date('d/m/y', strtotime($d->chick_in)) }} <br>
 
                         @php
-                            $kg += empty($d->pcs) ? '0' : $d->kg - $d->pcs / 180;
+                            $kgTtl += empty($d->pcs) ? '0' : $d->kg - ($d->pcs / 180);
                             $kg_kotor += empty($d->pcs) ? '0' : $d->kg;
-                            $pcs += $d->pcs;
+                            $pcsTtl += $d->pcs;
                             $gr_butir += empty($d->pcs) ? '0' : number_format((($d->kg - $d->pcs / 180) * 1000) / $d->pcs, 0);
                             $kg_today += $d->kg - $d->pcs / 180 - ($d->kg_past - $d->pcs_past / 180);
                             $butir += $d->pcs - $d->pcs_past;
@@ -414,9 +416,9 @@
                 <br>{{ number_format($ayam_akhir, 0) }} <br>
                 {{ number_format(($ayam_akhir / $ayam_awal) * 100, 0) }} %
             </th>
-            <th class="text-end">{{ number_format($kg, 2) }}
+            <th class="text-end">{{ number_format($kgTtl, 2) }}
                 <br>
-                {{ number_format($pcs, 0) }}
+                {{ number_format($pcsTtl, 0) }}
                 <br>
                 {{ number_format($kg_kotor, 2) }}
             </th>
