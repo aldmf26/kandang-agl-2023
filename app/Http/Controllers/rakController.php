@@ -34,7 +34,7 @@ class rakController extends Controller
         foreach ($r->all() as $key => $value) {
             $wadah[$key] = str_replace(',', '', $value);
         }
-        
+
         $selisih = $wadah['selisih'];
         $stokProgram = $wadah['stok_program'];
         $stokAktual = $wadah['stok_aktual'];

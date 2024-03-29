@@ -56,7 +56,7 @@
 
     </h6>
 
-    <table class="table table-bordered table-hover " id="" style="font-size: {{ $font }}px;">
+    <table class="table table-bordered table-hover " id="" style="font-size: {{ $font }}px; font-fa">
         <thead>
             <tr>
                 @php
@@ -133,10 +133,12 @@
                         {{ date('d/m/y', strtotime($d->chick_in)) }} <br>
 
                         @php
-                            $kgTtl += empty($d->pcs) ? '0' : $d->kg - ($d->pcs / 180);
+                            $kgTtl += empty($d->pcs) ? '0' : $d->kg - $d->pcs / 180;
                             $kg_kotor += empty($d->pcs) ? '0' : $d->kg;
                             $pcsTtl += $d->pcs;
-                            $gr_butir += empty($d->pcs) ? '0' : number_format((($d->kg - $d->pcs / 180) * 1000) / $d->pcs, 0);
+                            $gr_butir += empty($d->pcs)
+                                ? '0'
+                                : number_format((($d->kg - $d->pcs / 180) * 1000) / $d->pcs, 0);
                             $kg_today += $d->kg - $d->pcs / 180 - ($d->kg_past - $d->pcs_past / 180);
                             $butir += $d->pcs - $d->pcs_past;
                             $dc_week += $d->mati_week + $d->jual_week;
@@ -191,7 +193,8 @@
                         class="tambah_populasi {{ $kelas }}" data-bs-target="#tambah_populasi">
                         <a href="javascript:void(0);" style="font-weight: bold">
                             &nbsp; <br>
-                            {{ empty($mati) ? '0' : $mati }} <br> {{ empty($jual) ? '0' : $jual }} <br> {{ empty($ayamAfkir) ? '0' : $ayamAfkir }}
+                            {{ empty($mati) ? '0' : $mati }} <br> {{ empty($jual) ? '0' : $jual }} <br>
+                            {{ empty($ayamAfkir) ? '0' : $ayamAfkir }}
                             <br>
                             {{ $d->mati_week + $d->jual_week }}
                         </a>
@@ -243,7 +246,9 @@
                         {{ number_format($d->kg, 1) }}
                     </td>
                     @php
-                        $gr_butir = empty($d->pcs) ? '0' : number_format((($d->kg - $d->pcs / 180) * 1000) / $d->pcs, 0);
+                        $gr_butir = empty($d->pcs)
+                            ? '0'
+                            : number_format((($d->kg - $d->pcs / 180) * 1000) / $d->pcs, 0);
                     @endphp
                     <td data-bs-toggle="modal" id_kandang="{{ $d->id_kandang }}" nm_kandang="{{ $d->nm_kandang }}"
                         class="tambah_telur text-center " data-bs-target="#tambah_telur">
@@ -317,7 +322,7 @@
                         id_kandang="{{ $d->id_kandang }}" class="{{ $kelas }} tambah_perencanaan"
                         data-bs-target="#tambah_perencanaan">
                         {{ number_format($gr_perekor, 0) }}</td>
-                    <td style="font-size: 11px" class="td_layer" align="center">
+                    <td class="td_layer" align="center">
                         @php
                             $vitamin = DB::select("SELECT a.id_pakan, b.nm_produk, c.nm_satuan, a.id_kandang, a.pcs_kredit, b.kategori
                                     FROM stok_produk_perencanaan as a
@@ -327,11 +332,9 @@
                         @endphp
 
                         @foreach ($vitamin as $v)
-                            <a href="#" onclick="return false;" data-bs-toggle="modal"
-                                data-bs-target="#history" class="history" id_produk="{{ $v->id_pakan }}"
-                                id_kandang="{{ $d->id_kandang }}">{{ $v->nm_produk }} :
-                                {{ number_format($v->pcs_kredit / 1000, 1) }}
-                                Kg</a> <br>
+                            {{ $v->nm_produk }} :
+                            {{ number_format($v->pcs_kredit / 1000, 1) }}
+                            Kg<br>
                         @endforeach
 
                         @php
@@ -349,18 +352,15 @@
                         @endphp
 
                         @foreach ($vitamin as $v)
-                            <a href="#" onclick="return false;" data-bs-toggle="modal"
-                                data-bs-target="#history" class="history" id_produk="{{ $v->id_pakan }}"
-                                id_kandang="{{ $d->id_kandang }}">
-                                {{ $v->nm_produk }} :
-                                {{ number_format($v->pcs_kredit, 1) }}
-                                {{ $v->nm_satuan }} | 
-                                @if ($v->kategori == 'obat_ayam')
-                                    {{ number_format($v->pcs_kredit / ($d->stok_awal - $d->pop_kurang) ,1) }} PerAyam
-                                @else
-                                {{ $v->campuran }} {{ $v->satuan_campuran }} 
-                                @endif
-                            </a> <br>
+                            {{ $v->nm_produk }} :
+                            {{ number_format($v->pcs_kredit, 1) }}
+                            {{ $v->nm_satuan }} |
+                            @if ($v->kategori == 'obat_ayam')
+                                {{ number_format($v->pcs_kredit / ($d->stok_awal - $d->pop_kurang), 1) }} PerAyam
+                            @else
+                                {{ $v->campuran }} {{ $v->satuan_campuran }}
+                            @endif
+                            <br>
                         @endforeach
 
                     </td>
@@ -402,14 +402,17 @@
                     a.id_telur = '$t->id_produk_telur' and a.id_kandang != '0'");
                     $total_pcs += $totalstok->total_pcs;
 
-                    $stokKemarin = DB::selectOne("SELECT sum(a.pcs) as ttl_pcs FROM stok_telur as a WHERE  a.tgl = '$tglKemarin' AND a.id_telur = '$t->id_produk_telur'");
+                    $stokKemarin = DB::selectOne(
+                        "SELECT sum(a.pcs) as ttl_pcs FROM stok_telur as a WHERE  a.tgl = '$tglKemarin' AND a.id_telur = '$t->id_produk_telur'",
+                    );
                     $total_kemarin_pcs += $stokKemarin->ttl_pcs;
                 }
 
             @endphp
             <th style="background-color: {{ $bgZona }} !important" colspan="2">Total</th>
             <th style="background-color: {{ $bgZona }} !important" class="text-center">
-                {{ number_format($total_mati, 0) }} <br> {{ number_format($total_jual, 0) }} <br> {{ number_format($total_ayamAfkir, 0) }} <br>
+                {{ number_format($total_mati, 0) }} <br> {{ number_format($total_jual, 0) }} <br>
+                {{ number_format($total_ayamAfkir, 0) }} <br>
                 {{ $dc_week }}</th>
             <th style="background-color: {{ $bgZona }} !important" class="text-end">
                 {{ number_format($ayam_awal, 0) }}

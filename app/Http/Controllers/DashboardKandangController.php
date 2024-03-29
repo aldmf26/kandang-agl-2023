@@ -162,6 +162,8 @@ class DashboardKandangController extends Controller
         } else {
             DB::table('stok_telur')->where([['id_kandang', $r->id_kandang], ['tgl', $r->tgl]])->delete();
             DB::table('stok_telur_new')->where([['id_kandang', $r->id_kandang], ['tgl', $r->tgl]])->delete();
+
+            $pcs = 0;
             for ($i = 0; $i < count($r->id_telur); $i++) {
                 // $ikat = $r->ikat[$i];
                 // $ikat_kg = $r->ikat_kg[$i];
@@ -205,8 +207,27 @@ class DashboardKandangController extends Controller
                     'ket' => '',
                 ];
                 DB::table('stok_telur')->insert($dataStok);
+                $pcs += $r->pcs[$i];
             }
-
+            $getBiaya = DB::selectOne("SELECT sum(a.total_rp + a.biaya_dll) as ttl_rp, sum(a.debit - a.kredit) as ttl_debit FROM `tb_rak_telur` as a
+            WHERE a.id_gudang = 1 AND a.no_nota LIKE '%RAKMSK%'");
+            $hargaSatuan = $getBiaya->ttl_rp / $getBiaya->ttl_debit;
+            $rak = $pcs / 180;
+            $rupiah = $hargaSatuan * $rak;
+            $cek = DB::table('tb_rak_telur')->where('no_nota', 'LIKE', '%RAKKLR%')->latest('no_nota')->first();
+            $no_nota = empty($cek) ? 1001 : str()->remove('RAKKLR-', $cek->no_nota) + 1;
+            $datas = [
+                'debit' => 0,
+                'opname' => 'T',
+                'tgl' => $r->tgl,
+                'admin' => auth()->user()->name,
+                'no_nota' => "RAKKLR-" . $no_nota,
+                'h_opname' => 'Y',
+                'selisih' => 0,
+                'kredit' => $rak,
+                'total_rp' => $rupiah
+            ];
+            DB::table('tb_rak_telur')->insert($datas);
             return redirect()->route('dashboard_kandang.index')->with('sukses', 'Data Berhasil Ditambahkan');
         }
     }
@@ -2552,5 +2573,75 @@ class DashboardKandangController extends Controller
     {
         DB::table('font_size')->where('id_font', 1)->update(['font' => $r->font]);
         return redirect()->route('dashboard_kandang.index')->with('Font Table Kandang diubah');
+    }
+
+    public function print_perencanaan(Request $r)
+    {
+        $tgl = date('Y-m-d');
+        $tgl_kemarin = date("Y-m-d", strtotime($tgl . " -1 days"));
+        $tgl_sebelumnya = date("Y-m-d", strtotime($tgl . " -6 days"));
+
+        $data = [
+            'title' => 'Dashboard Kandang',
+            'kandang' => DB::select("SELECT 
+            CEIL(DATEDIFF('$tgl', a.chick_in) / 7) AS mgg,
+             a.*,
+            CEIL(DATEDIFF(a.chick_out, a.chick_in) / 7) AS mgg_afkir,
+            aa.ttl_gjl,
+            w.mati_week,
+            w.jual_week,
+            b.pop_kurang,
+            h.kg,
+            h.pcs,
+            n.kuml_rp_vitamin,
+            s.kum_ttl_rp_vaksin,
+            i.pcs_past,
+            i.kg_past
+            FROM kandang AS a
+            left join(SELECT b.id_kandang, sum(b.mati+b.jual + b.afkir) as pop_kurang 
+            FROM populasi as b 
+            where b.tgl between '2020-01-01' and '$tgl'
+            group by b.id_kandang ) as b on b.id_kandang = a.id_kandang
+            left join (
+                SELECT a.id_kandang, a.nm_kandang, count(b.total) as ttl_gjl
+                FROM kandang as a 
+                left join (
+                SELECT a.id_kandang, count(a.id_kandang) as total
+                FROM stok_produk_perencanaan as a 
+                left join tb_produk_perencanaan as b on a.id_pakan = b.id_produk
+                where b.kategori = 'pakan' and a.pcs_kredit != 0
+                group by a.tgl,  a.id_kandang
+                ) as b on b.id_kandang = a.id_kandang
+                GROUP by a.id_kandang
+            ) as aa on aa.id_kandang = a.id_kandang
+
+            left join (SELECT h.id_kandang , sum(h.pcs) as pcs, sum(h.kg) as kg FROM stok_telur as h  where h.tgl = '$tgl' group by h.id_kandang) as h on h.id_kandang = a.id_kandang
+
+            left join (SELECT h.id_kandang , sum(h.pcs) as pcs_past, sum(h.kg) as kg_past FROM stok_telur as h  where h.tgl = '$tgl_kemarin' group by h.id_kandang) as i on i.id_kandang = a.id_kandang
+
+            left join (
+                SELECT d.id_kandang, sum(d.total_rp) as kuml_rp_vitamin
+                FROM stok_produk_perencanaan as d 
+                left join tb_produk_perencanaan as e on e.id_produk = d.id_pakan
+                where d.tgl between '2020-01-01' and '$tgl' and e.kategori in('obat_pakan','obat_air') and d.pcs_kredit != '0'
+                group by d.id_kandang
+            ) as n on n.id_kandang = a.id_kandang
+            left join (
+                SELECT s.id_kandang , sum(s.ttl_rp) as kum_ttl_rp_vaksin
+                FROM tb_vaksin_perencanaan as s
+                group by s.id_kandang
+            ) as s on s.id_kandang = a.id_kandang
+            left join (
+                SELECT w.id_kandang , sum(w.mati) as mati_week , sum(w.jual) as jual_week
+                    FROM populasi as w 
+                    where w.tgl between '$tgl_sebelumnya' and '$tgl'
+                group by w.id_kandang
+            ) as w on w.id_kandang = a.id_kandang
+
+            WHERE a.selesai = 'T'
+            ORDER BY a.nm_kandang ASC;"),
+        ];
+
+        return view('dashboard_kandang.perencanaan.print_perencanaan', $data);
     }
 }
