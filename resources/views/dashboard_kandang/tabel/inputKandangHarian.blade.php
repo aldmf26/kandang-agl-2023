@@ -70,7 +70,7 @@
                 <th style="background-color: {{ $bgZona }} !important" colspan="3" class="text-center  putih">
                     Populasi</th>
                 <th colspan="9" class="text-center abu"> Telur </th>
-                <th style="background-color: {{ $bgZona }} !important" colspan="3" class="text-center putih">
+                <th style="background-color: {{ $bgZona }} !important" colspan="4" class="text-center putih">
                     pakan</th>
                 <th width="2%" class="text-center dhead" rowspan="2">Aksi</th>
             </tr>
@@ -97,7 +97,8 @@
                 <th width="1%" class="dhead text-center">Kg</th>
                 <th width="3%" class="dhead text-center">Gr / Ekor <i
                         class="fas text-white fa-question-circle rumus" rumus="grEkor" style="cursor: pointer"></i></th>
-                <th width="10" class="dhead text-center">Pakan Obat/vit</th>
+                <th class="dhead text-center">Pakan </th>
+                <th class="dhead text-center">Obat/vit </th>
 
             </tr>
         </thead>
@@ -331,12 +332,14 @@
                                     WHERE a.tgl = '$tgl' and a.id_kandang = '$d->id_kandang' and b.kategori in('pakan');");
                         @endphp
 
-                        @foreach ($vitamin as $v)
+                        @foreach ($vitamin as $key => $v)
                             {{ $v->nm_produk }} :
                             {{ number_format($v->pcs_kredit / 1000, 1) }}
-                            Kg<br>
+                            Kg
+                            <br>
                         @endforeach
-
+                    </td>
+                    <td class="td_layer" align="center">
                         @php
                             $vitamin = DB::select("SELECT a.id_pakan, b.nm_produk, c.nm_satuan, a.id_kandang, a.pcs_kredit, b.kategori, d.campuran, e.nm_satuan as satuan_campuran
                             FROM stok_produk_perencanaan as a
@@ -351,18 +354,17 @@
                             WHERE a.tgl = '$tgl' and a.id_kandang = '$d->id_kandang' and b.kategori in('obat_pakan', 'obat_air','obat_ayam');");
                         @endphp
 
-                        @foreach ($vitamin as $v)
+                        @foreach ($vitamin as $key => $v)
                             {{ $v->nm_produk }} :
                             {{ number_format($v->pcs_kredit, 1) }}
                             {{ $v->nm_satuan }} |
                             @if ($v->kategori == 'obat_ayam')
-                                {{ number_format($v->pcs_kredit / ($d->stok_awal - $d->pop_kurang), 1) }} PerAyam
+                                {{ number_format($v->pcs_kredit / ($d->stok_awal - $d->pop_kurang), 1) }} PerAyam,
                             @else
-                                {{ $v->campuran }} {{ $v->satuan_campuran }}
+                                {{ $v->campuran }} {{ $v->satuan_campuran }},
                             @endif
                             <br>
                         @endforeach
-
                     </td>
 
                     {{-- end pakan --}}
