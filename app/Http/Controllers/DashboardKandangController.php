@@ -293,7 +293,7 @@ class DashboardKandangController extends Controller
         FROM `invoice_mtd` as a
         LEFT JOIN telur_produk as b ON a.id_produk = b.id_produk_telur
         LEFT JOIN (
-            SELECT no_nota, SUM(kg_pcs) as kg_pcs, sum(kg_ikat) as kg_ikat, sum(kg_kg_kotor) as kg_kg_kotor, sum(kg_kg) as kg_kg FROM `invoice_mtd` GROUP BY no_nota
+            SELECT no_nota, SUM(if(kg_pcs is null , 0 ,kg_pcs)) as kg_pcs, sum(kg_ikat) as kg_ikat, sum(kg_kg_kotor) as kg_kg_kotor, sum(kg_kg) as kg_kg FROM `invoice_mtd` GROUP BY no_nota
         ) as c ON a.no_nota = c.no_nota
         WHERE a.jenis = 'tf'
         GROUP BY a.no_nota
