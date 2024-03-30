@@ -214,7 +214,7 @@ class DashboardKandangController extends Controller
             WHERE a.id_gudang = 1 AND a.no_nota LIKE '%RAKMSK%'");
             $hargaSatuan = $getBiaya->ttl_rp / $getBiaya->ttl_debit;
             $rak = $pcs / 180;
-            $rupiah = $hargaSatuan * $rak;
+            $rupiah = $hargaSatuan * ($rak * 9);
             $cek = DB::table('tb_rak_telur')->where('no_nota', 'LIKE', '%RAKKLR%')->latest('no_nota')->first();
 
 
