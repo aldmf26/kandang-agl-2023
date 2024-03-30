@@ -162,6 +162,7 @@ class DashboardKandangController extends Controller
         } else {
             DB::table('stok_telur')->where([['id_kandang', $r->id_kandang], ['tgl', $r->tgl]])->delete();
             DB::table('stok_telur_new')->where([['id_kandang', $r->id_kandang], ['tgl', $r->tgl]])->delete();
+            DB::table('tb_rak_telur')->where([['id_kandang', $r->id_kandang], ['tgl', $r->tgl]])->delete();
 
             $pcs = 0;
             for ($i = 0; $i < count($r->id_telur); $i++) {
@@ -215,6 +216,8 @@ class DashboardKandangController extends Controller
             $rak = $pcs / 180;
             $rupiah = $hargaSatuan * $rak;
             $cek = DB::table('tb_rak_telur')->where('no_nota', 'LIKE', '%RAKKLR%')->latest('no_nota')->first();
+
+
             $no_nota = empty($cek) ? 1001 : str()->remove('RAKKLR-', $cek->no_nota) + 1;
             $datas = [
                 'debit' => 0,
@@ -224,8 +227,9 @@ class DashboardKandangController extends Controller
                 'no_nota' => "RAKKLR-" . $no_nota,
                 'h_opname' => 'Y',
                 'selisih' => 0,
-                'kredit' => $rak,
-                'total_rp' => $rupiah
+                'kredit' => $rak * 9,
+                'total_rp' => $rupiah,
+                'id_kandang' => $r->id_kandang
             ];
             DB::table('tb_rak_telur')->insert($datas);
             return redirect()->route('dashboard_kandang.index')->with('sukses', 'Data Berhasil Ditambahkan');
