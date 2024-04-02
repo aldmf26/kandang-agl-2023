@@ -121,7 +121,8 @@ class Penjualan_telurmartadahController extends Controller
         left join telur_produk as b on b.id_produk_telur = a.id_produk
         where a.no_nota = '$r->no_nota';");
 
-        $penjualan_mtd_detail = DB::selectOne("SELECT a.*, b.nm_telur, c.urutan FROM invoice_mtd as a 
+        $penjualan_mtd_detail = DB::selectOne("SELECT a.*, b.nm_telur, c.urutan , c.id_customer2
+        FROM invoice_mtd as a 
         left join telur_produk as b on b.id_produk_telur = a.id_produk
         left join invoice_telur as c on c.no_nota = a.no_nota
         where a.no_nota = '$r->no_nota';");
@@ -131,6 +132,7 @@ class Penjualan_telurmartadahController extends Controller
             'invoice2' => $penjualan_mtd_detail,
             'kandang' => DB::table('kandang')->get(),
             'produk' => DB::table('telur_produk')->get(),
+            'customer' => DB::select('SELECT * FROM `customer` WHERE npwp IS NOT NULL OR ktp IS NOT NULL;'),
         ];
         return view('dashboard_kandang.penjualan_telur.edit', $data);
     }
@@ -347,6 +349,7 @@ class Penjualan_telurmartadahController extends Controller
                 $data = [
                     'tgl' => $r->tgl,
                     'customer' => $r->customer,
+                    'id_customer2' => $r->id_customer2,
                     'no_nota' => $no_nota,
                     'id_produk' => $r->id_produk[$x],
                     'pcs' => $total_pcs,

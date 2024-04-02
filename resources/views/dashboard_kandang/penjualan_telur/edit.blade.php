@@ -4,7 +4,7 @@
         <form action="{{ route('dashboard_kandang.save_edit_telur') }}" method="post">
             <div class="col-lg-12">
                 @if (session()->has('error'))
-                <x-theme.alert pesan="{{ session()->get('error') }}" />
+                    <x-theme.alert pesan="{{ session()->get('error') }}" />
                 @endif
                 <div class="row">
                     <div class="col-lg-7">
@@ -13,9 +13,10 @@
                                 <th class="dhead">Tanggal</th>
                                 <th class="dhead">No Nota</th>
                                 <th class="dhead">Customer</th>
+                                <th class="dhead">Customer2</th>
                                 <th class="dhead">HP</th>
                                 @if ($invoice2->tgl != date('Y-m-d'))
-                                <th class="dhead">Voucher Edit</th>
+                                    <th class="dhead">Voucher Edit</th>
                                 @endif
                             </tr>
                             <tr>
@@ -34,14 +35,24 @@
                                         value="{{ $invoice2->customer }}">
                                 </td>
                                 <td>
+                                    <select name="id_customer2" id="" class="select2_add" required>
+                                        <option value="">-Pilih Customer-</option>
+                                        @foreach ($customer as $c)
+                                            <option value="{{ $c->id_customer }}"
+                                                {{ $c->id_customer == $invoice2->id_customer2 ? 'selected' : '' }}>
+                                                {{ $c->nm_customer }}</option>
+                                        @endforeach
+                                    </select>
+                                </td>
+                                <td>
                                     <input type="hidden" name="tipe" value="kg">
                                     <input type="text" class="form-control no_hp" name="no_hp" required
                                         value="{{ $invoice2->no_hp }}">
                                 </td>
                                 @if ($invoice2->tgl != date('Y-m-d'))
-                                <td>
-                                    <input type="text" class="form-control" name="voucher">
-                                </td>
+                                    <td>
+                                        <input type="text" class="form-control" name="voucher">
+                                    </td>
                                 @endif
                             </tr>
                         </table>
@@ -93,103 +104,110 @@
                         </thead>
                         <tbody>
                             @foreach ($invoice as $no => $i)
-                            <tr class="baris{{ $no + 1 }}">
-                                @php
-                                $rp_pcs = $i->pcs_pcs * $i->rp_pcs;
-                                $rp_ikat = ($i->kg_ikat - $i->ikat) * $i->rp_ikat;
-                                $rak_kali = round($i->rak_kg * 0.12, 1);
-                                $rp_kg = $i->kg_kg * $i->rp_kg;
-                                $total_rp = $rp_pcs + $rp_ikat + $rp_kg;
+                                <tr class="baris{{ $no + 1 }}">
+                                    @php
+                                        $rp_pcs = $i->pcs_pcs * $i->rp_pcs;
+                                        $rp_ikat = ($i->kg_ikat - $i->ikat) * $i->rp_ikat;
+                                        $rak_kali = round($i->rak_kg * 0.12, 1);
+                                        $rp_kg = $i->kg_kg * $i->rp_kg;
+                                        $total_rp = $rp_pcs + $rp_ikat + $rp_kg;
 
-                                @endphp
-                                <td>
-                                    <select name="id_produk[]" class="select2_add" required>
-                                        <option value="">-Pilih Produk-</option>
-                                        @foreach ($produk as $p)
-                                        <option value="{{ $p->id_produk_telur }}" {{ $i->id_produk ==
-                                            $p->id_produk_telur ? 'SELECTED' : '' }}>
-                                            {{ $p->nm_telur }}</option>
-                                        @endforeach
-                                    </select>
-                                </td>
-                                <td align="right">
-                                    <input type="text" class="form-control pcs pcs{{ $no + 1 }}" count="{{ $no + 1 }}"
-                                        style="text-align: right; font-size: 12px;" value="{{ $i->pcs_pcs }}">
-                                    <input type="hidden" class="form-control  pcs_biasa{{ $no + 1 }}" name="pcs_pcs[]"
-                                        value="{{ $i->pcs_pcs }}">
-                                </td>
-                                <td align="right">
-                                    <input type="text" class="form-control kg_pcs kg_pcs{{ $no + 1 }}"
-                                        count="{{ $no + 1 }}" style="text-align: right; font-size: 12px;"
-                                        value="{{ $i->kg_pcs }}" name="kg_pcs[]">
-                                    <input type="hidden" class="form-control  kg_pcs_biasa{{ $no + 1 }}"
-                                        value="{{ $i->kg_pcs }}">
-                                </td>
-                                <td align="right">
-                                    <input type="text" class="form-control rp_pcs pcs{{ $no + 1 }}"
-                                        count="{{ $no + 1 }}" style="text-align: right;font-size: 12px;"
-                                        value="{{ $i->rp_pcs }}">
-                                    <input type="hidden" class="form-control rp_pcs_biasa rp_pcs_biasa{{ $no + 1 }}"
-                                        name="rp_pcs[]" value="{{ $i->rp_pcs }}">
-                                    <input type="hidden" class="ttl_rp_pcs{{ $no + 1 }}"
-                                        value="{{ $i->pcs_pcs * $i->rp_pcs }}">
-                                </td>
-                                <!-- Jual Ikat -->
-                                <td align="right">
-                                    <input type="text" class="form-control ikat ikat{{ $no + 1 }}" count="{{ $no + 1 }}"
-                                        style="text-align: right;font-size: 12px;" value="{{ $i->ikat }}" name="ikat[]">
-                                </td>
-                                <td align="right">
-                                    <input type="text" class="form-control kg_ikat kg_ikat{{ $no + 1 }}"
-                                        count="{{ $no + 1 }}" style="text-align: right;font-size: 12px;"
-                                        value="{{ $i->kg_ikat }}" name="kg_ikat[]">
-                                </td>
-                                <td align="right">
-                                    <input type="text" class="form-control rp_ikat rp_ikat{{ $no + 1 }}"
-                                        count="{{ $no + 1 }}" style="text-align: right;font-size: 12px;"
-                                        value="{{ $i->rp_ikat }}">
-                                    <input type="hidden" class="form-control  rp_ikat_biasa{{ $no + 1 }}"
-                                        name="rp_ikat[]" value="{{ $i->rp_ikat }}">
-                                    <input type="hidden" class="ttl_rp_ikat{{ $no + 1 }}" value="{{ $rp_ikat }}">
-                                </td>
-                                <!-- Jual Ikat -->
-                                <!-- Jual Kg -->
-                                <td align="right">
-                                    <input type="text" class="form-control" name="pcs_kg[]" count="{{ $no + 1 }}"
-                                        style="text-align: right;font-size: 12px;" value="{{ $i->pcs_kg }}">
-                                </td>
-                                <td align="right">
-                                    <input type="text" class="form-control " count="{{ $no + 1 }}"
-                                        style="text-align: right;font-size: 12px;" value="{{ $i->kg_kg_kotor }}"
-                                        name="kg_kg_kotor[]">
-                                </td>
-                                <td align="right">
-                                    <input type="text" class="form-control kg_kg kg_kg{{ $no + 1 }}"
-                                        count="{{ $no + 1 }}" style="text-align: right;font-size: 12px;"
-                                        value="{{ $i->kg_kg }}" name="kg_kg[]">
-                                </td>
-                                {{-- <td align="right">
+                                    @endphp
+                                    <td>
+                                        <select name="id_produk[]" class="select2_add" required>
+                                            <option value="">-Pilih Produk-</option>
+                                            @foreach ($produk as $p)
+                                                <option value="{{ $p->id_produk_telur }}"
+                                                    {{ $i->id_produk == $p->id_produk_telur ? 'SELECTED' : '' }}>
+                                                    {{ $p->nm_telur }}</option>
+                                            @endforeach
+                                        </select>
+                                    </td>
+                                    <td align="right">
+                                        <input type="text" class="form-control pcs pcs{{ $no + 1 }}"
+                                            count="{{ $no + 1 }}" style="text-align: right; font-size: 12px;"
+                                            value="{{ $i->pcs_pcs }}">
+                                        <input type="hidden" class="form-control  pcs_biasa{{ $no + 1 }}"
+                                            name="pcs_pcs[]" value="{{ $i->pcs_pcs }}">
+                                    </td>
+                                    <td align="right">
+                                        <input type="text" class="form-control kg_pcs kg_pcs{{ $no + 1 }}"
+                                            count="{{ $no + 1 }}" style="text-align: right; font-size: 12px;"
+                                            value="{{ $i->kg_pcs }}" name="kg_pcs[]">
+                                        <input type="hidden" class="form-control  kg_pcs_biasa{{ $no + 1 }}"
+                                            value="{{ $i->kg_pcs }}">
+                                    </td>
+                                    <td align="right">
+                                        <input type="text" class="form-control rp_pcs pcs{{ $no + 1 }}"
+                                            count="{{ $no + 1 }}" style="text-align: right;font-size: 12px;"
+                                            value="{{ $i->rp_pcs }}">
+                                        <input type="hidden"
+                                            class="form-control rp_pcs_biasa rp_pcs_biasa{{ $no + 1 }}"
+                                            name="rp_pcs[]" value="{{ $i->rp_pcs }}">
+                                        <input type="hidden" class="ttl_rp_pcs{{ $no + 1 }}"
+                                            value="{{ $i->pcs_pcs * $i->rp_pcs }}">
+                                    </td>
+                                    <!-- Jual Ikat -->
+                                    <td align="right">
+                                        <input type="text" class="form-control ikat ikat{{ $no + 1 }}"
+                                            count="{{ $no + 1 }}" style="text-align: right;font-size: 12px;"
+                                            value="{{ $i->ikat }}" name="ikat[]">
+                                    </td>
+                                    <td align="right">
+                                        <input type="text" class="form-control kg_ikat kg_ikat{{ $no + 1 }}"
+                                            count="{{ $no + 1 }}" style="text-align: right;font-size: 12px;"
+                                            value="{{ $i->kg_ikat }}" name="kg_ikat[]">
+                                    </td>
+                                    <td align="right">
+                                        <input type="text" class="form-control rp_ikat rp_ikat{{ $no + 1 }}"
+                                            count="{{ $no + 1 }}" style="text-align: right;font-size: 12px;"
+                                            value="{{ $i->rp_ikat }}">
+                                        <input type="hidden" class="form-control  rp_ikat_biasa{{ $no + 1 }}"
+                                            name="rp_ikat[]" value="{{ $i->rp_ikat }}">
+                                        <input type="hidden" class="ttl_rp_ikat{{ $no + 1 }}"
+                                            value="{{ $rp_ikat }}">
+                                    </td>
+                                    <!-- Jual Ikat -->
+                                    <!-- Jual Kg -->
+                                    <td align="right">
+                                        <input type="text" class="form-control" name="pcs_kg[]"
+                                            count="{{ $no + 1 }}" style="text-align: right;font-size: 12px;"
+                                            value="{{ $i->pcs_kg }}">
+                                    </td>
+                                    <td align="right">
+                                        <input type="text" class="form-control " count="{{ $no + 1 }}"
+                                            style="text-align: right;font-size: 12px;" value="{{ $i->kg_kg_kotor }}"
+                                            name="kg_kg_kotor[]">
+                                    </td>
+                                    <td align="right">
+                                        <input type="text" class="form-control kg_kg kg_kg{{ $no + 1 }}"
+                                            count="{{ $no + 1 }}" style="text-align: right;font-size: 12px;"
+                                            value="{{ $i->kg_kg }}" name="kg_kg[]">
+                                    </td>
+                                    {{-- <td align="right">
                                     <input type="text" class="form-control rak_kg rak_kg1" count="{{$no+1}}"
                                         style="text-align: right;font-size: 12px;" value="0" name="rak_kg[]">
                                 </td> --}}
-                                <td align="right">
-                                    <input type="text" class="form-control rp_kg rp_kg{{ $no + 1 }}"
-                                        count="{{ $no + 1 }}" style="text-align: right;font-size: 12px;"
-                                        value="{{ number_format($i->rp_kg, 0, ',', '.') }}">
-                                    <input type="hidden" class="form-control  rp_kg_biasa rp_kg_biasa{{ $no + 1 }}"
-                                        name="rp_kg[]" value="{{ $i->rp_kg }}">
-                                    <input type="hidden" class="ttl_rp_kg{{ $no + 1 }}" value="{{ $rp_kg }}">
-                                </td>
-                                <!-- Jual Kg -->
+                                    <td align="right">
+                                        <input type="text" class="form-control rp_kg rp_kg{{ $no + 1 }}"
+                                            count="{{ $no + 1 }}" style="text-align: right;font-size: 12px;"
+                                            value="{{ number_format($i->rp_kg, 0, ',', '.') }}">
+                                        <input type="hidden"
+                                            class="form-control  rp_kg_biasa rp_kg_biasa{{ $no + 1 }}"
+                                            name="rp_kg[]" value="{{ $i->rp_kg }}">
+                                        <input type="hidden" class="ttl_rp_kg{{ $no + 1 }}"
+                                            value="{{ $rp_kg }}">
+                                    </td>
+                                    <!-- Jual Kg -->
 
-                                <td align="right" class="ttl_rp{{ $no + 1 }}">
-                                    {{ number_format($total_rp) }}</td>
-                                <td style="vertical-align: top;">
-                                    <button type="button" class="btn rounded-pill remove_baris_kg"
-                                        count="{{ $no + 1 }}"><i class="fas fa-trash text-danger"></i>
-                                    </button>
-                                </td>
-                            </tr>
+                                    <td align="right" class="ttl_rp{{ $no + 1 }}">
+                                        {{ number_format($total_rp) }}</td>
+                                    <td style="vertical-align: top;">
+                                        <button type="button" class="btn rounded-pill remove_baris_kg"
+                                            count="{{ $no + 1 }}"><i class="fas fa-trash text-danger"></i>
+                                        </button>
+                                    </td>
+                                </tr>
                             @endforeach
                         </tbody>
                         <tbody id="tb_baris_mtd">
@@ -220,8 +238,8 @@
         </form>
     </section>
     @section('scripts')
-    <script>
-        $(document).ready(function() {
+        <script>
+            $(document).ready(function() {
                 $(document).on("keyup", ".pcs", function() {
                     var count = $(this).attr("count");
 
@@ -293,9 +311,9 @@
                     $('.ttl_rp' + count).text(total_rupiah);
                 });
             });
-    </script>
-    <script>
-        $(document).ready(function() {
+        </script>
+        <script>
+            $(document).ready(function() {
                 $(document).on("keyup", ".ikat", function() {
                     var count = $(this).attr("count");
                     var ikat = $('.ikat' + count).val();
@@ -378,9 +396,9 @@
                     $('.ttl_rp' + count).text(total_rupiah);
                 });
             });
-    </script>
-    <script>
-        $(document).ready(function() {
+        </script>
+        <script>
+            $(document).ready(function() {
                 $(document).on("keyup", ".kg_kg", function() {
                     var count = $(this).attr("count");
                     var kg = $('.kg_kg' + count).val();
@@ -471,9 +489,9 @@
                 });
 
             });
-    </script>
-    <script>
-        $(document).ready(function() {
+        </script>
+        <script>
+            $(document).ready(function() {
                 var count = 2;
                 $(document).on("click", ".tbh_baris_mtd", function() {
                     count = count + 1;
@@ -548,6 +566,6 @@
                     }
                 });
             });
-    </script>
+        </script>
     @endsection
 </x-theme.app>
