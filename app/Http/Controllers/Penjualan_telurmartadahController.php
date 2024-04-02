@@ -410,8 +410,6 @@ class Penjualan_telurmartadahController extends Controller
         } else {
             return redirect()->route('dashboard_kandang.edit_telur', ['no_nota' => $no_nota])->with('error', 'Voucher Update Salah!');
         }
-
-
         return redirect()->route('dashboard_kandang.cek_penjualan_telur', ['no_nota' => $no_nota])->with('sukses', 'Data berhasil ditambahkan');
     }
 
