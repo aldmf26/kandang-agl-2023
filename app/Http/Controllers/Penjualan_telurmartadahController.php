@@ -98,7 +98,7 @@ class Penjualan_telurmartadahController extends Controller
         $data = [
             'title' => 'Buat Invoice',
             'produk' => DB::table('telur_produk')->get(),
-            'customer' => DB::table('customer')->get(),
+            'customer' => DB::select('SELECT * FROM `customer` WHERE npwp IS NOT NULL OR ktp IS NOT NULL;'),
             'nota' => $nota_t,
             'akun' => DB::table('akun')->whereIn('id_klasifikasi', ['1', '7'])->get()
         ];

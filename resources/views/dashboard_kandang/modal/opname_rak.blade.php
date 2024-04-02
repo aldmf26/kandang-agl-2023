@@ -77,6 +77,10 @@
                         aria-controls="home" aria-selected="true">Stok Masuk</a>
                 </li>
                 <li class="nav-item" role="presentation">
+                    <a class="nav-link " id="home2-tab" data-bs-toggle="tab" href="#home2" role="tab"
+                        aria-controls="home2" aria-selected="true">Stok Keluar</a>
+                </li>
+                <li class="nav-item" role="presentation">
                     <a class="nav-link" id="profile-tab" data-bs-toggle="tab" href="#profile" role="tab"
                         aria-controls="profile" aria-selected="false" tabindex="-1">Opname</a>
                 </li>
@@ -103,6 +107,37 @@
                                 <td>{{ $no + 1 }}</td>
                                 <td>{{ tanggal($d->tgl) }}</td>
                                 <td class="text-end">{{ number_format($d->debit, 0) }}</td>
+                                <td class="text-end">{{ number_format($d->total_rp, 0) }}</td>
+                                <td class="text-end">{{ number_format($d->biaya_dll, 0) }}</td>
+                                <td>{{ $d->admin }}</td>
+                            </tr>
+                        @endforeach
+                    </table>
+                </div>
+                <div class="tab-pane fade " id="home2" role="tabpanel" aria-labelledby="home2-tab">
+                    <h6 class="mt-3">History Keluar Rak Telur</h6>
+                    <table class="table">
+                        <tr>
+                            <th class="dhead">No</th>
+                            <th class="dhead">Tgl</th>
+                            <th class="dhead">Kandang</th>
+                            <th class="dhead text-end">Qty</th>
+                            <th class="dhead text-end">Ttl Rp</th>
+                            <th class="dhead text-end">Biaya Lain-lain</th>
+                            <th class="dhead">Admin</th>
+                        </tr>
+                        @php
+                            $masuk = DB::select("SELECT * 
+                            FROM `tb_rak_telur` as a
+                            left join kandang as b on b.id_kandang = a.id_kandang
+                            WHERE a.id_gudang = 1 AND a.no_nota LIKE '%RAKKLR%'");
+                        @endphp
+                        @foreach ($masuk as $no => $d)
+                            <tr>
+                                <td>{{ $no + 1 }}</td>
+                                <td>{{ tanggal($d->tgl) }}</td>
+                                <td>{{ $d->nm_kandang }}</td>
+                                <td class="text-end">{{ number_format($d->kredit, 0) }}</td>
                                 <td class="text-end">{{ number_format($d->total_rp, 0) }}</td>
                                 <td class="text-end">{{ number_format($d->biaya_dll, 0) }}</td>
                                 <td>{{ $d->admin }}</td>
