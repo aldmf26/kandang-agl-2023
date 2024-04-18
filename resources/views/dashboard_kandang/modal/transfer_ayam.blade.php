@@ -1,11 +1,11 @@
 {{-- modal --}}
-<form action="{{route('dashboard_kandang.transfer_ayam')}}" method="post">
+<form action="{{ route('dashboard_kandang.transfer_ayam') }}" method="post">
     @csrf
     <x-theme.modal title="Transfer ayam" idModal="transfer_ayam">
         <div class="row">
             <div class="col-lg-6">
                 <label for="">Tanggal</label>
-                <input type="date" name="tgl" class="form-control" value="{{date('Y-m-d')}}" readonly>
+                <input type="date" name="tgl" class="form-control" value="{{ date('Y-m-d') }}">
             </div>
             <div class="col-lg-6">
                 <label for="">Qty</label>
