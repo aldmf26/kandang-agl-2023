@@ -1,5 +1,5 @@
 @props([
-'title' => '',
+    'title' => '',
 ])
 <x-theme.button modal="Y" idModal="view" icon="fa-calendar-week" addClass="float-end" teks="" />
 <form action="" method="get">
@@ -28,12 +28,11 @@
                 <label for="">Bulan</label>
                 <select name="bulan" id="bulan" class="selectView bulan">
                     @php
-                    $listBulan = DB::table('bulan')->get();
+                        $listBulan = DB::table('bulan')->get();
                     @endphp
-                    @foreach($listBulan as $l)
-                    <option value="{{ $l->bulan }}" {{ (int) date('m')==$l->bulan ? 'selected' : ''
-                        }}>{{
-                        $l->nm_bulan }}</option>
+                    @foreach ($listBulan as $l)
+                        <option value="{{ $l->bulan }}" {{ (int) date('m') == $l->bulan ? 'selected' : '' }}>
+                            {{ $l->nm_bulan }}</option>
                     @endforeach
                 </select>
             </div>
@@ -42,6 +41,7 @@
                 <select name="tahun" id="" class="selectView bulan">
                     <option value="2022">2022</option>
                     <option value="2023">2023</option>
+                    <option value="2024">2024</option>
                 </select>
             </div>
             <div class="col-lg-8 tahun_muncul mt-2">
@@ -49,6 +49,7 @@
                 <select name="tahunfilter" id="" class="selectView tahun">
                     <option value="2022">2022</option>
                     <option value="2023">2023</option>
+                    <option value="2024">2024</option>
                 </select>
             </div>
         </div>
