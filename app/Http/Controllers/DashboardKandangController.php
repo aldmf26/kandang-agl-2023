@@ -229,9 +229,41 @@ class DashboardKandangController extends Controller
                 'selisih' => 0,
                 'kredit' => $rak * 9,
                 'total_rp' => $rupiah,
-                'id_kandang' => $r->id_kandang
+                'id_kandang' => $r->id_kandang,
+                'cek' => 'Y'
             ];
             DB::table('tb_rak_telur')->insert($datas);
+
+            $akun = DB::table('akun')->where('id_akun', 46)->first();
+            $urutan = empty($max_akun) ? '1001' : ($max_akun->urutan == 0 ? '1001' : $max_akun->urutan + 1);
+
+            $data = [
+                'tgl' => $r->tgl,
+                'no_nota' => "RAKKLR-" . $no_nota,
+                'id_akun' => '46',
+                'id_buku' => '4',
+                'ket' => 'Biaya Pengeluaran Rak Telur ' . "RAKKLR-" . $no_nota,
+                'debit' => '0',
+                'kredit' => $rupiah,
+                'admin' => auth()->user()->name,
+                'no_urut' => $akun->inisial . '-' . $urutan,
+                'urutan' => $urutan,
+            ];
+            DB::table('jurnal')->insert($data);
+            $akun_2 = DB::table('akun')->where('id_akun', 47)->first();
+            $data = [
+                'tgl' => $r->tgl,
+                'no_nota' => "RAKKLR-" . $no_nota,
+                'id_akun' => '47',
+                'id_buku' => '4',
+                'ket' => 'Biaya Pengeluaran Rak Telur ' . "RAKKLR-" . $no_nota,
+                'kredit' => '0',
+                'debit' => $rupiah,
+                'admin' => auth()->user()->name,
+                'no_urut' => $akun_2->inisial . '-' . $urutan,
+                'urutan' => $urutan,
+            ];
+            DB::table('jurnal')->insert($data);
             return redirect()->route('dashboard_kandang.index')->with('sukses', 'Data Berhasil Ditambahkan');
         }
     }
