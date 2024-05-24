@@ -1612,7 +1612,7 @@ class DashboardKandangController extends Controller
         $check_pakan = DB::selectOne("SELECT a.check
         FROM stok_produk_perencanaan as a 
         left join tb_produk_perencanaan as b on b.id_produk = a.id_pakan 
-        where a.tgl = '$tgl' and b.kategori = 'pakan' 
+        where a.tgl = '$tgl' and b.kategori = 'pakan' AND a.id_kandang = $id_kandang
         group by b.kategori
         ");
         $check_obat = DB::selectOne("SELECT a.check
