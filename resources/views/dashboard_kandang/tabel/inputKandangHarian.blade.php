@@ -191,7 +191,7 @@
                     {{-- mati dan jual --}}
                     <td style="background-color: {{ $bgZona }} !important" align="center" data-bs-toggle="modal"
                         id_kandang="{{ $d->id_kandang }}" nm_kandang="{{ $d->nm_kandang }}"
-                        class="tambah_populasi {{ $kelas }}" data-bs-target="#tambah_populasi">
+                        class="tambah_populasi {{ $kelas }}" data-bs-target="#tambah_populasi{{auth()->user()->id == 28 ? 'no' : ''}}">
                         <a href="javascript:void(0);" style="font-weight: bold">
                             &nbsp; <br>
                             {{ empty($mati) ? '0' : $mati }} <br> {{ empty($jual) ? '0' : $jual }} <br>
@@ -203,7 +203,7 @@
                     {{-- end mati dan jual --}}
 
                     <td style="background-color: {{ $bgZona }} !important"
-                        class="tambah_populasi putih text-center" data-bs-target="#tambah_populasi">
+                        class="tambah_populasi putih text-center" data-bs-target="#tambah_populasi{{auth()->user()->id == 28 ? 'no' : ''}}">
                         &nbsp; <br>{{ $d->stok_awal }} <br> {{ $d->stok_awal - $d->pop_kurang }} <br>
                         {{ number_format((($d->stok_awal - $d->pop_kurang) / $d->stok_awal) * 100, 1) }}%
                     </td>
