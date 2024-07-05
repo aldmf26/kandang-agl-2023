@@ -349,6 +349,7 @@
                                 SELECT d.id_produk , d.tgl, d.campuran  
                                 FROM tb_obat_perencanaan as d
                                 where d.tgl = '$tgl' and d.id_kandang = '$d->id_kandang'
+                                group by d.id_produk
                             ) as d on d.id_produk = a.id_pakan
                             left join tb_satuan as e on e.id_satuan = b.campuran_satuan
                             WHERE a.tgl = '$tgl' and a.id_kandang = '$d->id_kandang' and b.kategori in('obat_pakan', 'obat_air','obat_ayam');");

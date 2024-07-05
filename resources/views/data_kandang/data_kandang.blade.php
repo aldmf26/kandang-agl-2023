@@ -7,7 +7,6 @@
             <div class="col-lg-12">
                 <x-theme.button modal="Y" idModal="tambah_kandang" icon="fa-plus" addClass="float-end"
                     teks="Buat Baru" />
-
             </div>
         </div>
     </x-slot>
@@ -24,11 +23,9 @@
                         <th>Strain</th>
                         <th class="text-end">Pop Awal</th>
                         <th class="text-end">Rupiah</th>
-
                         <th class="text-center">Aksi</th>
                     </tr>
                 </thead>
-
                 <tbody>
                     @foreach ($kandang as $no => $a)
                         @php
@@ -48,7 +45,6 @@
                             <td class="text-end">
                                 Rp {{ number_format($a->rupiah, 0) }}
                             </td>
-
                             <td align="center">
                                 @if (auth()->user()->posisi_id == 1)
                                     @if ($a->selesai == 'T')
