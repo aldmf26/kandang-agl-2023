@@ -191,7 +191,7 @@
                     {{-- mati dan jual --}}
                     <td style="background-color: {{ $bgZona }} !important" align="center" data-bs-toggle="modal"
                         id_kandang="{{ $d->id_kandang }}" nm_kandang="{{ $d->nm_kandang }}"
-                        class="tambah_populasi {{ $kelas }}" data-bs-target="#tambah_populasi">
+                        class="tambah_populasi {{ $kelas }}" data-bs-target="#tambah_populasi{{auth()->user()->id == 28 ? 'no' : ''}}">
                         <a href="javascript:void(0);" style="font-weight: bold">
                             &nbsp; <br>
                             {{ empty($mati) ? '0' : $mati }} <br> {{ empty($jual) ? '0' : $jual }} <br>
@@ -203,7 +203,7 @@
                     {{-- end mati dan jual --}}
 
                     <td style="background-color: {{ $bgZona }} !important"
-                        class="tambah_populasi putih text-center" data-bs-target="#tambah_populasi">
+                        class="tambah_populasi putih text-center" data-bs-target="#tambah_populasi{{auth()->user()->id == 28 ? 'no' : ''}}">
                         &nbsp; <br>{{ $d->stok_awal }} <br> {{ $d->stok_awal - $d->pop_kurang }} <br>
                         {{ number_format((($d->stok_awal - $d->pop_kurang) / $d->stok_awal) * 100, 1) }}%
                     </td>
@@ -252,7 +252,7 @@
                             : number_format((($d->kg - $d->pcs / 180) * 1000) / $d->pcs, 0);
                     @endphp
                     <td data-bs-toggle="modal" id_kandang="{{ $d->id_kandang }}" nm_kandang="{{ $d->nm_kandang }}"
-                        class="tambah_telur text-center " data-bs-target="#tambah_telur">
+                        class="tambah_telur text-center " data-bs-target="#tambah_telur {{auth()->user()->id == 28 ? 'no' : ''}}">
                         <p style="margin: 0; padding: 0;">&nbsp;</p>
                         <p style="margin: 0; padding: 0;">&nbsp;</p>
                         <p style="margin: 0; padding: 0;" class="{{ $gr_butir < 58 ? 'text-danger fw-bold' : '' }}">
@@ -261,7 +261,7 @@
                         </p>
                     </td>
                     <td data-bs-toggle="modal" id_kandang="{{ $d->id_kandang }}" nm_kandang="{{ $d->nm_kandang }}"
-                        class="tambah_telur " data-bs-target="#tambah_telur">
+                        class="tambah_telur " data-bs-target="#tambah_telur {{auth()->user()->id == 28 ? 'no' : ''}}">
                         @php
                             $kg = $d->kg - $d->pcs / 180 - ($d->kg_past - $d->pcs_past / 180);
                         @endphp
@@ -291,7 +291,7 @@
 
                         @endphp <td data-bs-toggle="modal" id_kandang="{{ $d->id_kandang }}"
                             nm_kandang="{{ $d->nm_kandang }}" class="tambah_telur abu"
-                            data-bs-target="#tambah_telur">
+                            data-bs-target="#tambah_telur {{auth()->user()->id == 28 ? 'no' : ''}}">
                             <span>{{ $stok->pcs ?? 0 }}</span>
                         </td>
                     @endforeach
