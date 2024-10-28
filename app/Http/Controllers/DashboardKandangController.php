@@ -1929,7 +1929,7 @@ class DashboardKandangController extends Controller
             GROUP BY a.tgl
         ) as abnormal ON abnormal.id_kandang = a.id_kandang AND abnormal.tgl = a.tgl
         INNER JOIN (
-            SELECT id_kandang,sum(mati) as mati, sum(jual) as jual FROM `populasi` WHERE id_kandang = '$id_kandang' GROUP BY tgl
+            SELECT tgl, id_kandang,sum(mati) as mati, sum(jual) as jual FROM `populasi` WHERE id_kandang = '$id_kandang' GROUP BY tgl
         ) as populasi ON populasi.id_kandang = a.id_kandang and populasi.tgl = a.tgl
         WHERE a.id_kandang = '$id_kandang'
         GROUP BY a.tgl
