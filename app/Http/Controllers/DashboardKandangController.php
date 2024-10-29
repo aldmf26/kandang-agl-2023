@@ -1888,7 +1888,8 @@ class DashboardKandangController extends Controller
         $style2 = array(
             'font' => array(
                 'size' => 18,
-                'setBold' => true
+                'setBold' => true,
+                'color' => array('argb' => '0000FF')
             ),
             'alignment' => array(
                 'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
@@ -1896,7 +1897,7 @@ class DashboardKandangController extends Controller
             ),
             'fill' => array(
                 'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
-                'startColor' => array('argb' => 'ADD8E6')
+                'startColor' => array('argb' => 'FFFF00')
             ),
         );
         $style3 = array(
