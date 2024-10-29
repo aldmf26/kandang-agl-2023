@@ -2005,7 +2005,7 @@ class DashboardKandangController extends Controller
             ->setCellValue('V10', 'CUM');
 
 
-        $sheet1->mergeCells("A1:R1")
+        $sheet1->mergeCells("A1:Y1")
             ->mergeCells("A3:C3")
             ->mergeCells("A5:C5")
             ->mergeCells("A7:C7")
