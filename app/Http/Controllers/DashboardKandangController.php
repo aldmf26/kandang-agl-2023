@@ -1909,7 +1909,7 @@ class DashboardKandangController extends Controller
         // daily production
         $pullet = DB::select("SELECT a.tgl, populasi.mati as pop_mati,populasi.jual as pop_jual, b.stok_awal, SUM(a.gr) as kg_pakan, 
         CEIL(DATEDIFF(a.tgl, b.chick_in) / 7) AS mgg,
-        c.mati as death, c.jual as culling, normal.normalPcs, normal.normalKg, abnormal.abnormalPcs, abnormal.abnormalKg, d.pcs,d.kg, sum(d.pcs) as ttl_pcs, SUM(d.kg) as ttl_kg, b.chick_in as ayam_awal
+        c.mati as death, c.jual as culling, normal.normalPcs, normal.normalKg, abnormal.abnormalPcs, abnormal.abnormalKg, d.pcs,d.kg, sum(d.pcs) as ttl_pcs, SUM(d.kg) as ttl_kg, b.chick_in as ayam_awal, g.nama_obat, h.nm_pakan, i.nm_vaksin
         FROM tb_pakan_perencanaan as a
         LEFT JOIN kandang as b ON a.id_kandang = b.id_kandang
         LEFT JOIN populasi as c ON c.id_kandang = a.id_kandang AND c.tgl = a.tgl
@@ -1928,9 +1928,33 @@ class DashboardKandangController extends Controller
             WHERE a.id_telur != 1 AND a.id_kandang = '$id_kandang'
             GROUP BY a.tgl
         ) as abnormal ON abnormal.id_kandang = a.id_kandang AND abnormal.tgl = a.tgl
-        INNER JOIN (
+        LEFT JOIN (
             SELECT tgl, id_kandang,sum(mati) as mati, sum(jual) as jual FROM `populasi` WHERE id_kandang = '$id_kandang' GROUP BY tgl
         ) as populasi ON populasi.id_kandang = a.id_kandang and populasi.tgl = a.tgl
+
+        left join (
+                SELECT a.tgl, GROUP_CONCAT(b.nm_produk ORDER BY b.nm_produk SEPARATOR ', ') as nama_obat
+                FROM stok_produk_perencanaan as a 
+                LEFT JOIN tb_produk_perencanaan as b ON b.id_produk = a.id_pakan
+                WHERE b.kategori IN ('obat_pakan', 'obat_air') AND a.id_kandang = '$id_kandang'
+                GROUP BY a.tgl
+        ) as g on g.tgl = a.tgl
+        left join (
+                SELECT a.tgl, GROUP_CONCAT(b.nm_produk ORDER BY b.nm_produk SEPARATOR ', ') as nm_pakan
+                FROM stok_produk_perencanaan as a 
+                LEFT JOIN tb_produk_perencanaan as b ON b.id_produk = a.id_pakan
+                WHERE b.kategori IN ('pakan') AND a.id_kandang = '$id_kandang'
+                GROUP BY a.tgl
+        ) as h on h.tgl = a.tgl
+        left join (
+                SELECT a.tgl, GROUP_CONCAT(a.nm_vaksin ORDER BY a.nm_vaksin SEPARATOR ', ') as nm_vaksin
+                FROM tb_vaksin_perencanaan as a 
+                WHERE a.id_kandang = '$id_kandang'
+                GROUP BY a.tgl
+        ) as i on i.tgl = a.tgl
+
+
+
         WHERE a.id_kandang = '$id_kandang'
         GROUP BY a.tgl
         ORDER BY a.tgl ASC");
@@ -1943,85 +1967,43 @@ class DashboardKandangController extends Controller
             ->setCellValue('A3', "HEN HOUSE/POPULATION : $kandang->ayam_awal")
             ->setCellValue('A5', "HOUSE : $kandang->nm_kandang")
             ->setCellValue('A7', "STRAIN : $kandang->nm_strain")
-            ->setCellValue('A9', 'DATE')
-            ->setCellValue('B9', 'AGE OF BIRD')
-            ->setCellValue('C9', 'CHICK AMOUNT')
+            ->setCellValue('A9', 'Tanggal')
+            ->setCellValue('B9', 'Umur minggu')
+            ->setCellValue('C9', 'Populasi Ayam')
             ->setCellValue('D9', 'DEPLETION')
             ->setCellValue('I9', 'FEED CONSUMTION')
-            ->setCellValue('K9', 'EGG PRODUCTION')
+            ->setCellValue('L9', 'EGG PRODUCTION')
+            ->setCellValue('U9', 'FCR')
+            ->setCellValue('W9', 'Vaksin')
+            ->setCellValue('X9', 'Obat')
+            ->setCellValue('Y9', 'Pakan')
 
-            ->setCellValue('D10', 'BIRD DEATH')
-            ->setCellValue('E10', 'BIRD CULLING')
-            ->setCellValue('F10', 'BIRD TOTAL')
+            ->setCellValue('D10', 'Mati')
+            ->setCellValue('E10', 'Afkir')
+            ->setCellValue('F10', 'Total Mati/Afkir')
             ->setCellValue('G10', '%')
             ->setCellValue('H10', 'CUM')
-            ->setCellValue('I10', 'PER DAY (KG)')
-            ->setCellValue('J10', 'CUM')
-            ->setCellValue('K10', 'PERDAY')
+            ->setCellValue('I10', 'Total pakan (Kg)')
+            ->setCellValue('J10', 'Gr/ekor')
+            ->setCellValue('K10', 'Gttl Pakan')
+            ->setCellValue('L10', 'Perhari')
 
-            ->setCellValue('K11', 'NORMAL')
-            ->setCellValue('L11', 'ABNORMAL')
-            ->setCellValue('M11', 'TOTAL')
-            ->setCellValue('N11', '%HD')
-            ->setCellValue('O11', 'CUM (BUTIR)')
-            ->setCellValue('P11', 'WIGHT (KG) ')
-            ->setCellValue('Q11', 'CUM (KG)')
-            ->setCellValue('R9', 'EGG WEIGHT (g)')
-            ->setCellValue('S9', 'FCR')
-            ->setCellValue('S10', 'PER DAY')
-            ->setCellValue('T10', 'CUM');
+            ->setCellValue('K11', 'Cum')
 
-        $kolom = 12;
-        $kum = 0;
-        $cum_kg = 0;
-        $cum_ttlpcs = 0;
-        $cum_ttlkg = 0;
+            ->setCellValue('L11', 'normal')
+            ->setCellValue('M11', 'abnormal')
+            ->setCellValue('N11', '% abnormal')
+            ->setCellValue('O11', 'TOTAL')
+            ->setCellValue('P11', '%HD')
+            ->setCellValue('Q11', 'CUM (BUTIR)')
+            ->setCellValue('R11', 'WIGHT (KG) ')
+            ->setCellValue('S11', 'CUM (KG)')
+            ->setCellValue('T9', 'EGG WEIGHT (g)')
 
-        foreach ($pullet as $d) {
-
-            $abnor =  $d->abnormalPcs ?? 0;
-            $normal = $d->normalPcs ?? 0;
+            ->setCellValue('U10', 'PER DAY')
+            ->setCellValue('V10', 'CUM');
 
 
-
-            $kum += $d->death + $d->culling;
-            $cum_kg += $d->kg_pakan / 1000;
-            $cum_ttlpcs += $normal + $abnor;
-            $cum_ttlkg += $d->ttl_kg;
-            $populasi = $d->stok_awal - $d->pop_mati + $d->pop_jual;
-
-            $birdTotal = $d->death + $d->culling;
-            // isi
-            $sheet1->setCellValue("A$kolom", date('Y-m-d', strtotime($d->tgl)))
-                ->setCellValue("B$kolom", $d->mgg)
-                ->setCellValue("C$kolom", $populasi - $kum)
-                ->setCellValue("D$kolom", $d->death ?? 0)
-                ->setCellValue("E$kolom", $d->culling ?? 0)
-                ->setCellValue("F$kolom", $birdTotal);
-            $death = $d->death ?? 0;
-            $culling = $d->culling ?? 0;
-            $pop = $populasi  ?? 0;
-            $sheet1->setCellValue("G$kolom", ($birdTotal) > 0 && $pop > 0 ? round((($death + $culling) / $pop) * 100, 2) : 0)
-                ->setCellValue("H$kolom", $kum)
-                ->setCellValue("I$kolom", round($d->kg_pakan / 1000, 2))
-                ->setCellValue("J$kolom", round($cum_kg, 2))
-                ->setCellValue("K$kolom", $d->normalPcs ?? 0)
-                ->setCellValue("L$kolom", $d->abnormalPcs ?? 0)
-
-                ->setCellValue("M$kolom", $abnor + $normal)
-                ->setCellValue("N$kolom", $pop > 0 ? round((($abnor + $normal) / ($populasi - $kum)) * 100, 2) : 0)
-                ->setCellValue("O$kolom", $cum_ttlpcs);
-            $ttlPcs = $d->normalPcs ?? 0 + $d->abnormalPcs ?? 0;
-            $weightKg = empty($d->kg) ? 0 : $d->kg - ($d->pcs / 180);
-            $kg_pakan = empty($d->kg_pakan) ? 0 : $d->kg_pakan / 1000;
-            $sheet1->setCellValue("P$kolom", round($weightKg, 2))
-                ->setCellValue("Q$kolom", round($cum_ttlkg - ($cum_ttlpcs / 180), 2))
-                ->setCellValue("R$kolom", empty($d->normalPcs) ? 0 : number_format(($weightKg / $d->normalPcs ?? 0) * 1000, 2))
-                ->setCellValue("S$kolom", round($weightKg == 0 ? 0 : $kg_pakan  / $weightKg, 2))
-                ->setCellValue("T$kolom", empty($cum_ttlpcs) ? 0 : round($cum_kg / ($cum_ttlkg - ($cum_ttlpcs / 180)), 2));
-
-            $kolom++;
-        }
         $sheet1->mergeCells("A1:R1")
             ->mergeCells("A3:C3")
             ->mergeCells("A5:C5")
@@ -2040,29 +2022,93 @@ class DashboardKandangController extends Controller
             ->mergeCells("I10:I11")
             ->mergeCells("J10:J11")
 
-            ->mergeCells("S10:S11")
-            ->mergeCells("T10:T11")
+
+            ->mergeCells("T9:T11")
 
             ->mergeCells("D9:H9")
-            ->mergeCells("R9:R11")
-            ->mergeCells("I9:J9")
-            ->mergeCells("K9:Q9")
-            ->mergeCells("K10:M10")
+            ->mergeCells("I9:K9")
+            ->mergeCells("L9:S9")
+            ->mergeCells("L10:S10")
 
-            ->mergeCells("S9:T9");
+            ->mergeCells("U9:V9")
+            ->mergeCells("W9:W11")
+            ->mergeCells("X9:X11")
+            ->mergeCells("Y9:Y11");
 
-        $sheet1->getStyle('A1:T1')->applyFromArray($style2);
-        $sheet1->getStyle('A9:T11')->applyFromArray($style2);
+        $kolom = 12;
+        $kum = 0;
+        $cum_kg = 0;
+        $cum_ttlpcs = 0;
+        $cum_ttlkg = 0;
+
+        $weight_cum = 0;
+
+        foreach ($pullet as $d) {
+
+            $abnor =  $d->abnormalPcs ?? 0;
+            $normal = $d->normalPcs ?? 0;
+
+
+
+            $kum += $d->death + $d->culling;
+            $cum_kg += $d->kg_pakan / 1000;
+            $cum_ttlpcs += $normal + $abnor;
+            $cum_ttlkg += $d->ttl_kg;
+            $populasi = $d->stok_awal;
+
+            $birdTotal = $d->death + $d->culling;
+            $weight_cum += empty($d->kg) ? 0 : $d->kg - ($d->pcs / 180);
+            // isi
+            $sheet1->setCellValue("A$kolom", date('Y-m-d', strtotime($d->tgl)))
+                ->setCellValue("B$kolom", $d->mgg)
+                ->setCellValue("C$kolom", $populasi - $kum)
+                ->setCellValue("D$kolom", $d->death ?? 0)
+                ->setCellValue("E$kolom", $d->culling ?? 0)
+                ->setCellValue("F$kolom", $birdTotal);
+            $death = $d->death ?? 0;
+            $culling = $d->culling ?? 0;
+            $pop = $populasi  ?? 0;
+            $sheet1->setCellValue("G$kolom", ($birdTotal) > 0 && $pop > 0 ? round((($death + $culling) / $pop) * 100, 2) : 0)
+                ->setCellValue("H$kolom", $kum)
+                ->setCellValue("I$kolom", round($d->kg_pakan / 1000, 1))
+                ->setCellValue("J$kolom", round((round($d->kg_pakan / 1000, 1) / ($populasi - $kum)) * 1000, 2))
+                ->setCellValue("K$kolom", round($cum_kg, 2))
+                ->setCellValue("L$kolom", $d->normalPcs ?? 0)
+                ->setCellValue("M$kolom", $d->abnormalPcs ?? 0)
+                ->setCellValue("N$kolom", empty($d->normalPcs) ? 0 : round(($d->abnormalPcs / $d->normalPcs) * 100, 2) . "%")
+
+                ->setCellValue("O$kolom", $abnor + $normal)
+                ->setCellValue("P$kolom", $pop > 0 ? round((($abnor + $normal) / ($populasi - $kum)) * 100, 2) : 0)
+                ->setCellValue("Q$kolom", $cum_ttlpcs);
+            $ttlPcs = $d->normalPcs ?? 0 + $d->abnormalPcs ?? 0;
+            $weightKg = empty($d->kg) ? 0 : $d->kg - ($d->pcs / 180);
+            $kg_pakan = empty($d->kg_pakan) ? 0 : $d->kg_pakan / 1000;
+            $sheet1->setCellValue("R$kolom", round($weightKg, 2))
+                ->setCellValue("S$kolom", round($weight_cum, 2))
+                ->setCellValue("T$kolom", empty($weightKg) ? 0 : number_format((round($weightKg, 2) / ($abnor + $normal)) * 1000, 2))
+                // ->setCellValue("T$kolom", "=(R$kolom/O$kolom)*1000")
+                ->setCellValue("U$kolom", round($weightKg == 0 ? 0 : round($kg_pakan, 1)  / round($weightKg, 2), 2))
+                ->setCellValue("V$kolom", empty($weight_cum) ? '#N/A' : round(round($cum_kg, 2) / round($weight_cum, 2), 2))
+                ->setCellValue("W$kolom", $d->nm_vaksin)
+                ->setCellValue("X$kolom", $d->nama_obat)
+                ->setCellValue("Y$kolom", $d->nm_pakan);
+
+            $kolom++;
+        }
+
+
+        $sheet1->getStyle('A1:Y1')->applyFromArray($style2);
+        $sheet1->getStyle('A9:Y11')->applyFromArray($style2);
         $sheet1->getStyle('A3:B3')->applyFromArray($style3);
         $sheet1->getStyle('A5:B5')->applyFromArray($style3);
         $sheet1->getStyle('A7:B7')->applyFromArray($style3);
-        $sheet1->getStyle('A9:T11')->applyFromArray($style);
-        $sheet1->getStyle('A9:T9')->getAlignment()->setWrapText(true);
+        $sheet1->getStyle('A9:Y11')->applyFromArray($style);
+        $sheet1->getStyle('A9:Y9')->getAlignment()->setWrapText(true);
         $sheet1->getColumnDimension('B')->setWidth(10.64);
         $sheet1->getColumnDimension('D')->setWidth(8.36);
         $sheet1->getColumnDimension('F')->setWidth(9.82);
         $batas = $kolom - 1;
-        $sheet1->getStyle('A12:T' . $batas)->applyFromArray($style);
+        $sheet1->getStyle('A12:Y' . $batas)->applyFromArray($style);
         // end daily -----------------------------------------------
 
         // // obat pakan -----------------
