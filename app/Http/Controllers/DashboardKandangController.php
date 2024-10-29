@@ -1986,7 +1986,7 @@ class DashboardKandangController extends Controller
             ->setCellValue('H10', 'CUM')
             ->setCellValue('I10', 'Total pakan (Kg)')
             ->setCellValue('J10', 'Gr/ekor')
-            ->setCellValue('K10', 'Gttl Pakan')
+            ->setCellValue('K10', 'ttl Pakan')
             ->setCellValue('L10', 'Perhari')
 
             ->setCellValue('K11', 'Cum')
