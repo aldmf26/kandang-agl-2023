@@ -1950,9 +1950,14 @@ class DashboardKandangController extends Controller
                 GROUP BY a.tgl
         ) as g on g.tgl = a.tgl
         left join (
-                SELECT a.tgl, GROUP_CONCAT(b.nm_produk ORDER BY b.nm_produk SEPARATOR ', ') as nm_pakan
+                SELECT a.tgl, GROUP_CONCAT( 
+        CONCAT(b.nm_produk, ' : ', c.persen, ' %') 
+        ORDER BY b.nm_produk 
+        SEPARATOR ', '
+    ) AS nm_pakan
                 FROM stok_produk_perencanaan as a 
                 LEFT JOIN tb_produk_perencanaan as b ON b.id_produk = a.id_pakan
+                left join tb_pakan_perencanaan as c on c.id_kandang = a.id_kandang and c.tgl =  a.tgl and a.id_pakan = 	c.id_produk_pakan
                 WHERE b.kategori IN ('pakan') AND a.id_kandang = '$id_kandang'
                 GROUP BY a.tgl
         ) as h on h.tgl = a.tgl
