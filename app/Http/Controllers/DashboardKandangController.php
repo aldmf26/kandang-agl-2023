@@ -1879,6 +1879,7 @@ class DashboardKandangController extends Controller
             'alignment' => array(
                 'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
                 'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+                'wrapText' => true,
             ),
             'fill' => array(
                 'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
@@ -1905,6 +1906,14 @@ class DashboardKandangController extends Controller
                 'size' => 9,
                 'setBold' => true
             ),
+        );
+        $style4 = array(
+            'font' => array(
+                'size' => 9,
+            ),
+            'alignment' => array(
+                'wrapText' => true
+            )
         );
 
         // daily production
@@ -2108,6 +2117,9 @@ class DashboardKandangController extends Controller
         $sheet1->getColumnDimension('B')->setWidth(10.64);
         $sheet1->getColumnDimension('D')->setWidth(8.36);
         $sheet1->getColumnDimension('F')->setWidth(9.82);
+        $sheet1->getColumnDimension('X')->setWidth(27.9);
+        $sheet1->getColumnDimension('W')->setWidth(15.9);
+        $sheet1->getColumnDimension('Y')->setWidth(20.9);
         $batas = $kolom - 1;
         $sheet1->getStyle('A12:Y' . $batas)->applyFromArray($style);
         // end daily -----------------------------------------------
