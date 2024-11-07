@@ -2143,11 +2143,11 @@ class DashboardKandangController extends Controller
         LEFT JOIN (
             SELECT a.id_produk,SUM(b.debit) as debit FROM `tb_produk_perencanaan` as a
             LEFT JOIN jurnal as b ON a.id_produk = SUBSTRING_INDEX(RIGHT(b.ket, LENGTH(b.ket) - INSTR(b.ket, '-')), '-', -1)
-            WHERE a.kategori = 'pakan' AND b.debit != 0
+            WHERE a.kategori = 'obat_pakan' AND b.debit != 0
             GROUP BY a.id_produk
         ) AS d ON d.id_produk = a.id_produk
         left join stok_produk_perencanaan as z on z.id_pakan = a.id_produk and a.tgl = z.tgl and z.h_opname != 'Y' and z.id_kandang = '$id_kandang'
-        WHERE b.kategori = 'pakan' AND a.id_kandang = '$id_kandang' ORDER BY a.tgl ASC");
+        WHERE b.kategori = 'obat_pakan' AND a.id_kandang = '$id_kandang' ORDER BY a.tgl ASC");
 
         $knd =  DB::table('kandang')->where('id_kandang', $id_kandang)->first();
         // $response = Http::get("https://agrilaras.putrirembulan.com/kirim/vitamin_api?id=$knd->nm_kandang");
