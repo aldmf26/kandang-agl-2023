@@ -137,19 +137,9 @@
                             $kgTtl += empty($d->pcs) ? '0' : $d->kg - $d->pcs / 180;
                             $kg_kotor += empty($d->pcs) ? '0' : $d->kg;
                             $pcsTtl += $d->pcs;
-
-                            // $gr_butir += empty($d->pcs)
-                            //     ? '0'
-                            //     : (($d->kg - $d->pcs / 180) * 1000) / $d->pcs;
-
-                                if (empty($d->kg) || empty($d->pcs) || $d->pcs <= 0 || $d->kg <= 0) {
-    $gr_butir += 0;
-} elseif (($d->kg - $d->pcs / 180) <= 0) {
-    $gr_butir += 0; // Hasil negatif dianggap tidak valid
-} else {
-    $gr_butir += floatval(number_format((($d->kg - $d->pcs / 180) * 1000) / $d->pcs, 0));
-}
-
+                            $gr_butir += empty($d->pcs)
+                                ? '0'
+                                : number_format((($d->kg - $d->pcs / 180) * 1000) / $d->pcs, 0);
                             $kg_today += $d->kg - $d->pcs / 180 - ($d->kg_past - $d->pcs_past / 180);
                             $butir += $d->pcs - $d->pcs_past;
                             $dc_week += $d->mati_week + $d->jual_week;
