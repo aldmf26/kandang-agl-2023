@@ -25,7 +25,7 @@
     <x-theme.modal title="Tambah vaksin" size="modal-lg" idModal="tbh_vaksin">
         <div class="row">
             <div class="col-lg-3">
-                <div class="form-group">    
+                <div class="form-group">
                     <label for="">Tanggal</label>
                     <input value="{{ date('Y-m-d') }}" type="date" name="tgl" class="form-control">
                 </div>
@@ -47,7 +47,7 @@
                         <select name="id_kandang" class="form-control" id="">
                             <option value="">- Pilih Kandang -</option>
                             @foreach ($kandang as $d)
-                            <option value="{{ $d->id_kandang }}">{{ $d->nm_kandang }}</option>
+                                <option value="{{ $d->id_kandang }}">{{ $d->nm_kandang }}</option>
                             @endforeach
                         </select>
                     </td>

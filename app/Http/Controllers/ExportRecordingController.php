@@ -23,7 +23,7 @@ class ExportRecordingController extends Controller
         left join tb_produk_perencanaan as q on q.id_produk = o.id_pakan
         where q.kategori = 'pakan' and o.id_kandang ='$id_kandang'
         group by o.tgl , o.id_kandang
-        ) as o
+        ) as o 
         left join kandang as p on p.id_kandang = o.id_kandang
 
         left join (

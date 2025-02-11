@@ -176,7 +176,7 @@
                     <td align="center"
                         class="freeze-cell_td td_layer mgg {{ $d->mgg >= '85' ? 'text-danger fw-bold' : '' }}">
                         {{ $d->mgg }} <br> {{ $d->mgg_afkir }} <br>
-                        ({{ number_format(($d->mgg / $d->mgg_afkir) * 100, 0) }}%) <br>
+                        ({{ empty($d->mgg) ? 0 : number_format(($d->mgg / $d->mgg_afkir) * 100, 0) }}%) <br>
                     </td>
 
                     @php

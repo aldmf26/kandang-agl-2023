@@ -161,7 +161,6 @@ class ObatPakanController extends Controller
                 } else {
                     continue;
                 }
-
             }
             DB::commit();
             return redirect()->route('dashboard_kandang.print_opname', "PAKVITOPN-" . $no_nota)->with('sukses', 'Data berhasil di simpan');

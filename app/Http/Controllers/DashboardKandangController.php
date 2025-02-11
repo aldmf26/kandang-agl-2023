@@ -65,8 +65,8 @@ class DashboardKandangController extends Controller
             w.mati_week,
             w.jual_week,
             b.pop_kurang,
-            h.kg,
-            h.pcs,
+            round(h.kg,0) as kg,
+            round(h.pcs,0) as pcs,
             n.kuml_rp_vitamin,
             s.kum_ttl_rp_vaksin,
             i.pcs_past,
@@ -89,7 +89,7 @@ class DashboardKandangController extends Controller
                 GROUP by a.id_kandang
             ) as aa on aa.id_kandang = a.id_kandang
 
-            left join (SELECT h.id_kandang , sum(h.pcs) as pcs, sum(h.kg) as kg FROM stok_telur as h  where h.tgl = '$tgl' group by h.id_kandang) as h on h.id_kandang = a.id_kandang
+            left join (SELECT h.id_kandang , sum(round(h.pcs,0)) as pcs, sum(round(h.kg,0)) as kg FROM stok_telur as h  where h.tgl = '$tgl' group by h.id_kandang) as h on h.id_kandang = a.id_kandang
 
             left join (SELECT h.id_kandang , sum(h.pcs) as pcs_past, sum(h.kg) as kg_past FROM stok_telur as h  where h.tgl = '$tgl_kemarin' group by h.id_kandang) as i on i.id_kandang = a.id_kandang
 
@@ -252,8 +252,13 @@ class DashboardKandangController extends Controller
     public function tambah_populasi(Request $r)
     {
         $jual = 0;
+        $cost_ayam = 0;
         for ($x = 0; $x < count($r->id_kandang); $x++) {
             DB::table('populasi')->where([['id_kandang', $r->id_kandang[$x]], ['tgl', $r->tgl[$x]]])->delete();
+            $kandang = DB::table('kandang')->where('id_kandang', $r->id_kandang[$x])->first();
+
+            $cost = $kandang->rupiah / $kandang->stok_awal;
+
             DB::table('populasi')->insert([
                 'id_kandang' => $r->id_kandang[$x],
                 'mati' => $r->mati[$x],
@@ -265,7 +270,35 @@ class DashboardKandangController extends Controller
             $pesan = $r->mati[$x] > 3 ? 'error' : 'sukses';
             $jual += $r->jual[$x] + $r->afkir[$x];
             $tgl = $r->tgl[$x];
+
+            $cost_ayam += ($r->mati[$x] + $r->afkir[$x] + $r->jual[$x]) * $cost;
         }
+
+        DB::table('jurnal')->where('no_nota', 'PPL-' . date('Ymd'))->delete();
+
+        $jurnal_debit = [
+            'tgl' => $tgl,
+            'id_akun' => 108,
+            'debit' => $cost_ayam,
+            'kredit' => 0,
+            'no_nota' => 'PPL-' . date('Ymd'),
+            'id_buku' => 4,
+            'ket' => 'Penyesuaian Ayam',
+            'admin' => auth()->user()->name
+        ];
+        DB::table('jurnal')->insert($jurnal_debit);
+        $jurnal_kredit = [
+            'tgl' => $tgl,
+            'id_akun' => 107,
+            'debit' => 0,
+            'kredit' => $cost_ayam,
+            'no_nota' => 'PPL-' . date('Ymd'),
+            'id_buku' => 4,
+            'ket' => 'Penyesuaian Ayam',
+            'admin' => auth()->user()->name
+        ];
+        DB::table('jurnal')->insert($jurnal_kredit);
+
         DB::table('stok_ayam')->where([['id_gudang', 1], ['tgl', $tgl], ['transfer',  'T']])->delete();
         DB::table('stok_ayam')->insert([
             'tgl' => $tgl,

@@ -66,7 +66,6 @@ Route::middleware('auth')->group(function () {
         Route::get('/kandang', 'kandang')->name('kandang');
     });
 
-
     Route::controller(JurnalController::class)->group(function () {
         Route::get('/jurnal', 'index')->name('jurnal');
         Route::post('/jurnal-update', 'update')->name('jurnal.update');
