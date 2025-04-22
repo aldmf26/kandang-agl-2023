@@ -1692,7 +1692,7 @@ class DashboardKandangController extends Controller
             WHERE a.kategori = '$jenis' AND b.debit != 0
             GROUP BY a.id_produk
         ) AS d ON d.id_produk = a.id_produk
-        left join stok_produk_perencanaan as z on z.id_pakan = a.id_produk and a.tgl = z.tgl and z.h_opname != 'Y' and z.id_kandang = '$id_kandang'
+        left join stok_produk_perencanaan as z on z.id_pakan = a.id_produk and a.tgl = z.tgl and z.h_opname != 'Y' and z.id_kandang = '$id_kandang' and z.pcs_kredit != '0'
         WHERE b.kategori = '$jenis' AND a.id_kandang = '$id_kandang' ORDER BY a.tgl ASC;");
     }
 
@@ -2179,7 +2179,7 @@ class DashboardKandangController extends Controller
             WHERE a.kategori = 'obat_pakan' AND b.debit != 0
             GROUP BY a.id_produk
         ) AS d ON d.id_produk = a.id_produk
-        left join stok_produk_perencanaan as z on z.id_pakan = a.id_produk and a.tgl = z.tgl and z.h_opname != 'Y' and z.id_kandang = '$id_kandang'
+        left join stok_produk_perencanaan as z on z.id_pakan = a.id_produk and a.tgl = z.tgl and z.h_opname != 'Y' and z.id_kandang = '$id_kandang' and z.pcs_kredit != '0'
         WHERE b.kategori = 'obat_pakan' AND a.id_kandang = '$id_kandang' ORDER BY a.tgl ASC");
 
         $knd =  DB::table('kandang')->where('id_kandang', $id_kandang)->first();
