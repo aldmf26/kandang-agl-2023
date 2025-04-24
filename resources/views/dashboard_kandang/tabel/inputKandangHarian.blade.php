@@ -40,7 +40,7 @@
                 <a href="{{ route('dashboard_kandang.export_perencanaan') }}" class="text-white dropdown-item hoverbtn"
                     href="#"> Perencanaan</a>
                 <a data-bs-toggle="modal" data-bs-target="#export_vitamin_accurate" href="#"
-                    class="text-white dropdown-item hoverbtn" href="#"> export vitamin import accurate</a>
+                    class="text-white dropdown-item hoverbtn" href="#"> export import accurate</a>
                 {{-- <a data-bs-toggle="modal" data-bs-target="#week_layer" class="text-white dropdown-item hoverbtn"
                     href="#"> Week Layer</a> --}}
             </div>
@@ -616,6 +616,7 @@
                         <option value="">- Pilih Produk -</option>
                         <option value="pakan">- Pakan -</option>
                         <option value="vitamin">- Obat & Vitamin -</option>
+                        <option value="telur">- Telur -</option>
 
                     </select>
                 </div>

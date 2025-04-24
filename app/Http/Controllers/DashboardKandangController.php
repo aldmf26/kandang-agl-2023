@@ -2755,16 +2755,67 @@ class DashboardKandangController extends Controller
 
         if ($r->id_produk == 'pakan') {
             $kategori = "'pakan'";
-        } else {
+        } elseif ($r->id_produk == 'vitamin') {
             $kategori = "'obat_pakan','obat_air'";
         }
-        $produk  = DB::select(" SELECT c.nm_kandang,  b.nm_produk, b.kode_accurate, sum(a.pcs_kredit) as qty , d.nm_satuan
+        if ($r->id_produk == 'pakan' || $r->id_produk == 'vitamin') {
+            $produk  = DB::select(" SELECT c.nm_kandang,  b.nm_produk, b.kode_accurate, sum(a.pcs_kredit) as qty , d.nm_satuan
         FROM stok_produk_perencanaan as a
         left join tb_produk_perencanaan as b on b.id_produk = a.id_pakan
         left join kandang as c on c.id_kandang = a.id_kandang
         left join tb_satuan as d on d.id_satuan = b.dosis_satuan
         where a.tgl = '$r->tgl' and b.kategori in ($kategori) and a.pcs_kredit != '0' and a.id_kandang = '$r->id_kandang'
         GROUP by a.id_kandang, a.id_pakan;");
+        } else {
+            $produk = DB::select("SELECT 
+    CONCAT('Telur ', b.nm_telur, '*') AS nm_produk,
+    CASE b.nm_telur
+        WHEN 'Utuh' THEN 'T-011'
+        WHEN 'Pecah' THEN 'T-012'
+        WHEN 'Tipis' THEN 'T-013'
+        WHEN 'Pupuk' THEN 'T-014'
+        WHEN 'K2 & XL' THEN 'T-015'
+        ELSE 'T'
+    END AS kode_accurate,
+    'Pcs' as nm_satuan,
+    a.pcs as qty,
+    'Martadah' as Gudang,
+    'Pengurangan' as Tipe
+FROM 
+    stok_telur AS a
+LEFT JOIN 
+    telur_produk AS b ON b.id_produk_telur = a.id_telur
+WHERE 
+    a.id_kandang = '$r->id_kandang' 
+    AND a.tgl = '$r->tgl' and b.id_produk_telur != '3'
+    
+UNION ALL 
+
+SELECT 
+    CONCAT('Telur ', b.nm_telur) AS nm_produk,
+    CASE b.nm_telur
+        WHEN 'Utuh' THEN 'T-002'
+        WHEN 'Pecah' THEN 'T-004'
+        WHEN 'Tipis' THEN 'T-006'
+        WHEN 'Pupuk' THEN 'T-008'
+        WHEN 'K2 & XL' THEN 'T-010'
+        ELSE 'T'
+    END AS kode_accurate,
+    'Kg' as nm_satuan,
+    a.kg as qty,
+    'Martadah' as Gudang,
+    'Pengurangan' as Tipe
+FROM 
+    stok_telur AS a
+LEFT JOIN 
+    telur_produk AS b ON b.id_produk_telur = a.id_telur
+WHERE 
+    a.id_kandang = '$r->id_kandang' 
+    AND a.tgl = '$r->tgl' and b.id_produk_telur != '3'
+    
+    order by nm_produk ASC");
+        }
+
 
         $kandang = DB::table('kandang')->where('id_kandang', $r->id_kandang)->first();
         $spreadsheet = new Spreadsheet;
@@ -2799,8 +2850,8 @@ class DashboardKandangController extends Controller
         foreach ($produk as $i => $p) {
             $sheet->setCellValue("A$kolom", $p->nm_produk)
                 ->setCellValue("B$kolom", $p->kode_accurate)
-                ->setCellValue("C$kolom", $p->qty)
-                ->setCellValue("D$kolom", $p->nm_satuan)
+                ->setCellValue("C$kolom", $p->nm_satuan)
+                ->setCellValue("D$kolom", $p->qty)
                 ->setCellValue("E$kolom", "Martadah")
                 ->setCellValue("F$kolom", "Pengurangan");
             $kolom++;
@@ -2815,7 +2866,7 @@ class DashboardKandangController extends Controller
         $writer = new Xlsx($spreadsheet);
 
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header('Content-Disposition: attachment;filename="Obat Perancanaan Kandang ' . $kandang->nm_kandang . '".xlsx"');
+        header('Content-Disposition: attachment;filename="Export ' . $r->id_produk . ' ' . $kandang->nm_kandang . '".xlsx"');
         header('Cache-Control: max-age=0');
 
         $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, 'Xlsx');
