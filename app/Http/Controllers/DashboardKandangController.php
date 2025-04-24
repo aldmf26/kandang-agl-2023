@@ -2749,4 +2749,77 @@ class DashboardKandangController extends Controller
 
         return view('dashboard_kandang.perencanaan.print_perencanaan', $data);
     }
+
+    public function export_vitamin_accurate(Request $r)
+    {
+
+        if ($r->id_produk == 'pakan') {
+            $kategori = "'pakan'";
+        } else {
+            $kategori = "'obat_pakan','obat_air'";
+        }
+        $produk  = DB::select(" SELECT c.nm_kandang,  b.nm_produk, b.kode_accurate, sum(a.pcs_kredit) as qty , d.nm_satuan
+        FROM stok_produk_perencanaan as a
+        left join tb_produk_perencanaan as b on b.id_produk = a.id_pakan
+        left join kandang as c on c.id_kandang = a.id_kandang
+        left join tb_satuan as d on d.id_satuan = b.dosis_satuan
+        where a.tgl = '$r->tgl' and b.kategori in ($kategori) and a.pcs_kredit != '0' and a.id_kandang = '$r->id_kandang'
+        GROUP by a.id_kandang, a.id_pakan;");
+
+        $kandang = DB::table('kandang')->where('id_kandang', $r->id_kandang)->first();
+        $spreadsheet = new Spreadsheet;
+
+        $spreadsheet->setActiveSheetIndex(0);
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $style = array(
+            'font' => array(
+                'size' => 9
+            ),
+            'borders' => array(
+                'allBorders' => array(
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                ),
+            ),
+            'alignment' => array(
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+            ),
+        );
+
+        // pakan
+        $sheet
+            ->setCellValue('A1', 'Nama Barang')
+            ->setCellValue('B1', 'Kode')
+            ->setCellValue('C1', 'Unit')
+            ->setCellValue('D1', 'Kuantitas')
+            ->setCellValue('E1', 'Gudang')
+            ->setCellValue('F1', 'Tipe Penyusuaian');
+        $kolom = 2;
+        foreach ($produk as $i => $p) {
+            $sheet->setCellValue("A$kolom", $p->nm_produk)
+                ->setCellValue("B$kolom", $p->kode_accurate)
+                ->setCellValue("C$kolom", $p->qty)
+                ->setCellValue("D$kolom", $p->nm_satuan)
+                ->setCellValue("E$kolom", "Martadah")
+                ->setCellValue("F$kolom", "Pengurangan");
+            $kolom++;
+        }
+        $batas = $kolom - 1;
+        $sheet->getStyle("A1:F$batas")->applyFromArray($style);
+
+        // obat pakan
+
+
+
+        $writer = new Xlsx($spreadsheet);
+
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="Obat Perancanaan Kandang ' . $kandang->nm_kandang . '".xlsx"');
+        header('Cache-Control: max-age=0');
+
+        $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, 'Xlsx');
+        $writer->save('php://output');
+        exit();
+    }
 }

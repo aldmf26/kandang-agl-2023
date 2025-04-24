@@ -39,6 +39,8 @@
                     href="#"> Commercial Layer</a>
                 <a href="{{ route('dashboard_kandang.export_perencanaan') }}" class="text-white dropdown-item hoverbtn"
                     href="#"> Perencanaan</a>
+                <a data-bs-toggle="modal" data-bs-target="#export_vitamin_accurate" href="#"
+                    class="text-white dropdown-item hoverbtn" href="#"> export vitamin import accurate</a>
                 {{-- <a data-bs-toggle="modal" data-bs-target="#week_layer" class="text-white dropdown-item hoverbtn"
                     href="#"> Week Layer</a> --}}
             </div>
@@ -580,6 +582,45 @@
                     @endforeach
                 </select>
             </div>
+        </div>
+    </x-theme.modal>
+</form>
+<form action="{{ route('dashboard_kandang.export_vitamin_accurate') }}" method="get">
+    @csrf
+    <x-theme.modal title="Export Vitamin Accurate" idModal="export_vitamin_accurate">
+        <div class="row">
+            <div class="col-lg-12">
+
+                <div class="form-group">
+                    <label for="">Tanggal</label>
+                    <input type="date" name="tgl" class="form-control">
+                </div>
+            </div>
+            <div class="col-lg-6">
+
+                <div class="form-group">
+                    <label for="">Kandang</label>
+                    <select name="id_kandang" class="form-control" id="">
+                        <option value="">- Pilih Kandang -</option>
+                        @foreach ($kandang as $kd)
+                            <option value="{{ $kd->id_kandang }}">{{ $kd->nm_kandang }}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+            <div class="col-lg-6">
+
+                <div class="form-group">
+                    <label for="">Produk</label>
+                    <select name="id_produk" class="form-control" id="">
+                        <option value="">- Pilih Produk -</option>
+                        <option value="pakan">- Pakan -</option>
+                        <option value="vitamin">- Obat & Vitamin -</option>
+
+                    </select>
+                </div>
+            </div>
+
         </div>
     </x-theme.modal>
 </form>
