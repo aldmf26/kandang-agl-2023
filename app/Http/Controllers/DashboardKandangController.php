@@ -2775,6 +2775,7 @@ class DashboardKandangController extends Controller
         WHEN 'Tipis' THEN 'T-013'
         WHEN 'Pupuk' THEN 'T-014'
         WHEN 'K2 & XL' THEN 'T-015'
+        WHEN 'Ceplok' THEN 'T-016'
         ELSE 'T'
     END AS kode_accurate,
     'Pcs' as nm_satuan,
@@ -2799,6 +2800,7 @@ SELECT
         WHEN 'Tipis' THEN 'T-006'
         WHEN 'Pupuk' THEN 'T-008'
         WHEN 'K2 & XL' THEN 'T-010'
+        WHEN 'Ceplok' THEN 'T-017'
         ELSE 'T'
     END AS kode_accurate,
     'Kg' as nm_satuan,
