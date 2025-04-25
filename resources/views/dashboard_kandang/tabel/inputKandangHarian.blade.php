@@ -616,7 +616,7 @@
                         <option value="">- Pilih Produk -</option>
                         <option value="pakan">- Pakan -</option>
                         <option value="vitamin">- Obat & Vitamin -</option>
-                        <option value="telur">- Telur -</option>
+                        {{-- <option value="telur">- Telur -</option> --}}
 
                     </select>
                 </div>
