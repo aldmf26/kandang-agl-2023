@@ -2788,7 +2788,7 @@ LEFT JOIN
     telur_produk AS b ON b.id_produk_telur = a.id_telur
 WHERE 
     a.id_kandang = '$r->id_kandang' 
-    AND a.tgl = '$r->tgl' and b.id_produk_telur != '3' and (a.pcs + a.gr) != '0'
+    AND a.tgl = '$r->tgl' and b.id_produk_telur != '3' and (a.pcs + a.kg) != '0'
     
 UNION ALL 
 
@@ -2813,7 +2813,7 @@ LEFT JOIN
     telur_produk AS b ON b.id_produk_telur = a.id_telur
 WHERE 
     a.id_kandang = '$r->id_kandang' 
-    AND a.tgl = '$r->tgl' and b.id_produk_telur != '3' and (a.pcs + a.gr) != '0' 
+    AND a.tgl = '$r->tgl' and b.id_produk_telur != '3' and (a.pcs + a.kg) != '0' 
     
     order by nm_produk ASC");
         }
