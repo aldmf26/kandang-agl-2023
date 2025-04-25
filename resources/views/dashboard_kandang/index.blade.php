@@ -31,8 +31,8 @@
                     - Out</a>
                 <a href="{{ route('data_chickin.index') }}" class="me-2 btn btn-sm btn-primary float-end">Laporan Chick
                     In - Out</a>
-                <a href="https://ternak.ptagafood.com/produk_telur" class="me-2 btn btn-sm btn-primary float-end">Link
-                    Dashboard</a>
+                {{-- <a href="https://ternak.ptagafood.com/produk_telur" class="me-2 btn btn-sm btn-primary float-end">Link
+                    Dashboard</a> --}}
 
             </div>
         </div>
