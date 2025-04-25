@@ -2847,7 +2847,7 @@ WHERE
             ->setCellValue('C1', 'Unit')
             ->setCellValue('D1', 'Kuantitas')
             ->setCellValue('E1', 'Gudang')
-            ->setCellValue('F1', 'Tipe Penyusuaian');
+            ->setCellValue('F1', 'Tipe Penyesuaian');
         $kolom = 2;
         foreach ($produk as $i => $p) {
             $sheet->setCellValue("A$kolom", $p->nm_produk)
