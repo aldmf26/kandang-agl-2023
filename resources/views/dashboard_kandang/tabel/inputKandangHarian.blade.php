@@ -71,7 +71,7 @@
                 </th>
                 <th style="background-color: {{ $bgZona }} !important" colspan="3" class="text-center  putih">
                     Populasi</th>
-                <th colspan="9" class="text-center abu"> Telur </th>
+                <th colspan="10" class="text-center abu"> Telur </th>
                 <th style="background-color: {{ $bgZona }} !important" colspan="4" class="text-center putih">
                     pakan</th>
                 <th width="2%" class="text-center dhead" rowspan="2">Aksi</th>
