@@ -2855,7 +2855,7 @@ WHERE
                 ->setCellValue("C$kolom", $p->nm_satuan)
                 ->setCellValue("D$kolom", $p->qty)
                 ->setCellValue("E$kolom", "Martadah")
-                ->setCellValue("F$kolom", "Pengurangan");
+                ->setCellValue("F$kolom", $r->id_produk  == 'telur' ? 'Penambahan' : 'Pengurangan');
             $kolom++;
         }
         $batas = $kolom - 1;
