@@ -2802,7 +2802,7 @@ class DashboardKandangController extends Controller
             ELSE 'T'
         END AS kode_accurate,
         'Kg' as nm_satuan,
-        round((a.kg - (a.pcs / 180),1)  as qty,
+        (a.kg - (a.pcs / 180)  as qty,
         'Martadah' as Gudang,
         'Pengurangan' as Tipe
     FROM 
@@ -2861,7 +2861,7 @@ class DashboardKandangController extends Controller
                 $sheet->setCellValue("A$kolom", $p->nm_produk)
                     ->setCellValue("B$kolom", $p->kode_accurate)
                     ->setCellValue("C$kolom", $p->nm_satuan)
-                    ->setCellValue("D$kolom", $p->qty)
+                    ->setCellValue("D$kolom", round($p->qty, 1))
                     ->setCellValue("E$kolom", "Martadah")
                     ->setCellValue("F$kolom",  'Penambahan');
                 $kolom++;
