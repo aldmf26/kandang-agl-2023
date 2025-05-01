@@ -2802,7 +2802,7 @@ class DashboardKandangController extends Controller
             ELSE 'T'
         END AS kode_accurate,
         'Kg' as nm_satuan,
-        (a.kg - (a.pcs / 180))  as qty,
+        round((a.kg - (a.pcs / 180),1)  as qty,
         'Martadah' as Gudang,
         'Pengurangan' as Tipe
     FROM 
