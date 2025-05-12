@@ -41,6 +41,8 @@
                     href="#"> Perencanaan</a>
                 <a data-bs-toggle="modal" data-bs-target="#export_vitamin_accurate" href="#"
                     class="text-white dropdown-item hoverbtn" href="#"> export import accurate</a>
+                <a data-bs-toggle="modal" data-bs-target="#export_penjualan_accurate" href="#"
+                    class="text-white dropdown-item hoverbtn" href="#"> export penjualan accurate</a>
                 {{-- <a data-bs-toggle="modal" data-bs-target="#week_layer" class="text-white dropdown-item hoverbtn"
                     href="#"> Week Layer</a> --}}
             </div>
@@ -622,6 +624,19 @@
                 </div>
             </div>
 
+        </div>
+    </x-theme.modal>
+</form>
+<form action="{{ route('dashboard_kandang.export_penjualan_accurate') }}" method="get">
+    @csrf
+    <x-theme.modal title="Export Penjualan Accurate" idModal="export_penjualan_accurate">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="form-group">
+                    <label for="">Tanggal</label>
+                    <input type="date" name="tgl" class="form-control">
+                </div>
+            </div>
         </div>
     </x-theme.modal>
 </form>

@@ -1951,7 +1951,7 @@ class DashboardKandangController extends Controller
         // daily production
         $pullet = DB::select("SELECT a.tgl, populasi.mati as pop_mati,populasi.jual as pop_jual, b.stok_awal, SUM(a.gr) as kg_pakan, 
         CEIL(DATEDIFF(a.tgl, b.chick_in) / 7) AS mgg,
-        c.mati as death, c.jual as culling, normal.normalPcs, normal.normalKg, abnormal.abnormalPcs, abnormal.abnormalKg, d.pcs,d.kg, sum(d.pcs) as ttl_pcs, SUM(d.kg) as ttl_kg, b.chick_in as ayam_awal, g.nama_obat, h.nm_pakan, i.nm_vaksin
+        c.mati as death, c.jual as culling, c.afkir, normal.normalPcs, normal.normalKg, abnormal.abnormalPcs, abnormal.abnormalKg, d.pcs,d.kg, sum(d.pcs) as ttl_pcs, SUM(d.kg) as ttl_kg, b.chick_in as ayam_awal, g.nama_obat, h.nm_pakan, i.nm_vaksin
         FROM tb_pakan_perencanaan as a
         LEFT JOIN kandang as b ON a.id_kandang = b.id_kandang
         LEFT JOIN populasi as c ON c.id_kandang = a.id_kandang AND c.tgl = a.tgl
@@ -2097,25 +2097,26 @@ class DashboardKandangController extends Controller
 
 
 
-            $kum += $d->death + $d->culling;
+            $kum += $d->death + $d->culling + $d->afkir;
             $cum_kg += $d->kg_pakan / 1000;
             $cum_ttlpcs += $normal + $abnor;
             $cum_ttlkg += $d->ttl_kg;
             $populasi = $d->stok_awal;
 
-            $birdTotal = $d->death + $d->culling;
+            $birdTotal = $d->death + $d->culling + $d->afkir;
             $weight_cum += empty($d->kg) ? 0 : $d->kg - ($d->pcs / 180);
             // isi
             $sheet1->setCellValue("A$kolom", date('Y-m-d', strtotime($d->tgl)))
                 ->setCellValue("B$kolom", $d->mgg)
                 ->setCellValue("C$kolom", $populasi - $kum)
                 ->setCellValue("D$kolom", $d->death ?? 0)
-                ->setCellValue("E$kolom", $d->culling ?? 0)
+                ->setCellValue("E$kolom", $d->culling ?? 0 + $d->afkir ?? 0)
                 ->setCellValue("F$kolom", $birdTotal);
             $death = $d->death ?? 0;
             $culling = $d->culling ?? 0;
+            $afkir = $d->afkir ?? 0;
             $pop = $populasi  ?? 0;
-            $sheet1->setCellValue("G$kolom", ($birdTotal) > 0 && $pop > 0 ? round((($death + $culling) / $pop) * 100, 2) : 0)
+            $sheet1->setCellValue("G$kolom", ($birdTotal) > 0 && $pop > 0 ? round((($death + $culling + $afkir) / $pop) * 100, 2) : 0)
                 ->setCellValue("H$kolom", $kum)
                 ->setCellValue("I$kolom", round($d->kg_pakan / 1000, 1))
                 ->setCellValue("J$kolom", round((round($d->kg_pakan / 1000, 1) / ($populasi - $kum)) * 1000, 2))
@@ -2880,6 +2881,189 @@ class DashboardKandangController extends Controller
 
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         header('Content-Disposition: attachment;filename="Export ' . $r->id_produk . ' ' . $kandang->nm_kandang . '".xlsx"');
+        header('Cache-Control: max-age=0');
+
+        $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, 'Xlsx');
+        $writer->save('php://output');
+        exit();
+    }
+    public function export_penjualan_accurate(Request $r)
+    {
+
+        $spreadsheet = new Spreadsheet;
+
+        $spreadsheet->setActiveSheetIndex(0);
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $style = array(
+            'font' => array(
+                'size' => 14,
+                'bold' => true,
+                'color' => array(
+                    'rgb' => 'FFFFFF' // Warna teks putih
+                ),
+            ),
+            'borders' => array(
+                'allBorders' => array(
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                ),
+            ),
+            'alignment' => array(
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+            ),
+            'fill' => array(
+                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                'startColor' => array(
+                    'rgb' => '008000' // Kode warna hex untuk kuning
+                ),
+            ),
+        );
+        $styleItem = array(
+            'font' => array(
+                'size' => 14,
+                'bold' => true,
+                'color' => array(
+                    'rgb' => 'FFFFFF' // Warna teks putih
+                ),
+            ),
+            'borders' => array(
+                'allBorders' => array(
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                ),
+            ),
+            'alignment' => array(
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+            ),
+            'fill' => array(
+                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                'startColor' => array(
+                    'rgb' => '4F81BD' // Kode warna hex untuk kuning
+                ),
+            ),
+        );
+        $styleExpanse = array(
+            'font' => array(
+                'size' => 14,
+                'bold' => true,
+                'color' => array(
+                    'rgb' => 'FFFFFF' // Warna teks putih
+                ),
+            ),
+            'borders' => array(
+                'allBorders' => array(
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                ),
+            ),
+            'alignment' => array(
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+            ),
+            'fill' => array(
+                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                'startColor' => array(
+                    'rgb' => 'FF6600' // Kode warna hex untuk kuning
+                ),
+            ),
+        );
+
+        $styleHead = array(
+            'font' => array(
+                'size' => 14,
+                'color' => array(
+                    'rgb' => 'FFFFFF' // Warna teks putih
+                ),
+            ),
+            'borders' => array(
+                'allBorders' => array(
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                ),
+            ),
+            'alignment' => array(
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+            ),
+            'fill' => array(
+                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                'startColor' => array(
+                    'rgb' => '008000' // Kode warna hex untuk kuning
+                ),
+            ),
+        );
+
+        // pakan
+        $sheet
+            ->setCellValue('A1', 'HEADER')
+            ->setCellValue('B1', 'No Faktur')
+            ->setCellValue('C1', 'Tgl Faktur')
+            ->setCellValue('D1', 'No Pelanggan')
+            ->setCellValue('E1', 'Alamat Faktur')
+            ->setCellValue('F1', 'Kena PPN')
+            ->setCellValue('G1', 'Total Termasuk PPN')
+            ->setCellValue('H1', 'Nomor Faktur Pajak')
+            ->setCellValue('I1', 'Faktur Dimuka')
+            ->setCellValue('J1', 'Diskon Faktur (%)')
+            ->setCellValue('K1', 'Diskon Faktur (Rp)')
+            ->setCellValue('L1', 'Keterangan');
+
+        $sheet->getStyle("A1:L1")->applyFromArray($style);
+        $sheet
+            ->setCellValue('A2', 'ITEM')
+            ->setCellValue('B2', 'Kode Barang')
+            ->setCellValue('C2', 'Nama Barang')
+            ->setCellValue('D2', 'Kuantitas')
+            ->setCellValue('E2', 'Satuan')
+            ->setCellValue('F2', 'Harga Satuan')
+            ->setCellValue('G2', 'Diskon Barang (%)')
+            ->setCellValue('H2', 'Diskon Barang (Rp)')
+            ->setCellValue('I2', 'Catatan Barang')
+            ->setCellValue('J2', 'Nama Gudang')
+            ->setCellValue('K2', 'ID Salesman')
+            ->setCellValue('L2', 'Nama Dept Barang');
+        $sheet->getStyle("A2:L2")->applyFromArray($styleItem);
+        $sheet
+            ->setCellValue('A3', 'EXPENSE')
+            ->setCellValue('B3', 'No Biaya')
+            ->setCellValue('C3', 'Nama Biaya')
+            ->setCellValue('D3', 'Nilai Biaya')
+            ->setCellValue('E3', 'Catatan Biaya')
+            ->setCellValue('F3', 'Nama Dept Biaya')
+            ->setCellValue('G3', 'No Proyek Biaya')
+            ->setCellValue('H3', 'Kategori Keuangan 1')
+            ->setCellValue('I3', 'Kategori Keuangan 2')
+            ->setCellValue('J3', 'Kategori Keuangan 3')
+            ->setCellValue('K3', 'Kategori Keuangan 4')
+            ->setCellValue('L3', 'Kategori Keuangan 5');
+        $sheet->getStyle("A3:L3")->applyFromArray($styleExpanse);
+
+        $head = DB::select("SELECT a.tgl FROM invoice_telur as a where a.lokasi = 'mtd' and a.tgl = '$r->tgl' 
+        group by a.no_nota");
+
+        $kolom = 4;
+        foreach ($head as $i => $p) {
+            $sheet->setCellValue("A$kolom", 'HEADER');
+            $sheet->setCellValue("B$kolom", '');
+            $sheet->setCellValue("C$kolom", $p->tgl);
+            $sheet->setCellValue("D$kolom", '');
+            $sheet->setCellValue("E$kolom", '');
+            $sheet->setCellValue("F$kolom", 'Tidak');
+            $sheet->setCellValue("G$kolom", 'Tidak');
+            $sheet->setCellValue("H$kolom", '');
+            $sheet->setCellValue("I$kolom", 'Tidak');
+            $sheet->setCellValue("J$kolom", '');
+            $sheet->setCellValue("K$kolom", '');
+            $sheet->setCellValue("L$kolom", 'PENJUALAN TELUR');
+            $sheet->getStyle("A4:L$kolom")->applyFromArray($styleHead);
+            $kolom++;
+        }
+
+
+
+        $writer = new Xlsx($spreadsheet);
+
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="Export Penjualan.xlsx"');
         header('Cache-Control: max-age=0');
 
         $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, 'Xlsx');
