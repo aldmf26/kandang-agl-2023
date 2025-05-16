@@ -194,7 +194,7 @@ class PenjualanController extends Controller
                 'pcs_kredit' => $r->pcs[$x],
                 'kg_kredit' => $r->kg[$x],
                 'admin' => Auth::user()->name,
-                'id_gudang' => '2',
+                'id_gudang' => '1',
                 'check' => 'Y',
                 'nota_transfer' => 'TM' . $nota_t,
             ];
@@ -328,7 +328,7 @@ class PenjualanController extends Controller
                 'pcs_kredit' => $r->pcs[$x],
                 'kg_kredit' => $r->kg[$x],
                 'admin' => Auth::user()->name,
-                'id_gudang' => '2',
+                'id_gudang' => '1',
                 'check' => 'Y',
                 'nota_transfer' => $r->no_nota,
             ];
