@@ -3140,20 +3140,23 @@ class DashboardKandangController extends Controller
 
             $barisItem2 = $kolom;
             $rak_telur = DB::table('rak_telur_penjualan')->where('no_nota', $p->no_nota)->where('pcs', '!=', '0')->first();
-            $sheet->setCellValue("A$barisItem2", 'ITEM');
-            $sheet->setCellValue("B$barisItem2", 'R-001');
-            $sheet->setCellValue("C$barisItem2", 'Rak Telur');
-            $sheet->setCellValue("D$barisItem2", $rak_telur->pcs);
-            $sheet->setCellValue("E$barisItem2", 'Pcs');
-            $sheet->setCellValue("F$barisItem2", 0);
-            $sheet->setCellValue("G$barisItem2", '');
-            $sheet->setCellValue("H$barisItem2", '');
-            $sheet->setCellValue("I$barisItem2", '');
-            $sheet->setCellValue("J$barisItem2", 'Martadah');
-            $sheet->setCellValue("K$barisItem2", '');
-            $sheet->setCellValue("L$barisItem2", '');
-            $sheet->getStyle("A$barisItem2:L$barisItem2")->applyFromArray($styleItem2);
-            $kolom++;
+            if (empty($rak_telur->pcs)) {
+            } else {
+                $sheet->setCellValue("A$barisItem2", 'ITEM');
+                $sheet->setCellValue("B$barisItem2", 'R-001');
+                $sheet->setCellValue("C$barisItem2", 'Rak Telur');
+                $sheet->setCellValue("D$barisItem2", $rak_telur->pcs);
+                $sheet->setCellValue("E$barisItem2", 'Pcs');
+                $sheet->setCellValue("F$barisItem2", 0);
+                $sheet->setCellValue("G$barisItem2", '');
+                $sheet->setCellValue("H$barisItem2", '');
+                $sheet->setCellValue("I$barisItem2", '');
+                $sheet->setCellValue("J$barisItem2", 'Martadah');
+                $sheet->setCellValue("K$barisItem2", '');
+                $sheet->setCellValue("L$barisItem2", '');
+                $sheet->getStyle("A$barisItem2:L$barisItem2")->applyFromArray($styleItem2);
+                $kolom++;
+            }
         }
 
         $writer = new Xlsx($spreadsheet);
