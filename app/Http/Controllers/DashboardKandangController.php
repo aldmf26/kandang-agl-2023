@@ -2991,6 +2991,29 @@ class DashboardKandangController extends Controller
                 ),
             ),
         );
+        $styleItem2 = array(
+            'font' => array(
+                'size' => 14,
+                'color' => array(
+                    'rgb' => 'FFFFFF' // Warna teks putih
+                ),
+            ),
+            'borders' => array(
+                'allBorders' => array(
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                ),
+            ),
+            'alignment' => array(
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+            ),
+            'fill' => array(
+                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                'startColor' => array(
+                    'rgb' => '4F81BD' // Kode warna hex untuk kuning
+                ),
+            ),
+        );
 
         // pakan
         $sheet
@@ -3037,33 +3060,106 @@ class DashboardKandangController extends Controller
             ->setCellValue('L3', 'Kategori Keuangan 5');
         $sheet->getStyle("A3:L3")->applyFromArray($styleExpanse);
 
-        $head = DB::select("SELECT a.tgl FROM invoice_telur as a where a.lokasi = 'mtd' and a.tgl = '$r->tgl' 
+        $head = DB::select("SELECT a.tgl , b.kode_customer , a.no_nota FROM invoice_telur as a
+        left join customer as b on b.id_customer = a.id_customer
+        where a.lokasi = 'mtd' and a.tgl = '$r->tgl' 
         group by a.no_nota");
 
         $kolom = 4;
         foreach ($head as $i => $p) {
-            $sheet->setCellValue("A$kolom", 'HEADER');
-            $sheet->setCellValue("B$kolom", '');
-            $sheet->setCellValue("C$kolom", $p->tgl);
-            $sheet->setCellValue("D$kolom", '');
-            $sheet->setCellValue("E$kolom", '');
-            $sheet->setCellValue("F$kolom", 'Tidak');
-            $sheet->setCellValue("G$kolom", 'Tidak');
-            $sheet->setCellValue("H$kolom", '');
-            $sheet->setCellValue("I$kolom", 'Tidak');
-            $sheet->setCellValue("J$kolom", '');
-            $sheet->setCellValue("K$kolom", '');
-            $sheet->setCellValue("L$kolom", 'PENJUALAN TELUR');
-            $sheet->getStyle("A4:L$kolom")->applyFromArray($styleHead);
+            $barisHeader = $kolom;
+
+            $sheet->setCellValue("A$barisHeader", 'HEADER');
+            $sheet->setCellValue("B$barisHeader", '');
+            $sheet->setCellValue("C$barisHeader", date('d/m/Y', strtotime($p->tgl)));
+            $sheet->setCellValue("D$barisHeader", $p->kode_customer);
+            $sheet->setCellValue("E$barisHeader", '');
+            $sheet->setCellValue("F$barisHeader", 'Tidak');
+            $sheet->setCellValue("G$barisHeader", 'Tidak');
+            $sheet->setCellValue("H$barisHeader", '');
+            $sheet->setCellValue("I$barisHeader", 'Tidak');
+            $sheet->setCellValue("J$barisHeader", '');
+            $sheet->setCellValue("K$barisHeader", '');
+            $sheet->setCellValue("L$barisHeader", 'PENJUALAN TELUR');
+            $sheet->getStyle("A$barisHeader:L$barisHeader")->applyFromArray($styleHead);
+            $kolom++;
+
+            $item = DB::select("SELECT 
+                CASE b.nm_telur
+                WHEN 'Utuh' THEN 'T-011'
+                WHEN 'Pecah' THEN 'T-012'
+                WHEN 'Tipis' THEN 'T-013'
+                WHEN 'Pupuk' THEN 'T-014'
+                WHEN 'K2 & XL' THEN 'T-015'
+                WHEN 'Ceplok' THEN 'T-016'
+                ELSE 'T'
+                END AS kode_accurate, 
+                CONCAT('Telur ', b.nm_telur, '*') AS nm_produk ,a.pcs as qty, 'Pcs' as satuan,
+                if(a.tipe = 'pcs',a.rp_satuan,0) as hrga_satuan
+                FROM invoice_telur as a 
+                left join telur_produk as b on b.id_produk_telur = a.id_produk
+                where a.no_nota = '$p->no_nota'
+
+                UNION ALL 
+
+                SELECT 
+                CASE b.nm_telur
+                WHEN 'Utuh' THEN 'T-002'
+                WHEN 'Pecah' THEN 'T-004'
+                WHEN 'Tipis' THEN 'T-006'
+                WHEN 'Pupuk' THEN 'T-008'
+                WHEN 'K2 & XL' THEN 'T-010'
+                WHEN 'Ceplok' THEN 'T-017'
+                ELSE 'T'
+                END AS kode_accurate, 
+                CONCAT('Telur ', b.nm_telur) AS nm_produk ,a.kg_jual as qty, 'Kg' as satuan,
+                if(a.tipe = 'kg',a.rp_satuan,0) as hrga_satuan
+                FROM invoice_telur as a 
+                left join telur_produk as b on b.id_produk_telur = a.id_produk
+                where a.no_nota = '$p->no_nota';");
+
+
+
+            foreach ($item as $t) {
+                $barisItem = $kolom;
+                $sheet->setCellValue("A$barisItem", 'ITEM');
+                $sheet->setCellValue("B$barisItem", $t->kode_accurate);
+                $sheet->setCellValue("C$barisItem", $t->nm_produk);
+                $sheet->setCellValue("D$barisItem", $t->qty);
+                $sheet->setCellValue("E$barisItem", $t->satuan);
+                $sheet->setCellValue("F$barisItem", $t->hrga_satuan);
+                $sheet->setCellValue("G$barisItem", '');
+                $sheet->setCellValue("H$barisItem", '');
+                $sheet->setCellValue("I$barisItem", '');
+                $sheet->setCellValue("J$barisItem", 'Martadah');
+                $sheet->setCellValue("K$barisItem", '');
+                $sheet->setCellValue("L$barisItem", '');
+                $sheet->getStyle("A$barisItem:L$barisItem")->applyFromArray($styleItem2);
+                $kolom++;
+            }
+
+            $barisItem2 = $kolom;
+            $rak_telur = DB::table('rak_telur_penjualan')->where('no_nota', $p->no_nota)->first();
+            $sheet->setCellValue("A$barisItem2", 'ITEM');
+            $sheet->setCellValue("B$barisItem2", 'R-001');
+            $sheet->setCellValue("C$barisItem2", 'Rak Telur');
+            $sheet->setCellValue("D$barisItem2", $rak_telur->pcs);
+            $sheet->setCellValue("E$barisItem2", 'Pcs');
+            $sheet->setCellValue("F$barisItem2", 0);
+            $sheet->setCellValue("G$barisItem2", '');
+            $sheet->setCellValue("H$barisItem2", '');
+            $sheet->setCellValue("I$barisItem2", '');
+            $sheet->setCellValue("J$barisItem2", 'Martadah');
+            $sheet->setCellValue("K$barisItem2", '');
+            $sheet->setCellValue("L$barisItem2", '');
+            $sheet->getStyle("A$barisItem2:L$barisItem2")->applyFromArray($styleItem2);
             $kolom++;
         }
-
-
 
         $writer = new Xlsx($spreadsheet);
 
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header('Content-Disposition: attachment;filename="Export Penjualan.xlsx"');
+        header('Content-Disposition: attachment;filename="Export Penjualan ' . date('d/M/Y', strtotime($r->tgl)) . '.xlsx"');
         header('Cache-Control: max-age=0');
 
         $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, 'Xlsx');

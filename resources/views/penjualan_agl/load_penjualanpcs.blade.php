@@ -17,23 +17,27 @@
                 <select name="id_produk[]" class="select" required>
                     <option value="">-Pilih Produk-</option>
                     @foreach ($produk as $p)
-                    <option value="{{$p->id_produk_telur}}">{{$p->nm_telur}}</option>
+                        <option value="{{ $p->id_produk_telur }}">{{ $p->nm_telur }}</option>
                     @endforeach
                 </select>
             </td>
             <td align="right">
-                <input type="text" class="form-control tipe_pcs tipe_pcs1" count="1" style="text-align: right" required>
+                <input type="text" class="form-control tipe_pcs tipe_pcs1" count="1" style="text-align: right"
+                    required>
                 <input type="hidden" class="form-control  tipe_pcs_biasa1" name="pcs[]" value="0">
             </td>
             <td align="right">
-                <input type="text" class="form-control tipe_kg tipe_kg1" count="1" style="text-align: right" required>
-                <input type="hidden" class="form-control tipe_kgbiasa tipe_kgbiasa1" name="kg[]" count="1" value="0">
+                <input type="text" class="form-control tipe_kg tipe_kg1" count="1" style="text-align: right"
+                    required>
+                <input type="hidden" class="form-control tipe_kgbiasa tipe_kgbiasa1" name="kg[]" count="1"
+                    value="0">
             </td>
             <td align="right">
                 <input type="text" class="form-control tipe_rp_satuan tipe_rp_satuan1" count="1"
                     style="text-align: right" required>
                 <input type="hidden" class="form-control tipe_rp_satuanbiasa1" name="rp_satuan[]" value="0">
-                <input type="hidden" class="form-control ttl_rpbiasa tipe_ttl_rpbiasa1" name="total_rp[]" value="0">
+                <input type="hidden" class="form-control ttl_rpbiasa tipe_ttl_rpbiasa1" name="total_rp[]"
+                    value="0">
             </td>
             <td align="right" class="tipe_ttl_rp1"></td>
             <td style="vertical-align: top;">
@@ -47,6 +51,19 @@
     </tbody>
     <tbody id="tb_baris_pcs">
 
+    </tbody>
+    <tbody>
+        <tr>
+            <td></td>
+            <td>Rak</td>
+            <td><input type="text" class="form-control pcs_rak text-end" name="pcs_rak" value="0"></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+
+
+        </tr>
     </tbody>
     <tfoot>
         <tr>
