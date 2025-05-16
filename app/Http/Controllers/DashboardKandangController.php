@@ -2889,7 +2889,7 @@ class DashboardKandangController extends Controller
     }
     public function export_penjualan_accurate(Request $r)
     {
-
+        DB::table('invoice_telur')->where('tgl', $r->tgl)->update(['import' => 'Y']);
         $spreadsheet = new Spreadsheet;
 
         $spreadsheet->setActiveSheetIndex(0);
@@ -3062,7 +3062,7 @@ class DashboardKandangController extends Controller
 
         $head = DB::select("SELECT a.tgl , b.kode_customer , a.no_nota FROM invoice_telur as a
         left join customer as b on b.id_customer = a.id_customer
-        where a.lokasi = 'mtd' and a.tgl = '$r->tgl' 
+        where a.lokasi = 'mtd' and a.tgl = '$r->tgl' and a.import ='T'
         group by a.no_nota");
 
         $kolom = 4;
@@ -3098,7 +3098,7 @@ class DashboardKandangController extends Controller
                 if(a.tipe = 'pcs',a.rp_satuan,0) as hrga_satuan
                 FROM invoice_telur as a 
                 left join telur_produk as b on b.id_produk_telur = a.id_produk
-                where a.no_nota = '$p->no_nota'
+                where a.no_nota = '$p->no_nota' and a.import ='T'
 
                 UNION ALL 
 
@@ -3116,7 +3116,7 @@ class DashboardKandangController extends Controller
                 if(a.tipe = 'kg',a.rp_satuan,0) as hrga_satuan
                 FROM invoice_telur as a 
                 left join telur_produk as b on b.id_produk_telur = a.id_produk
-                where a.no_nota = '$p->no_nota';");
+                where a.no_nota = '$p->no_nota' and a.import ='T';");
 
 
 
