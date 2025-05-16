@@ -54,7 +54,7 @@ class PenjualanController extends Controller
             'tgl2' => $tgl2,
             'invoice' => DB::select("SELECT a.no_nota, a.tgl, a.tipe, a.admin, b.nm_customer, sum(a.total_rp) as ttl_rp, a.status, c.debit_bayar , c.kredit_bayar, a.urutan_customer, a.driver, a.lokasi
             FROM invoice_telur as a 
-            left join customer as b on b.id_customer = a.id_customer
+            left join customer as b on b.id_customer = if(a.id_customer = 0 , a.id_customer2, a.id_customer)
             left join (
                 SELECT c.no_nota, sum(c.debit) as debit_bayar, sum(c.kredit) as kredit_bayar
                 FROM bayar_telur as c
