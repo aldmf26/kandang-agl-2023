@@ -39,7 +39,7 @@
                 </div>
                 <div class="col-lg-12">
                     <div id="loadkg"></div>
-                    <div id="loadpcs"></div>
+
                 </div>
                 <div class="col-lg-5">
 

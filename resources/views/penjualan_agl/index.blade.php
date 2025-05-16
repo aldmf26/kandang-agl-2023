@@ -23,11 +23,9 @@
                         <th>No Nota</th>
                         <th>Customer</th>
                         <th style="text-align: right">Total Rp</th>
-                        {{-- <th>Tipe Jual</th> --}}
+                        <th style="text-align: right">Total Rak</th>
                         <th>Admin</th>
-                        {{-- <th>Metode</th>
-                        <th>Lokasi</th> --}}
-                        {{-- <th>Status</th> --}}
+                        <th>Import</th>
                         <th>Aksi</th>
                     </tr>
                 </thead>
@@ -39,53 +37,36 @@
                             <td>{{ $i->no_nota }}</td>
                             <td>{{ $i->nm_customer }}{{ $i->urutan_customer }}</td>
                             <td align="right">Rp {{ number_format($i->ttl_rp, 0) }}</td>
+                            <td align="right"> {{ number_format($i->rak_tf, 0) }}</td>
                             {{-- <td>{{ $i->tipe }}</td> --}}
                             <td>{{ ucwords($i->admin) }}</td>
-                            {{-- <td>{{ $i->status == 'paid' ? 'Tunai' : 'Piutang' }}</td>
-                            <td>{{ $i->lokasi == 'mtd' ? 'Martadah' : 'Alpa' }}</td> --}}
-                            {{-- <td>
-                                <span
-                                    class="badge {{ $i->debit_bayar - $i->kredit_bayar != '0' ? 'bg-warning' : 'bg-success' }}">
-                                    {{ $i->debit_bayar - $i->kredit_bayar != '0' ? 'Unpaid' : 'Paid' }}
+
+                            <td>
+                                <span class="badge {{ $i->import == 'T' ? 'bg-warning' : 'bg-success' }}">
+                                    {{ $i->import == 'T' ? 'Belum Import' : 'Sudah Import' }}
                                 </span>
-                            </td> --}}
+                            </td>
                             <td>
                                 <div class="btn-group" role="group">
                                     <span class="btn btn-sm" data-bs-toggle="dropdown">
                                         <i class="fas fa-ellipsis-v text-primary"></i>
                                     </span>
                                     <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1">
-                                        @if ($i->status == 'paid')
+                                        @if ($i->import == 'Y')
+                                        @else
                                             <li>
                                                 <a class="dropdown-item text-primary edit_akun"
                                                     href="{{ route('edit_invoice_telur', ['no_nota' => $i->no_nota]) }}"><i
                                                         class="me-2 fas fa-pen"></i>Edit
                                                 </a>
                                             </li>
+
                                             <li>
                                                 <a class="dropdown-item text-danger delete_nota"
                                                     no_nota="{{ $i->no_nota }}" href="#" data-bs-toggle="modal"
                                                     data-bs-target="#delete"><i class="me-2 fas fa-trash"></i>Delete
                                                 </a>
                                             </li>
-                                        @else
-                                            @if ($i->debit_bayar - $i->kredit_bayar != '0')
-                                                <li>
-                                                    <a class="dropdown-item text-primary edit_akun"
-                                                        href="{{ route('edit_invoice_telur', ['no_nota' => $i->no_nota]) }}"><i
-                                                            class="me-2 fas fa-pen"></i>Edit
-                                                    </a>
-                                                </li>
-
-                                                <li>
-                                                    <a class="dropdown-item text-danger delete_nota"
-                                                        no_nota="{{ $i->no_nota }}" href="#"
-                                                        data-bs-toggle="modal" data-bs-target="#delete"><i
-                                                            class="me-2 fas fa-trash"></i>Delete
-                                                    </a>
-                                                </li>
-                                            @else
-                                            @endif
                                         @endif
 
                                         <li><a class="dropdown-item  text-info detail_nota" href="#"
