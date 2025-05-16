@@ -3139,7 +3139,7 @@ class DashboardKandangController extends Controller
             }
 
             $barisItem2 = $kolom;
-            $rak_telur = DB::table('rak_telur_penjualan')->where('no_nota', $p->no_nota)->first();
+            $rak_telur = DB::table('rak_telur_penjualan')->where('no_nota', $p->no_nota)->where('pcs', '!=', '0')->first();
             $sheet->setCellValue("A$barisItem2", 'ITEM');
             $sheet->setCellValue("B$barisItem2", 'R-001');
             $sheet->setCellValue("C$barisItem2", 'Rak Telur');
