@@ -174,22 +174,22 @@
                     var count = $(this).attr("count");
                     var input = $(this).val();
                     var tipe = $('.tipe' + count).val();
-                    input = input.replace(/[^\d\,]/g, "");
-                    input = input.replace(".", ",");
-                    input = input.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
+                    // input = input.replace(/[^\d\,]/g, "");
+                    // input = input.replace(".", ",");
+                    // input = input.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
 
                     if (input === "") {
                         $(this).val("");
                         $('.kgbiasa' + count).val(0)
                     } else {
                         $(this).val(input);
-                        input = input.replaceAll(".", "");
-                        input2 = input.replace(",", ".");
-                        $('.kgbiasa' + count).val(input2)
+                        // input = input.replaceAll(".", "");
+                        // input2 = input.replace(",", ".");
+                        $('.kgbiasa' + count).val(input)
                     }
                     var pcs = $('.pcs_biasa' + count).val();
                     var ikat = parseFloat(pcs) / 180;
-                    var kg_jual = parseFloat(input2) - parseFloat(ikat.toFixed(1));
+                    var kg_jual = parseFloat(input) - parseFloat(ikat.toFixed(1));
                     var pcs_biasa = $('.pcs_biasa' + count).val();
                     $('.kgminrak' + count).text(kg_jual.toFixed(1));
                     $('.kgminrakbiasa' + count).val(kg_jual.toFixed(1));
