@@ -333,6 +333,7 @@ class PenjualanController extends Controller
         DB::table('invoice_telur')->where('no_nota', $r->no_nota)->delete();
         DB::table('jurnal')->where('no_nota', $r->no_nota)->delete();
         DB::table('bayar_telur')->where('no_nota', $r->no_nota)->delete();
+        DB::table('stok_telur')->where('nota_transfer', $r->no_nota)->delete();
 
         return redirect()->route('penjualan_agrilaras')->with('sukses', 'Data berhasil ditambahkan');
     }
