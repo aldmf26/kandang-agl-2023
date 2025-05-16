@@ -2889,7 +2889,7 @@ class DashboardKandangController extends Controller
     }
     public function export_penjualan_accurate(Request $r)
     {
-        DB::table('invoice_telur')->where('tgl', $r->tgl)->update(['import' => 'Y']);
+
         $spreadsheet = new Spreadsheet;
 
         $spreadsheet->setActiveSheetIndex(0);
@@ -3165,5 +3165,6 @@ class DashboardKandangController extends Controller
         $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, 'Xlsx');
         $writer->save('php://output');
         exit();
+        DB::table('invoice_telur')->where('tgl', $r->tgl)->update(['import' => 'Y']);
     }
 }
