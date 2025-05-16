@@ -69,6 +69,20 @@ class PenjualanController extends Controller
         ];
         return view('penjualan_agl.index', $data);
     }
+    public function plus_customer(Request $r)
+    {
+        $customer = DB::table('customer')->where('kode_customer', $r->kode_customer)->first();
+        if ($customer) {
+            return redirect()->route('penjualan_agrilaras')->with('error', 'Data sudah ada');
+        }
+        $data = [
+            'nm_customer' => $r->nm_customer,
+            'kode_customer' => $r->kode_customer,
+            'active' => 'Y'
+        ];
+        DB::table('customer')->insert($data);
+        return redirect()->route('penjualan_agrilaras')->with('sukses', 'Data berhasil ditambahkan');
+    }
 
     public function tbh_invoice_telur(Request $r)
     {

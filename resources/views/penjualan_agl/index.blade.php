@@ -10,6 +10,7 @@
                 <x-theme.btn_filter />
                 <x-theme.button modal="T" href="/produk_telur" icon="fa-home" addClass="float-end"
                     teks="" />
+                <x-theme.button modal="Y" idModal="customer" icon="fa-plus" addClass="float-end" teks="Customer" />
             </div>
         </div>
     </x-slot>
@@ -84,10 +85,22 @@
         </section>
 
         {{-- sub akun --}}
-        <x-theme.modal title="Edit Akun" idModal="sub-akun" size="modal-lg">
-            <div id="load-sub-akun">
-            </div>
-        </x-theme.modal>
+        <form action="{{ route('plus_customer') }}" method="post">
+            @csrf
+            <x-theme.modal title="Tambah customer" idModal="customer">
+
+                <div class="row">
+                    <div class="col-lg-6">
+                        <label for="">Nama Customer</label>
+                        <input type="text" name="nm_customer" class="form-control">
+                    </div>
+                    <div class="col-lg-6">
+                        <label for="">Kode Accurate</label>
+                        <input type="text" name="kode_customer" class="form-control">
+                    </div>
+                </div>
+            </x-theme.modal>
+        </form>
 
         <x-theme.modal title="Detail Invoice" btnSave='T' size="modal-lg-max" idModal="detail">
             <div class="row">
