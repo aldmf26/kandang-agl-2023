@@ -54,6 +54,12 @@
                                     </span>
                                     <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1">
                                         @if ($i->import == 'Y')
+                                            <li>
+                                                <a class="dropdown-item text-primary edit_akun"
+                                                    href="{{ route('edit_invoice_telur', ['no_nota' => $i->no_nota]) }}"><i
+                                                        class="me-2 fas fa-pen"></i>Edit
+                                                </a>
+                                            </li>
                                         @else
                                             <li>
                                                 <a class="dropdown-item text-primary edit_akun"
@@ -124,7 +130,8 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Batal</button>
+                            <button type="button" class="btn btn-outline-danger"
+                                data-bs-dismiss="modal">Batal</button>
                             <button type="submit" class="btn btn-danger">Hapus</button>
                         </div>
                     </div>

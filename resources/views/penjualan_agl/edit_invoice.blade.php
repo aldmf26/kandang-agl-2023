@@ -26,6 +26,7 @@
                     <input type="hidden" class="form-control " name="urutan" value="{{ $invoice2->urutan }}" readonly>
                     <input type="hidden" class="form-control " name="urutan_customer"
                         value="{{ $invoice2->urutan_customer }}" readonly>
+                    <input type="hidden" class="form-control " name="import" value="{{ $invoice2->import }}" readonly>
                 </div>
                 <div class="col-lg-2 col-6">
                     <label for="">Customer</label>

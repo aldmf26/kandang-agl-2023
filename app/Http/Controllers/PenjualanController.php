@@ -254,7 +254,7 @@ class PenjualanController extends Controller
             'customer' => DB::table('customer')->where('active', 'Y')->get(),
             'akun' => DB::table('akun')->whereIn('id_klasifikasi', ['1', '7'])->get(),
             'nota' => $r->no_nota,
-            'invoice2' => DB::selectOne("SELECT a.urutan, a.urutan_customer, a.tgl, a.id_customer, a.id_produk, a.tipe, a.driver, sum(a.total_rp) as total_rp FROM invoice_telur as a where a.no_nota='$r->no_nota'"),
+            'invoice2' => DB::selectOne("SELECT a.urutan, a.urutan_customer, a.tgl, a.id_customer, a.id_produk, a.tipe, a.driver, a.import, sum(a.total_rp) as total_rp FROM invoice_telur as a where a.no_nota='$r->no_nota'"),
             'invoice' => DB::table('invoice_telur')->where('no_nota', $r->no_nota)->get(),
             'rak' => DB::table('rak_telur_penjualan')->where('no_nota', $r->no_nota)->first(),
 
@@ -317,7 +317,8 @@ class PenjualanController extends Controller
                 'urutan' => $r->urutan,
                 'urutan_customer' => $urutan_cus,
                 'driver' => 'kosong',
-                'lokasi' => 'mtd'
+                'lokasi' => 'mtd',
+                'import' => $r->import
             ];
             DB::table('invoice_telur')->insert($data);
 

@@ -43,8 +43,8 @@
             <th class="dhead" width="5">#</th>
             <th class="dhead">Produk</th>
             <th class="dhead" style="text-align: right">Pcs</th>
-            <th class="dhead" style="text-align: right">Kg</th>
-            <th class="dhead" style="text-align: right">Ikat</th>
+            <th class="dhead" style="text-align: right">Kg Kotor</th>
+            <th class="dhead" style="text-align: right">Potongan Rak</th>
             <th class="dhead" style="text-align: right">Kg Jual</th>
             <th class="dhead" style="text-align: right">Rp Satuan</th>
             <th class="dhead">Tipe Pembayaran</th>
@@ -63,7 +63,7 @@
                 <td>{{ $no + 1 }}</td>
                 <td>{{ $a->nm_telur }}</td>
                 <td align="right">{{ number_format($a->pcs, 0) }}</td>
-                <td align="right">{{ number_format($a->kg, 0) }}</td>
+                <td align="right">{{ number_format($a->kg, 2) }}</td>
                 <td align="right">{{ number_format($a->pcs / 180, 2) }}</td>
                 <td align="right">{{ number_format($a->kg_jual, 2) }}</td>
                 <td align="right">Rp {{ number_format($a->rp_satuan, 0) }}</td>
