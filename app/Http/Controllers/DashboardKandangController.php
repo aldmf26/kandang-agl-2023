@@ -2845,16 +2845,22 @@ class DashboardKandangController extends Controller
             ->setCellValue('B1', 'Kode')
             ->setCellValue('C1', 'Unit')
             ->setCellValue('D1', 'Kuantitas')
-            ->setCellValue('E1', 'Gudang')
-            ->setCellValue('F1', 'Tipe Penyesuaian');
+            ->setCellValue('E1', 'Biaya Satuan')
+            ->setCellValue('F1', 'Gudang')
+            ->setCellValue('G1', 'Tipe Penyesuaian')
+            ->setCellValue('H1', 'Nama Dept Barang')
+            ->setCellValue('I1', 'No Proyek Barang');
         $kolom = 2;
         foreach ($produk as $i => $p) {
             $sheet->setCellValue("A$kolom", $p->nm_produk)
                 ->setCellValue("B$kolom", $p->kode_accurate)
                 ->setCellValue("C$kolom", $p->nm_satuan)
                 ->setCellValue("D$kolom", $p->qty)
-                ->setCellValue("E$kolom", "Martadah")
-                ->setCellValue("F$kolom", 'Pengurangan');
+                ->setCellValue("E$kolom", 0)
+                ->setCellValue("F$kolom", "Martadah")
+                ->setCellValue("G$kolom", 'Pengurangan')
+                ->setCellValue("H$kolom", 'Kandang ' . $kandang->nm_kandang)
+                ->setCellValue("I$kolom", '');
             $kolom++;
         }
         if ($r->id_produk == 'pakan') {
@@ -2863,15 +2869,18 @@ class DashboardKandangController extends Controller
                     ->setCellValue("B$kolom", $p->kode_accurate)
                     ->setCellValue("C$kolom", $p->nm_satuan)
                     ->setCellValue("D$kolom", round($p->qty, 1))
-                    ->setCellValue("E$kolom", "Martadah")
-                    ->setCellValue("F$kolom",  'Penambahan');
+                    ->setCellValue("E$kolom", 0)
+                    ->setCellValue("F$kolom", "Martadah")
+                    ->setCellValue("G$kolom",  'Penambahan')
+                    ->setCellValue("H$kolom", 'Kandang ' . $kandang->nm_kandang)
+                    ->setCellValue("I$kolom", '');
                 $kolom++;
             }
         }
 
 
         $batas = $kolom - 1;
-        $sheet->getStyle("A1:F$batas")->applyFromArray($style);
+        $sheet->getStyle("A1:I$batas")->applyFromArray($style);
 
         // obat pakan
 
