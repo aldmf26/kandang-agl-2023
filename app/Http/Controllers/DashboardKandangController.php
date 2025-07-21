@@ -1951,7 +1951,7 @@ class DashboardKandangController extends Controller
         // daily production
         $pullet = DB::select("SELECT a.tgl, populasi.mati as pop_mati,populasi.jual as pop_jual, b.stok_awal, SUM(a.gr) as kg_pakan, 
         CEIL(DATEDIFF(a.tgl, b.chick_in) / 7) AS mgg,
-        c.mati as death, c.jual as culling, normal.normalPcs, normal.normalKg, abnormal.abnormalPcs, abnormal.abnormalKg, d.pcs,d.kg, sum(d.pcs) as ttl_pcs, SUM(d.kg) as ttl_kg, b.chick_in as ayam_awal, g.nama_obat, h.nm_pakan, i.nm_vaksin
+        c.mati as death, c.jual as culling, c.afkir, normal.normalPcs, normal.normalKg, abnormal.abnormalPcs, abnormal.abnormalKg, d.pcs,d.kg, sum(d.pcs) as ttl_pcs, SUM(d.kg) as ttl_kg, b.chick_in as ayam_awal, g.nama_obat, h.nm_pakan, i.nm_vaksin
         FROM tb_pakan_perencanaan as a
         LEFT JOIN kandang as b ON a.id_kandang = b.id_kandang
         LEFT JOIN populasi as c ON c.id_kandang = a.id_kandang AND c.tgl = a.tgl
@@ -2097,25 +2097,26 @@ class DashboardKandangController extends Controller
 
 
 
-            $kum += $d->death + $d->culling;
+            $kum += $d->death + $d->culling + $d->afkir;
             $cum_kg += $d->kg_pakan / 1000;
             $cum_ttlpcs += $normal + $abnor;
             $cum_ttlkg += $d->ttl_kg;
             $populasi = $d->stok_awal;
 
-            $birdTotal = $d->death + $d->culling;
+            $birdTotal = $d->death + $d->culling + $d->afkir;
             $weight_cum += empty($d->kg) ? 0 : $d->kg - ($d->pcs / 180);
             // isi
             $sheet1->setCellValue("A$kolom", date('Y-m-d', strtotime($d->tgl)))
                 ->setCellValue("B$kolom", $d->mgg)
                 ->setCellValue("C$kolom", $populasi - $kum)
                 ->setCellValue("D$kolom", $d->death ?? 0)
-                ->setCellValue("E$kolom", $d->culling ?? 0)
+                ->setCellValue("E$kolom", $d->culling ?? 0 + $d->afkir ?? 0)
                 ->setCellValue("F$kolom", $birdTotal);
             $death = $d->death ?? 0;
             $culling = $d->culling ?? 0;
+            $afkir = $d->afkir ?? 0;
             $pop = $populasi  ?? 0;
-            $sheet1->setCellValue("G$kolom", ($birdTotal) > 0 && $pop > 0 ? round((($death + $culling) / $pop) * 100, 2) : 0)
+            $sheet1->setCellValue("G$kolom", ($birdTotal) > 0 && $pop > 0 ? round((($death + $culling + $afkir) / $pop) * 100, 2) : 0)
                 ->setCellValue("H$kolom", $kum)
                 ->setCellValue("I$kolom", round($d->kg_pakan / 1000, 1))
                 ->setCellValue("J$kolom", round((round($d->kg_pakan / 1000, 1) / ($populasi - $kum)) * 1000, 2))
@@ -2844,16 +2845,22 @@ class DashboardKandangController extends Controller
             ->setCellValue('B1', 'Kode')
             ->setCellValue('C1', 'Unit')
             ->setCellValue('D1', 'Kuantitas')
-            ->setCellValue('E1', 'Gudang')
-            ->setCellValue('F1', 'Tipe Penyesuaian');
+            ->setCellValue('E1', 'Biaya Satuan')
+            ->setCellValue('F1', 'Gudang')
+            ->setCellValue('G1', 'Tipe Penyesuaian')
+            ->setCellValue('H1', 'Nama Dept Barang')
+            ->setCellValue('I1', 'No Proyek Barang');
         $kolom = 2;
         foreach ($produk as $i => $p) {
             $sheet->setCellValue("A$kolom", $p->nm_produk)
                 ->setCellValue("B$kolom", $p->kode_accurate)
                 ->setCellValue("C$kolom", $p->nm_satuan)
                 ->setCellValue("D$kolom", $p->qty)
-                ->setCellValue("E$kolom", "Martadah")
-                ->setCellValue("F$kolom", 'Pengurangan');
+                ->setCellValue("E$kolom", 0)
+                ->setCellValue("F$kolom", "Martadah")
+                ->setCellValue("G$kolom", 'Pengurangan')
+                ->setCellValue("H$kolom", 'Kandang ' . $kandang->nm_kandang)
+                ->setCellValue("I$kolom", '');
             $kolom++;
         }
         if ($r->id_produk == 'pakan') {
@@ -2862,15 +2869,18 @@ class DashboardKandangController extends Controller
                     ->setCellValue("B$kolom", $p->kode_accurate)
                     ->setCellValue("C$kolom", $p->nm_satuan)
                     ->setCellValue("D$kolom", round($p->qty, 1))
-                    ->setCellValue("E$kolom", "Martadah")
-                    ->setCellValue("F$kolom",  'Penambahan');
+                    ->setCellValue("E$kolom", 0)
+                    ->setCellValue("F$kolom", "Martadah")
+                    ->setCellValue("G$kolom",  'Penambahan')
+                    ->setCellValue("H$kolom", 'Kandang ' . $kandang->nm_kandang)
+                    ->setCellValue("I$kolom", '');
                 $kolom++;
             }
         }
 
 
         $batas = $kolom - 1;
-        $sheet->getStyle("A1:F$batas")->applyFromArray($style);
+        $sheet->getStyle("A1:I$batas")->applyFromArray($style);
 
         // obat pakan
 
@@ -2884,6 +2894,289 @@ class DashboardKandangController extends Controller
 
         $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, 'Xlsx');
         $writer->save('php://output');
+        exit();
+    }
+    public function export_penjualan_accurate(Request $r)
+    {
+
+        $spreadsheet = new Spreadsheet;
+
+        $spreadsheet->setActiveSheetIndex(0);
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $style = array(
+            'font' => array(
+                'size' => 14,
+                'bold' => true,
+                'color' => array(
+                    'rgb' => 'FFFFFF' // Warna teks putih
+                ),
+            ),
+            'borders' => array(
+                'allBorders' => array(
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                ),
+            ),
+            'alignment' => array(
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+            ),
+            'fill' => array(
+                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                'startColor' => array(
+                    'rgb' => '008000' // Kode warna hex untuk kuning
+                ),
+            ),
+        );
+        $styleItem = array(
+            'font' => array(
+                'size' => 14,
+                'bold' => true,
+                'color' => array(
+                    'rgb' => 'FFFFFF' // Warna teks putih
+                ),
+            ),
+            'borders' => array(
+                'allBorders' => array(
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                ),
+            ),
+            'alignment' => array(
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+            ),
+            'fill' => array(
+                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                'startColor' => array(
+                    'rgb' => '4F81BD' // Kode warna hex untuk kuning
+                ),
+            ),
+        );
+        $styleExpanse = array(
+            'font' => array(
+                'size' => 14,
+                'bold' => true,
+                'color' => array(
+                    'rgb' => 'FFFFFF' // Warna teks putih
+                ),
+            ),
+            'borders' => array(
+                'allBorders' => array(
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                ),
+            ),
+            'alignment' => array(
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+            ),
+            'fill' => array(
+                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                'startColor' => array(
+                    'rgb' => 'FF6600' // Kode warna hex untuk kuning
+                ),
+            ),
+        );
+
+        $styleHead = array(
+            'font' => array(
+                'size' => 14,
+                'color' => array(
+                    'rgb' => 'FFFFFF' // Warna teks putih
+                ),
+            ),
+            'borders' => array(
+                'allBorders' => array(
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                ),
+            ),
+            'alignment' => array(
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+            ),
+            'fill' => array(
+                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                'startColor' => array(
+                    'rgb' => '008000' // Kode warna hex untuk kuning
+                ),
+            ),
+        );
+        $styleItem2 = array(
+            'font' => array(
+                'size' => 14,
+                'color' => array(
+                    'rgb' => 'FFFFFF' // Warna teks putih
+                ),
+            ),
+            'borders' => array(
+                'allBorders' => array(
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                ),
+            ),
+            'alignment' => array(
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+            ),
+            'fill' => array(
+                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                'startColor' => array(
+                    'rgb' => '4F81BD' // Kode warna hex untuk kuning
+                ),
+            ),
+        );
+
+        // pakan
+        $sheet
+            ->setCellValue('A1', 'HEADER')
+            ->setCellValue('B1', 'No Faktur')
+            ->setCellValue('C1', 'Tgl Faktur')
+            ->setCellValue('D1', 'No Pelanggan')
+            ->setCellValue('E1', 'Alamat Faktur')
+            ->setCellValue('F1', 'Kena PPN')
+            ->setCellValue('G1', 'Total Termasuk PPN')
+            ->setCellValue('H1', 'Nomor Faktur Pajak')
+            ->setCellValue('I1', 'Faktur Dimuka')
+            ->setCellValue('J1', 'Diskon Faktur (%)')
+            ->setCellValue('K1', 'Diskon Faktur (Rp)')
+            ->setCellValue('L1', 'Keterangan');
+
+        $sheet->getStyle("A1:L1")->applyFromArray($style);
+        $sheet
+            ->setCellValue('A2', 'ITEM')
+            ->setCellValue('B2', 'Kode Barang')
+            ->setCellValue('C2', 'Nama Barang')
+            ->setCellValue('D2', 'Kuantitas')
+            ->setCellValue('E2', 'Satuan')
+            ->setCellValue('F2', 'Harga Satuan')
+            ->setCellValue('G2', 'Diskon Barang (%)')
+            ->setCellValue('H2', 'Diskon Barang (Rp)')
+            ->setCellValue('I2', 'Catatan Barang')
+            ->setCellValue('J2', 'Nama Gudang')
+            ->setCellValue('K2', 'ID Salesman')
+            ->setCellValue('L2', 'Nama Dept Barang');
+        $sheet->getStyle("A2:L2")->applyFromArray($styleItem);
+        $sheet
+            ->setCellValue('A3', 'EXPENSE')
+            ->setCellValue('B3', 'No Biaya')
+            ->setCellValue('C3', 'Nama Biaya')
+            ->setCellValue('D3', 'Nilai Biaya')
+            ->setCellValue('E3', 'Catatan Biaya')
+            ->setCellValue('F3', 'Nama Dept Biaya')
+            ->setCellValue('G3', 'No Proyek Biaya')
+            ->setCellValue('H3', 'Kategori Keuangan 1')
+            ->setCellValue('I3', 'Kategori Keuangan 2')
+            ->setCellValue('J3', 'Kategori Keuangan 3')
+            ->setCellValue('K3', 'Kategori Keuangan 4')
+            ->setCellValue('L3', 'Kategori Keuangan 5');
+        $sheet->getStyle("A3:L3")->applyFromArray($styleExpanse);
+
+        $head = DB::select("SELECT a.tgl , b.kode_customer , a.no_nota FROM invoice_telur as a
+        left join customer as b on b.id_customer = a.id_customer
+        where a.lokasi = 'mtd' and a.tgl = '$r->tgl' and a.import ='T'
+        group by a.no_nota");
+
+        $kolom = 4;
+        foreach ($head as $i => $p) {
+            $barisHeader = $kolom;
+
+            $sheet->setCellValue("A$barisHeader", 'HEADER');
+            $sheet->setCellValue("B$barisHeader", '');
+            $sheet->setCellValue("C$barisHeader", date('d/m/Y', strtotime($p->tgl)));
+            $sheet->setCellValue("D$barisHeader", $p->kode_customer);
+            $sheet->setCellValue("E$barisHeader", '');
+            $sheet->setCellValue("F$barisHeader", 'Tidak');
+            $sheet->setCellValue("G$barisHeader", 'Tidak');
+            $sheet->setCellValue("H$barisHeader", '');
+            $sheet->setCellValue("I$barisHeader", 'Tidak');
+            $sheet->setCellValue("J$barisHeader", '');
+            $sheet->setCellValue("K$barisHeader", '');
+            $sheet->setCellValue("L$barisHeader", 'PENJUALAN TELUR');
+            $sheet->getStyle("A$barisHeader:L$barisHeader")->applyFromArray($styleHead);
+            $kolom++;
+
+            $item = DB::select("SELECT 
+                CASE b.nm_telur
+                WHEN 'Utuh' THEN 'T-011'
+                WHEN 'Pecah' THEN 'T-012'
+                WHEN 'Tipis' THEN 'T-013'
+                WHEN 'Pupuk' THEN 'T-014'
+                WHEN 'K2 & XL' THEN 'T-015'
+                WHEN 'Ceplok' THEN 'T-016'
+                ELSE 'T'
+                END AS kode_accurate, 
+                CONCAT('Telur ', b.nm_telur, '*') AS nm_produk ,a.pcs as qty, 'Pcs' as satuan,
+                if(a.tipe = 'pcs',a.rp_satuan,0) as hrga_satuan
+                FROM invoice_telur as a 
+                left join telur_produk as b on b.id_produk_telur = a.id_produk
+                where a.no_nota = '$p->no_nota' and a.import ='T'
+
+                UNION ALL 
+
+                SELECT 
+                CASE b.nm_telur
+                WHEN 'Utuh' THEN 'T-002'
+                WHEN 'Pecah' THEN 'T-004'
+                WHEN 'Tipis' THEN 'T-006'
+                WHEN 'Pupuk' THEN 'T-008'
+                WHEN 'K2 & XL' THEN 'T-010'
+                WHEN 'Ceplok' THEN 'T-017'
+                ELSE 'T'
+                END AS kode_accurate, 
+                CONCAT('Telur ', b.nm_telur) AS nm_produk ,a.kg_jual as qty, 'Kg' as satuan,
+                if(a.tipe = 'kg',a.rp_satuan,0) as hrga_satuan
+                FROM invoice_telur as a 
+                left join telur_produk as b on b.id_produk_telur = a.id_produk
+                where a.no_nota = '$p->no_nota' and a.import ='T';");
+
+
+
+            foreach ($item as $t) {
+                $barisItem = $kolom;
+                $sheet->setCellValue("A$barisItem", 'ITEM');
+                $sheet->setCellValue("B$barisItem", $t->kode_accurate);
+                $sheet->setCellValue("C$barisItem", $t->nm_produk);
+                $sheet->setCellValue("D$barisItem", $t->qty);
+                $sheet->setCellValue("E$barisItem", $t->satuan);
+                $sheet->setCellValue("F$barisItem", $t->hrga_satuan);
+                $sheet->setCellValue("G$barisItem", '');
+                $sheet->setCellValue("H$barisItem", '');
+                $sheet->setCellValue("I$barisItem", '');
+                $sheet->setCellValue("J$barisItem", 'Martadah');
+                $sheet->setCellValue("K$barisItem", '');
+                $sheet->setCellValue("L$barisItem", '');
+                $sheet->getStyle("A$barisItem:L$barisItem")->applyFromArray($styleItem2);
+                $kolom++;
+            }
+
+            $barisItem2 = $kolom;
+            $rak_telur = DB::table('rak_telur_penjualan')->where('no_nota', $p->no_nota)->where('pcs', '!=', '0')->first();
+            if (empty($rak_telur->pcs)) {
+            } else {
+                $sheet->setCellValue("A$barisItem2", 'ITEM');
+                $sheet->setCellValue("B$barisItem2", 'R-001');
+                $sheet->setCellValue("C$barisItem2", 'Rak Telur');
+                $sheet->setCellValue("D$barisItem2", $rak_telur->pcs);
+                $sheet->setCellValue("E$barisItem2", 'Pcs');
+                $sheet->setCellValue("F$barisItem2", 0);
+                $sheet->setCellValue("G$barisItem2", '');
+                $sheet->setCellValue("H$barisItem2", '');
+                $sheet->setCellValue("I$barisItem2", '');
+                $sheet->setCellValue("J$barisItem2", 'Martadah');
+                $sheet->setCellValue("K$barisItem2", '');
+                $sheet->setCellValue("L$barisItem2", '');
+                $sheet->getStyle("A$barisItem2:L$barisItem2")->applyFromArray($styleItem2);
+                $kolom++;
+            }
+        }
+
+        $writer = new Xlsx($spreadsheet);
+
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="Export Penjualan ' . date('d/M/Y', strtotime($r->tgl)) . '.xlsx"');
+        header('Cache-Control: max-age=0');
+
+        $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, 'Xlsx');
+        $writer->save('php://output');
+        DB::table('invoice_telur')->where('tgl', $r->tgl)->update(['import' => 'Y']);
         exit();
     }
 }

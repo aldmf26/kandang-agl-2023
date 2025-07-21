@@ -278,6 +278,7 @@ Route::controller(PenjualanController::class)->group(function () {
     Route::get('/edit_invoice_telur', 'edit_invoice_telur')->name('edit_invoice_telur');
     Route::get('/loadkginvoiceedit', 'loadkginvoiceedit')->name('loadkginvoiceedit');
     Route::post('/edit_penjualan_telur', 'edit_penjualan_telur')->name('edit_penjualan_telur');
+    Route::post('/plus_customer', 'plus_customer')->name('plus_customer');
     Route::get('/delete_invoice_telur', 'delete_invoice_telur')->name('delete_invoice_telur');
     Route::get('/loadpcsinvoiceedit', 'loadpcsinvoiceedit')->name('loadpcsinvoiceedit');
 });

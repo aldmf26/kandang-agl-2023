@@ -52,21 +52,36 @@ class PenjualanController extends Controller
             'title' => 'Penjualan Agrilaras',
             'tgl1' => $tgl1,
             'tgl2' => $tgl2,
-            'invoice' => DB::select("SELECT a.no_nota, a.tgl, a.tipe, a.admin, b.nm_customer, sum(a.total_rp) as ttl_rp, a.status, c.debit_bayar , c.kredit_bayar, a.urutan_customer, a.driver, a.lokasi
+            'invoice' => DB::select("SELECT a.no_nota, a.tgl, a.tipe, a.admin, b.nm_customer, sum(a.total_rp) as ttl_rp, a.status, c.debit_bayar , c.kredit_bayar, a.urutan_customer, a.driver, a.lokasi, d.pcs as rak_tf, a.import
             FROM invoice_telur as a 
-            left join customer as b on b.id_customer = a.id_customer
+            left join customer as b on b.id_customer = if(a.id_customer = 0 , a.id_customer2, a.id_customer)
             left join (
                 SELECT c.no_nota, sum(c.debit) as debit_bayar, sum(c.kredit) as kredit_bayar
                 FROM bayar_telur as c
                 group by c.no_nota
             ) as c on c.no_nota = a.no_nota
-            where a.tgl between '$tgl1' and '$tgl2' and a.lokasi ='alpa'
+            left join rak_telur_penjualan as d on d.no_nota = a.no_nota
+            where a.tgl between '$tgl1' and '$tgl2' and a.lokasi ='mtd'
             group by a.no_nota
             order by a.urutan DESC
             ")
 
         ];
         return view('penjualan_agl.index', $data);
+    }
+    public function plus_customer(Request $r)
+    {
+        $customer = DB::table('customer')->where('kode_customer', $r->kode_customer)->first();
+        if ($customer) {
+            return redirect()->route('penjualan_agrilaras')->with('error', 'Data sudah ada');
+        }
+        $data = [
+            'nm_customer' => $r->nm_customer,
+            'kode_customer' => $r->kode_customer,
+            'active' => 'Y'
+        ];
+        DB::table('customer')->insert($data);
+        return redirect()->route('penjualan_agrilaras')->with('sukses', 'Data berhasil ditambahkan');
     }
 
     public function tbh_invoice_telur(Request $r)
@@ -81,7 +96,7 @@ class PenjualanController extends Controller
         $data = [
             'title' => 'Buat Invoice',
             'produk' => DB::table('telur_produk')->get(),
-            'customer' => DB::table('customer')->get(),
+            'customer' => DB::table('customer')->where('active', 'Y')->get(),
             'nota' => $nota_t,
             'akun' => DB::table('akun')->whereIn('id_klasifikasi', ['1', '7'])->get()
         ];
@@ -93,10 +108,22 @@ class PenjualanController extends Controller
         $data = [
             'title' => 'Buat Invoice',
             'produk' => DB::table('telur_produk')->get(),
+            'kandang' => DB::table('kandang')->where('selesai', 'T')->get(),
+            'count_kandang' => $r->count_kandang
         ];
         return view('penjualan_agl.load_penjualankg', $data);
     }
 
+    public function tambah_baris_kandang_kg(Request $r)
+    {
+        $data = [
+            'title' => 'Buat Invoice',
+            'produk' => DB::table('telur_produk')->get(),
+            'count' => $r->count,
+            'kandang' => $r->kandang
+        ];
+        return view('penjualan_agl.tbh_bariskg', $data);
+    }
     public function tambah_baris_kg(Request $r)
     {
         $data = [
@@ -118,7 +145,7 @@ class PenjualanController extends Controller
 
     public function save_penjualan_telur(Request $r)
     {
-        $max = DB::table('invoice_telur')->latest('urutan')->where('lokasi', 'alpa')->first();
+        $max = DB::table('invoice_telur')->latest('urutan')->where('lokasi', 'mtd')->first();
 
         if (empty($max) || $max->urutan == '0') {
             $nota_t = '1001';
@@ -135,46 +162,31 @@ class PenjualanController extends Controller
         }
 
 
+
+
         for ($x = 0; $x < count($r->id_produk); $x++) {
 
-            if ($r->tipe == 'kg') {
-                $data = [
-                    'tgl' => $r->tgl,
-                    'id_customer' => $r->customer,
-                    'tipe' => $r->tipe,
-                    'no_nota' => 'T' . $nota_t,
-                    'id_produk' => $r->id_produk[$x],
-                    'pcs' => $r->pcs[$x],
-                    'kg' => $r->kg[$x],
-                    'kg_jual' => $r->kg_jual[$x],
-                    'rp_satuan' => $r->rp_satuan[$x],
-                    'total_rp' => $r->total_rp[$x],
-                    'admin' => Auth::user()->name,
-                    'urutan' => $nota_t,
-                    'urutan_customer' => $urutan_cus,
-                    'driver' => $r->driver,
-                    'lokasi' => 'alpa'
-                ];
-                DB::table('invoice_telur')->insert($data);
-            } else {
-                $data = [
-                    'tgl' => $r->tgl,
-                    'id_customer' => $r->customer,
-                    'tipe' => $r->tipe,
-                    'no_nota' => 'T' . $nota_t,
-                    'id_produk' => $r->id_produk[$x],
-                    'pcs' => $r->pcs[$x],
-                    'kg' => $r->kg[$x],
-                    'rp_satuan' => $r->rp_satuan[$x],
-                    'total_rp' => $r->total_rp[$x],
-                    'admin' => Auth::user()->name,
-                    'urutan' => $nota_t,
-                    'urutan_customer' => $urutan_cus,
-                    'driver' => $r->driver,
-                    'lokasi' => 'alpa'
-                ];
-                DB::table('invoice_telur')->insert($data);
-            }
+
+            $data = [
+                'tgl' => $r->tgl,
+                'id_customer' => $r->customer,
+                'tipe' => $r->tipe[$x],
+                'no_nota' => 'TM' . $nota_t,
+                'id_produk' => $r->id_produk[$x],
+                'pcs' => $r->pcs[$x],
+                'kg' => $r->kg[$x],
+                'ikat' => $r->ikat[$x],
+                'kg_jual' => $r->kg_jual[$x],
+                'rp_satuan' => $r->rp_satuan[$x],
+                'total_rp' => $r->total_rp[$x],
+                'admin' => Auth::user()->name,
+                'urutan' => $nota_t,
+                'urutan_customer' => $urutan_cus,
+                'driver' => 'kosong',
+                'lokasi' => 'mtd'
+            ];
+            DB::table('invoice_telur')->insert($data);
+
 
             $data = [
                 'id_telur' => $r->id_produk[$x],
@@ -182,76 +194,17 @@ class PenjualanController extends Controller
                 'pcs_kredit' => $r->pcs[$x],
                 'kg_kredit' => $r->kg[$x],
                 'admin' => Auth::user()->name,
-                'id_gudang' => '2',
+                'id_gudang' => '1',
                 'check' => 'Y',
-                'nota_transfer' => 'T' . $nota_t,
+                'nota_transfer' => 'TM' . $nota_t,
             ];
             DB::table('stok_telur')->insert($data);
         }
-        $max_akun = DB::table('jurnal')->latest('urutan')->where('id_akun', '517')->first();
-        $akun = DB::table('akun')->where('id_akun', '517')->first();
-
-        $customer = DB::table('customer')->where('id_customer', $r->customer)->first();
-
-        $urutan = empty($max_akun) ? '1001' : ($max_akun->urutan == 0 ? '1001' : $max_akun->urutan + 1);
         $data = [
-            'tgl' => $r->tgl,
-            'no_nota' => 'T' . $nota_t,
-            'id_akun' => '517',
-            'id_buku' => '6',
-            'ket' => 'Penjualan Telur ' . $customer->nm_customer . $urutan_cus,
-            'debit' => 0,
-            'kredit' => $r->total_penjualan,
-            'admin' => Auth::user()->name,
-            'no_urut' => $akun->inisial . '-' . $urutan,
-            'urutan' => $urutan,
+            'no_nota' => 'TM' . $nota_t,
+            'pcs' => $r->pcs_rak,
         ];
-        DB::table('jurnal')->insert($data);
-
-        $data = [
-            'tgl' => $r->tgl,
-            'no_nota' => 'T' . $nota_t,
-            'debit' => 0,
-            'kredit' => $r->total_penjualan,
-        ];
-        DB::table('bayar_telur')->insert($data);
-
-
-
-        for ($x = 0; $x < count($r->id_akun); $x++) {
-            $max_akun2 = DB::table('jurnal')->latest('urutan')->where('id_akun', $r->id_akun[$x])->first();
-            $akun2 = DB::table('akun')->where('id_akun', $r->id_akun[$x])->first();
-            $urutan2 = empty($max_akun2) ? '1001' : ($max_akun2->urutan == 0 ? '1001' : $max_akun2->urutan + 1);
-            $data = [
-                'tgl' => $r->tgl,
-                'no_nota' => 'T' . $nota_t,
-                'id_akun' => $r->id_akun[$x],
-                'id_buku' => '6',
-                'ket' => 'Penjualan Telur ' . $customer->nm_customer . $urutan_cus,
-                'debit' => $r->debit[$x],
-                'kredit' => $r->kredit[$x],
-                'admin' => Auth::user()->name,
-                'no_urut' => $akun2->inisial . '-' . $urutan2,
-                'urutan' => $urutan2,
-            ];
-            DB::table('jurnal')->insert($data);
-
-
-            if ($akun2->id_klasifikasi == '7') {
-                $nota = 'T' . $nota_t;
-                DB::table('invoice_telur')->where('no_nota', $nota)->update(['status' => 'unpaid']);
-            } else {
-                $data = [
-                    'tgl' => $r->tgl,
-                    'no_nota' => 'T' . $nota_t,
-                    'debit' => $r->debit[$x],
-                    'kredit' => $r->kredit[$x],
-                    'no_nota_piutang' => 'T' . $nota_t
-                ];
-                DB::table('bayar_telur')->insert($data);
-            }
-        }
-
+        DB::table('rak_telur_penjualan')->insert($data);
         return redirect()->route('penjualan_agrilaras')->with('sukses', 'Data berhasil ditambahkan');
     }
 
@@ -264,9 +217,10 @@ class PenjualanController extends Controller
             LEFT JOIN customer as c on c.id_customer = a.id_customer
             where a.no_nota = '$r->no_nota'
             "),
-            'head_invoice' => DB::selectOne("SELECT *
+            'head_invoice' => DB::selectOne("SELECT a.*, c.nm_customer,d.pcs as rak_tf
                 FROM invoice_telur as a
-                LEFT JOIN customer as c on c.id_customer = a.id_customer
+                LEFT JOIN customer as c on c.id_customer = if(a.id_customer = 0 , a.id_customer2, a.id_customer)
+                LEFT JOIN rak_telur_penjualan as d on d.no_nota = a.no_nota
                 where a.no_nota = '$r->no_nota'
             ")
         ];
@@ -297,12 +251,13 @@ class PenjualanController extends Controller
         $data = [
             'title' => 'Buat Invoice',
             'produk' => DB::table('telur_produk')->get(),
-            'customer' => DB::table('customer')->get(),
+            'customer' => DB::table('customer')->where('active', 'Y')->get(),
             'akun' => DB::table('akun')->whereIn('id_klasifikasi', ['1', '7'])->get(),
             'nota' => $r->no_nota,
-            'invoice2' => DB::selectOne("SELECT a.urutan, a.urutan_customer, a.tgl, a.id_customer, a.id_produk, a.tipe, a.driver, sum(a.total_rp) as total_rp FROM invoice_telur as a where a.no_nota='$r->no_nota'"),
-            'jurnal' => DB::select("SELECT * FROM jurnal as a where a.no_nota = '$r->no_nota' and a.id_akun != '517'"),
-            'jurnal2' => DB::selectOne("SELECT * FROM jurnal as a where a.no_nota = '$r->no_nota' and a.id_akun = '517'"),
+            'invoice2' => DB::selectOne("SELECT a.urutan, a.urutan_customer, a.tgl, a.id_customer, a.id_produk, a.tipe, a.driver, a.import, sum(a.total_rp) as total_rp FROM invoice_telur as a where a.no_nota='$r->no_nota'"),
+            'invoice' => DB::table('invoice_telur')->where('no_nota', $r->no_nota)->get(),
+            'rak' => DB::table('rak_telur_penjualan')->where('no_nota', $r->no_nota)->first(),
+
         ];
         return view('penjualan_agl.edit_invoice', $data);
     }
@@ -332,137 +287,60 @@ class PenjualanController extends Controller
     {
 
         DB::table('invoice_telur')->where('no_nota', $r->no_nota)->delete();
-        DB::table('jurnal')->where('no_nota', $r->no_nota)->delete();
-        DB::table('bayar_telur')->where('no_nota', $r->no_nota)->delete();
+        DB::table('stok_telur')->where('nota_transfer', $r->no_nota)->delete();
+        DB::table('rak_telur_penjualan')->where('no_nota', $r->no_nota)->delete();
 
-
-        $max = DB::table('invoice_telur')->latest('urutan')->first();
         $max_customer = DB::table('invoice_telur')->latest('urutan_customer')->where('id_customer', $r->customer)->first();
 
         if (empty($max_customer)) {
-            $urutan = '1';
+            $urutan_cus = '1';
         } else {
-            $urutan = $max_customer->urutan_customer + 1;
-        }
-
-        if ($r->id_customer == $r->customer) {
-            $urutan_cus = $r->urutan_customer;
-        } else {
-            $urutan_cus = $urutan;
+            $urutan_cus = $max_customer->urutan_customer + 1;
         }
 
         for ($x = 0; $x < count($r->id_produk); $x++) {
 
-            if ($r->tipe == 'kg') {
-                $data = [
-                    'tgl' => $r->tgl,
-                    'id_customer' => $r->customer,
-                    'tipe' => $r->tipe,
-                    'no_nota' => $r->no_nota,
-                    'id_produk' => $r->id_produk[$x],
-                    'pcs' => $r->pcs[$x],
-                    'kg' => $r->kg[$x],
-                    'kg_jual' => $r->kg_jual[$x],
-                    'rp_satuan' => $r->rp_satuan[$x],
-                    'total_rp' => $r->total_rp[$x],
-                    'admin' => Auth::user()->name,
-                    'urutan' => $r->urutan,
-                    'urutan_customer' => $urutan_cus,
-                    'driver' => $r->driver
-                ];
-                DB::table('invoice_telur')->insert($data);
-            } else {
-                $data = [
-                    'tgl' => $r->tgl,
-                    'id_customer' => $r->customer,
-                    'tipe' => $r->tipe,
-                    'no_nota' => $r->no_nota,
-                    'id_produk' => $r->id_produk[$x],
-                    'pcs' => $r->pcs[$x],
-                    'kg' => $r->kg[$x],
-                    'rp_satuan' => $r->rp_satuan[$x],
-                    'total_rp' => $r->total_rp[$x],
-                    'admin' => Auth::user()->name,
-                    'urutan' => $r->urutan,
-                    'urutan_customer' => $urutan_cus,
-                    'driver' => $r->driver
-                ];
-                DB::table('invoice_telur')->insert($data);
-            }
-        }
-
-        $max_akun = DB::table('jurnal')->latest('urutan')->where('id_akun', '517')->first();
-        $akun = DB::table('akun')->where('id_akun', '517')->first();
-
-        $urutan = empty($max_akun) ? '1001' : ($max_akun->urutan == 0 ? '1001' : $max_akun->urutan + 1);
-
-        $customer = DB::table('customer')->where('id_customer', $r->customer)->first();
-        $data = [
-            'tgl' => $r->tgl,
-            'no_nota' => $r->no_nota,
-            'id_akun' => '517',
-            'id_buku' => '6',
-            'ket' => 'Penjualan Telur ' . $customer->nm_customer . $urutan_cus,
-            'debit' => 0,
-            'kredit' => $r->total_penjualan,
-            'admin' => Auth::user()->name,
-            'no_urut' => $r->no_urut_penjualan,
-            'urutan' => $r->urutan_penjualan,
-        ];
-        DB::table('jurnal')->insert($data);
-
-        $data = [
-            'tgl' => $r->tgl,
-            'no_nota' => $r->no_nota,
-            'debit' => 0,
-            'kredit' => $r->total_penjualan,
-        ];
-        DB::table('bayar_telur')->insert($data);
-
-
-
-        for ($x = 0; $x < count($r->id_akun); $x++) {
-            $max_akun2 = DB::table('jurnal')->latest('urutan')->where('id_akun', $r->id_akun[$x])->first();
-            $akun2 = DB::table('akun')->where('id_akun', $r->id_akun[$x])->first();
-            $urutan2 = empty($max_akun2) ? '1001' : ($max_akun2->urutan == 0 ? '1001' : $max_akun2->urutan + 1);
-
-            if ($r->id_akun2[$x] == $r->id_akun[$x]) {
-                $uruan_jurnal = $r->urutan_jurnal[$x];
-            } else {
-                $uruan_jurnal = $urutan2;
-            }
 
             $data = [
                 'tgl' => $r->tgl,
+                'id_customer' => $r->customer,
+                'tipe' => $r->tipe[$x],
                 'no_nota' => $r->no_nota,
-                'id_akun' => $r->id_akun[$x],
-                'id_buku' => '6',
-                'ket' => 'Penjualan Telur ' . $customer->nm_customer . $urutan_cus,
-                'debit' => $r->debit[$x],
-                'kredit' => $r->kredit[$x],
+                'id_produk' => $r->id_produk[$x],
+                'pcs' => $r->pcs[$x],
+                'kg' => $r->kg[$x],
+                'ikat' => $r->ikat[$x],
+                'kg_jual' => $r->kg_jual[$x],
+                'rp_satuan' => $r->rp_satuan[$x],
+                'total_rp' => $r->total_rp[$x],
                 'admin' => Auth::user()->name,
-                'no_urut' => $akun2->inisial . '-' . $uruan_jurnal,
-                'urutan' => $uruan_jurnal,
+                'urutan' => $r->urutan,
+                'urutan_customer' => $urutan_cus,
+                'driver' => 'kosong',
+                'lokasi' => 'mtd',
+                'import' => $r->import
             ];
-            DB::table('jurnal')->insert($data);
+            DB::table('invoice_telur')->insert($data);
 
 
-            if ($akun2->id_klasifikasi == '7') {
-                $nota = $r->no_nota;
-                DB::table('invoice_telur')->where('no_nota', $nota)->update(['status' => 'unpaid']);
-            } else {
-                $data = [
-                    'tgl' => $r->tgl,
-                    'no_nota' => $r->no_nota,
-                    'debit' => $r->debit[$x],
-                    'kredit' => $r->kredit[$x],
-                    'no_nota_piutang' => $r->no_nota
-                ];
-                DB::table('bayar_telur')->insert($data);
-            }
+            $data = [
+                'id_telur' => $r->id_produk[$x],
+                'tgl' => $r->tgl,
+                'pcs_kredit' => $r->pcs[$x],
+                'kg_kredit' => $r->kg[$x],
+                'admin' => Auth::user()->name,
+                'id_gudang' => '1',
+                'check' => 'Y',
+                'nota_transfer' => $r->no_nota,
+            ];
+            DB::table('stok_telur')->insert($data);
         }
-
-        return redirect()->route('penjualan_agrilaras')->with('sukses', 'Data berhasil ditambahkan');
+        $data = [
+            'no_nota' => $r->no_nota,
+            'pcs' => $r->pcs_rak,
+        ];
+        DB::table('rak_telur_penjualan')->insert($data);
+        return redirect()->route('penjualan_agrilaras')->with('sukses', 'Data berhasil di edit');
     }
 
     public function delete_invoice_telur(Request $r)
@@ -470,6 +348,7 @@ class PenjualanController extends Controller
         DB::table('invoice_telur')->where('no_nota', $r->no_nota)->delete();
         DB::table('jurnal')->where('no_nota', $r->no_nota)->delete();
         DB::table('bayar_telur')->where('no_nota', $r->no_nota)->delete();
+        DB::table('stok_telur')->where('nota_transfer', $r->no_nota)->delete();
 
         return redirect()->route('penjualan_agrilaras')->with('sukses', 'Data berhasil ditambahkan');
     }

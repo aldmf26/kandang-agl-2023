@@ -394,6 +394,7 @@ Route::middleware('auth')->group(function () {
             Route::post('/penjualan_ayam', 'penjualan_ayam')->name('penjualan_ayam');
             Route::get('/cek_penjualan_ayam', 'cek_penjualan_ayam')->name('cek_penjualan_ayam');
             Route::get('/export_vitamin_accurate', 'export_vitamin_accurate')->name('export_vitamin_accurate');
+            Route::get('/export_penjualan_accurate', 'export_penjualan_accurate')->name('export_penjualan_accurate');
         });
 
 
