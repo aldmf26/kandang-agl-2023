@@ -143,7 +143,7 @@
                             $pcsTtl += $d->pcs;
                             $gr_butir += empty($d->pcs)
                                 ? '0'
-                                : number_format((($d->kg - $d->pcs / 180) * 1000) / $d->pcs, 0);
+                                : ($d->pcs == 0 ? 0 : number_format((($d->kg - $d->pcs / 180) * 1000) / $d->pcs, 0));
                             $kg_today += $d->kg - $d->pcs / 180 - ($d->kg_past - $d->pcs_past / 180);
                             $butir += $d->pcs - $d->pcs_past;
                             $dc_week += $d->mati_week + $d->jual_week;
@@ -180,7 +180,7 @@
                     <td align="center"
                         class="freeze-cell_td td_layer mgg {{ $d->mgg >= '85' ? 'text-danger fw-bold' : '' }}">
                         {{ $d->mgg }} <br> {{ $d->mgg_afkir }} <br>
-                        ({{ empty($d->mgg) ? 0 : number_format(($d->mgg / $d->mgg_afkir) * 100, 0) }}%) <br>
+                        ({{ empty($d->mgg) || empty($d->mgg_afkir) ? 0 : number_format(($d->mgg_afkir == 0 ? 0 : ($d->mgg / $d->mgg_afkir) * 100), 0) }}%) <br>
                     </td>
 
                     @php
@@ -211,7 +211,7 @@
                         class="tambah_populasi putih text-center"
                         data-bs-target="#tambah_populasi{{ auth()->user()->id == 28 ? 'no' : '' }}">
                         &nbsp; <br>{{ $d->stok_awal }} <br> {{ $d->stok_awal - $d->pop_kurang }} <br>
-                        {{ number_format((($d->stok_awal - $d->pop_kurang) / $d->stok_awal) * 100, 1) }}%
+                        {{ $d->stok_awal == 0 ? 0 : number_format((($d->stok_awal - $d->pop_kurang) / $d->stok_awal) * 100, 1) }}%
                     </td>
                     @php
                         $telur = DB::table('telur_produk')->get();
@@ -253,7 +253,7 @@
                         {{ number_format($d->kg, 1) }}
                     </td>
                     @php
-                        $gr_butir = empty($d->pcs)
+                        $gr_butir = empty($d->pcs) || $d->pcs == 0
                             ? '0'
                             : number_format((($d->kg - $d->pcs / 180) * 1000) / $d->pcs, 0);
                     @endphp
@@ -320,7 +320,7 @@
                         GROUP BY a.id_kandang");
                         $gr_pakan = DB::selectOne("SELECT sum(a.gr) as ttl, a.no_nota FROM tb_pakan_perencanaan as a
                         where a.id_kandang = '$d->id_kandang' and a.tgl = '$tgl' group by a.id_kandang");
-                        $gr_perekor = empty($pakan) ? 0 : $pakan->total / $pop;
+                        $gr_perekor = empty($pakan) || $pop == 0 ? 0 : $pakan->total / $pop;
                         $kelas = $gr_perekor < 100 ? 'merah' : 'putih';
                     @endphp
                     <td style="background-color: {{ $bgZona }} !important" data-bs-toggle="modal"
@@ -368,7 +368,7 @@
                             {{ number_format($v->pcs_kredit, 1) }}
                             {{ $v->nm_satuan }} |
                             @if ($v->kategori == 'obat_ayam')
-                                {{ number_format($v->pcs_kredit / ($d->stok_awal - $d->pop_kurang), 1) }} PerAyam,
+                                {{ ($d->stok_awal - $d->pop_kurang) == 0 ? 0 : number_format($v->pcs_kredit / ($d->stok_awal - $d->pop_kurang), 1) }} PerAyam,
                             @else
                                 {{ $v->campuran }} {{ $v->satuan_campuran }},
                             @endif
@@ -398,7 +398,7 @@
                     $total_kilo += $ttlKg;
                     $total_kilo_kemaren += $ttlKgKemarin;
                     $total_kg_pakan += empty($gr_pakan) ? 0 : $gr_pakan->ttl / 1000;
-                    $totalGrPcs += empty($ttlKg) ? 0 : ($ttlKg * 1000) / $ttlPcs;
+                    $totalGrPcs += empty($ttlKg) || empty($ttlPcs) ? 0 : ($ttlKg * 1000) / $ttlPcs;
 
                     $total_pcs_kemarin_dan_hariini += $ttlPcs - $ttlPcsKemarin;
                 @endphp
@@ -428,7 +428,7 @@
             <th style="background-color: {{ $bgZona }} !important" class="text-end">
                 {{ number_format($ayam_awal, 0) }}
                 <br>{{ number_format($ayam_akhir, 0) }} <br>
-                {{ number_format(($ayam_akhir / $ayam_awal) * 100, 0) }} %
+                {{ $ayam_awal == 0 ? 0 : number_format(($ayam_akhir / $ayam_awal) * 100, 0) }} %
             </th>
             <th class="text-end">{{ number_format($kgTtl, 2) }}
                 <br>
@@ -436,7 +436,7 @@
                 <br>
                 {{ number_format($kg_kotor, 2) }}
             </th>
-            <th class="text-end">{{ $gr_butir / 4 }}</th>
+            <th class="text-end">{{ is_numeric($gr_butir) ? $gr_butir / 4 : 0 }}</th>
             <th class="text-end">{{ number_format($kg_today, 1) }}
                 <br>
                 {{ number_format($butir, 0) }}
