@@ -613,7 +613,8 @@ class DashboardKandangController extends Controller
         $tbl = DB::select("SELECT 
         *, 
         sum(a.total_rp) as total, 
-        count(*) as ttl_produk 
+        count(*) as ttl_produk,
+        a.tgl as tgl_jual
       FROM 
         `penjualan_agl` as a 
         LEFT JOIN tb_produk as b on a.id_produk = b.id_produk
@@ -2119,14 +2120,26 @@ class DashboardKandangController extends Controller
             $sheet1->setCellValue("G$kolom", ($birdTotal) > 0 && $pop > 0 ? round((($death + $culling + $afkir) / $pop) * 100, 2) : 0)
                 ->setCellValue("H$kolom", $kum)
                 ->setCellValue("I$kolom", round($d->kg_pakan / 1000, 1))
-                ->setCellValue("J$kolom", round((round($d->kg_pakan / 1000, 1) / ($populasi - $kum)) * 1000, 2))
+                ->setCellValue(
+                    "J$kolom",
+                    empty($d->kg_pakan) || ($populasi - $kum) == 0
+                        ? 0
+                        : round((round($d->kg_pakan / 1000, 1) / ($populasi - $kum)) * 1000, 2)
+                )
+
                 ->setCellValue("K$kolom", round($cum_kg, 2))
                 ->setCellValue("L$kolom", $d->normalPcs ?? 0)
                 ->setCellValue("M$kolom", $d->abnormalPcs ?? 0)
                 ->setCellValue("N$kolom", empty($d->normalPcs) ? 0 : round(($d->abnormalPcs / $d->normalPcs) * 100, 2) . "%")
 
                 ->setCellValue("O$kolom", $abnor + $normal)
-                ->setCellValue("P$kolom", $pop > 0 ? round((($abnor + $normal) / ($populasi - $kum)) * 100, 2) : 0)
+                ->setCellValue(
+                    "P$kolom",
+                    ($pop > 0 && ($populasi - $kum) != 0)
+                        ? round((($abnor + $normal) / ($populasi - $kum)) * 100, 2)
+                        : 0
+                )
+
                 ->setCellValue("Q$kolom", $cum_ttlpcs);
             $ttlPcs = $d->normalPcs ?? 0 + $d->abnormalPcs ?? 0;
             $weightKg = empty($d->kg) ? 0 : $d->kg - ($d->pcs / 180);

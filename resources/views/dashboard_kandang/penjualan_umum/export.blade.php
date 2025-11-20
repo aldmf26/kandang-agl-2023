@@ -13,12 +13,12 @@
         </tr>
     </thead>
     <tbody>
-        
+
         @foreach ($penjualan as $no => $d)
             <tr>
                 <td>{{ $no + 1 }}</td>
-                <td>{{$d->kode}}-{{ $d->urutan }}</td>
-                <td>{{ tanggal($d->tgl) }}</td>
+                <td>{{ $d->kode }}-{{ $d->urutan }}</td>
+                <td>{{ tanggal($d->tgl_jual) }}</td>
                 <td>{{ $d->id_customer }}</td>
                 <td>{{ $d->nm_produk }}</td>
                 <td>{{ $d->rp_satuan }}</td>
