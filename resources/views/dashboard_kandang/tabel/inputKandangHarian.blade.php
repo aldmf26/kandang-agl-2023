@@ -143,7 +143,9 @@
                             $pcsTtl += $d->pcs;
                             $gr_butir += empty($d->pcs)
                                 ? '0'
-                                : ($d->pcs == 0 ? 0 : number_format((($d->kg - $d->pcs / 180) * 1000) / $d->pcs, 0));
+                                : ($d->pcs == 0
+                                    ? 0
+                                    : number_format((($d->kg - $d->pcs / 180) * 1000) / $d->pcs, 0));
                             $kg_today += $d->kg - $d->pcs / 180 - ($d->kg_past - $d->pcs_past / 180);
                             $butir += $d->pcs - $d->pcs_past;
                             $dc_week += $d->mati_week + $d->jual_week;
@@ -180,7 +182,8 @@
                     <td align="center"
                         class="freeze-cell_td td_layer mgg {{ $d->mgg >= '85' ? 'text-danger fw-bold' : '' }}">
                         {{ $d->mgg }} <br> {{ $d->mgg_afkir }} <br>
-                        ({{ empty($d->mgg) || empty($d->mgg_afkir) ? 0 : number_format(($d->mgg_afkir == 0 ? 0 : ($d->mgg / $d->mgg_afkir) * 100), 0) }}%) <br>
+                        ({{ empty($d->mgg) || empty($d->mgg_afkir) ? 0 : number_format($d->mgg_afkir == 0 ? 0 : ($d->mgg / $d->mgg_afkir) * 100, 0) }}%)
+                        <br>
                     </td>
 
                     @php
@@ -253,9 +256,10 @@
                         {{ number_format($d->kg, 1) }}
                     </td>
                     @php
-                        $gr_butir = empty($d->pcs) || $d->pcs == 0
-                            ? '0'
-                            : number_format((($d->kg - $d->pcs / 180) * 1000) / $d->pcs, 0);
+                        $gr_butir =
+                            empty($d->pcs) || $d->pcs == 0
+                                ? '0'
+                                : number_format((($d->kg - $d->pcs / 180) * 1000) / $d->pcs, 0);
                     @endphp
                     <td data-bs-toggle="modal" id_kandang="{{ $d->id_kandang }}" nm_kandang="{{ $d->nm_kandang }}"
                         class="tambah_telur text-center "
@@ -368,7 +372,8 @@
                             {{ number_format($v->pcs_kredit, 1) }}
                             {{ $v->nm_satuan }} |
                             @if ($v->kategori == 'obat_ayam')
-                                {{ ($d->stok_awal - $d->pop_kurang) == 0 ? 0 : number_format($v->pcs_kredit / ($d->stok_awal - $d->pop_kurang), 1) }} PerAyam,
+                                {{ $d->stok_awal - $d->pop_kurang == 0 ? 0 : number_format($v->pcs_kredit / ($d->stok_awal - $d->pop_kurang), 1) }}
+                                PerAyam,
                             @else
                                 {{ $v->campuran }} {{ $v->satuan_campuran }},
                             @endif

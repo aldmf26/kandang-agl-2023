@@ -2862,18 +2862,28 @@ class DashboardKandangController extends Controller
             ->setCellValue('F1', 'Gudang')
             ->setCellValue('G1', 'Tipe Penyesuaian')
             ->setCellValue('H1', 'Nama Dept Barang')
-            ->setCellValue('I1', 'No Proyek Barang');
+            ->setCellValue('I1', 'No Proyek Barang')
+            ->setCellValue('J1', 'Keterangan')
+            ->setCellValue('K1', 'No. Seri/Produksi Aktif')
+            ->setCellValue('L1', 'Merupakan No. Produksi')
+            ->setCellValue('M1', 'Nomor Unik/Produksi')
+            ->setCellValue('N1', 'Kuantitas Nomor Produksi');
         $kolom = 2;
         foreach ($produk as $i => $p) {
             $sheet->setCellValue("A$kolom", $p->nm_produk)
                 ->setCellValue("B$kolom", $p->kode_accurate)
-                ->setCellValue("C$kolom", $p->nm_satuan)
+                ->setCellValue("C$kolom", '')
                 ->setCellValue("D$kolom", $p->qty)
                 ->setCellValue("E$kolom", 0)
                 ->setCellValue("F$kolom", "Martadah")
                 ->setCellValue("G$kolom", 'Pengurangan')
                 ->setCellValue("H$kolom", 'Kandang ' . $kandang->nm_kandang)
-                ->setCellValue("I$kolom", '');
+                ->setCellValue("I$kolom", '')
+                ->setCellValue("J$kolom", '')
+                ->setCellValue("K$kolom", '')
+                ->setCellValue("L$kolom", '')
+                ->setCellValue("M$kolom", '')
+                ->setCellValue("N$kolom", '');
             $kolom++;
         }
         if ($r->id_produk == 'pakan') {
