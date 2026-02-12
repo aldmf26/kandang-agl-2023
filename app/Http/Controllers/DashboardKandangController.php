@@ -2867,7 +2867,8 @@ class DashboardKandangController extends Controller
             ->setCellValue('K1', 'No. Seri/Produksi Aktif')
             ->setCellValue('L1', 'Merupakan No. Produksi')
             ->setCellValue('M1', 'Nomor Unik/Produksi')
-            ->setCellValue('N1', 'Kuantitas Nomor Produksi');
+            ->setCellValue('N1', 'Kuantitas Nomor Produksi')
+            ->setCellValue('O1', 'Tanggal Kadaluarsa');
         $kolom = 2;
         foreach ($produk as $i => $p) {
             $sheet->setCellValue("A$kolom", $p->nm_produk)
@@ -2883,7 +2884,8 @@ class DashboardKandangController extends Controller
                 ->setCellValue("K$kolom", '')
                 ->setCellValue("L$kolom", '')
                 ->setCellValue("M$kolom", '')
-                ->setCellValue("N$kolom", '');
+                ->setCellValue("N$kolom", '')
+                ->setCellValue("O$kolom", '');
             $kolom++;
         }
         if ($r->id_produk == 'pakan') {
@@ -2903,7 +2905,7 @@ class DashboardKandangController extends Controller
 
 
         $batas = $kolom - 1;
-        $sheet->getStyle("A1:I$batas")->applyFromArray($style);
+        $sheet->getStyle("A1:O$batas")->applyFromArray($style);
 
         // obat pakan
 
