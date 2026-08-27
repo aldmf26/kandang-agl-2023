@@ -18,7 +18,7 @@ class DashboardKandangController extends Controller
     protected $tgl1, $tgl2, $period, $produk, $gudang;
     public function __construct(Request $r)
     {
-        $this->produk = Produk::with('satuan')->where([['kontrol_stok', 'Y'], ['kategori_id', 3]])->get();
+        $this->produk = Produk::with('satuan')->where([['kontrol_stok', 'Y'], ['kategori_id', 1]])->get();
         $this->gudang = Gudang::where('kategori_id', 1)->get();
         if (empty($r->period)) {
             $this->tgl1 = date('Y-m-01');
