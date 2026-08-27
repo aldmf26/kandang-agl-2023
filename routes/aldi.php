@@ -327,6 +327,7 @@ Route::middleware('auth')->group(function () {
             Route::post('/tambah_karung', 'tambah_karung')->name('tambah_karung');
 
             // perencanaan
+            Route::get('/perencanaan', 'perencanaan')->name('perencanaan');
             Route::get('/load_perencanaan/{id_kandang}', 'load_perencanaan')->name('load_perencanaan');
             Route::post('/tambah_perencanaan', 'tambah_perencanaan')->name('tambah_perencanaan');
 

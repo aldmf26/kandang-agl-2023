@@ -20,9 +20,11 @@
                     {{ $populasi }} | Pakan/Gr :
                     {{ number_format($pakan->total / $populasi, 0) }}
                     | {{ $umur->mgg + 1 }} Minggu</h4>
-                <a href="#" id_kandang="{{ $id_kandang }}" tgl="{{ $tgl_per }}" class="btn  btn-primary float-end "
-                    id="edit_per"><i class="fas fa-edit"></i>
-                    Edit</a>
+                @if (empty($hideEdit))
+                    <a href="#" id_kandang="{{ $id_kandang }}" tgl="{{ $tgl_per }}"
+                        class="btn btn-primary float-end" id="edit_per"><i class="fas fa-edit"></i>
+                        Edit</a>
+                @endif
             </div>
         </div>
     </div>

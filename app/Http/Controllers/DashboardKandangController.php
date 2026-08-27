@@ -634,14 +634,21 @@ class DashboardKandangController extends Controller
 
     public function add_penjualan_umum()
     {
-        $kd_produk = Produk::latest('kd_produk')->first();
+        // kd_produk berisi format campuran (contoh: "1", "U-024", "V-056").
+        // Ambil hanya kode numerik agar penambahan kode produk tidak melakukan
+        // operasi aritmetika terhadap string pada PHP 8.
+        $kdProdukTerakhir = DB::table('tb_produk')
+            ->whereRaw("kd_produk REGEXP '^[0-9]+$'")
+            ->orderByRaw('CAST(kd_produk AS UNSIGNED) DESC')
+            ->value('kd_produk');
+
         $nota = buatNota('penjualan_agl', 'urutan');
         $data = [
             'title' => 'Tambah Penjualan Umum',
             'customer' => DB::table('customer')->get(),
             'produk' => $this->produk,
             'no_nota' => $nota,
-            'kd_produk' => empty($kd_produk) ? 1 : $kd_produk->kd_produk + 1,
+            'kd_produk' => $kdProdukTerakhir === null ? 1 : (int) $kdProdukTerakhir + 1,
             'satuan' => DB::table('tb_satuan')->get(),
             'gudang' => $this->gudang,
         ];
@@ -1524,6 +1531,19 @@ class DashboardKandangController extends Controller
         return view('dashboard_kandang.modal.detail_perencanaan', $data);
     }
 
+    public function perencanaan()
+    {
+        $data = [
+            'title' => 'History Perencanaan',
+            'kandang' => DB::table('kandang')
+                ->orderBy('selesai', 'ASC')
+                ->orderBy('nm_kandang', 'ASC')
+                ->get(),
+        ];
+
+        return view('dashboard_kandang.history.perencanaan', $data);
+    }
+
     public function getQueryObatPerencanaan($tgl, $id_kandang, $kategori)
     {
         return DB::table('tb_obat_perencanaan as a')
@@ -1549,6 +1569,11 @@ class DashboardKandangController extends Controller
 
     public function viewHistoryPerencanaan(Request $r)
     {
+        $r->validate([
+            'tgl' => ['required', 'date'],
+            'id_kandang' => ['required', 'integer', 'exists:kandang,id_kandang'],
+        ]);
+
         $id_kandang = $r->id_kandang;
         $tgl = $r->tgl;
 
@@ -1563,6 +1588,10 @@ class DashboardKandangController extends Controller
         $pakan = DB::selectOne("SELECT *,sum(gr) as total FROM tb_pakan_perencanaan as a 
                     WHERE a.tgl = '$tgl' AND a.id_kandang = '$id_kandang' 
                     GROUP BY a.id_kandang");
+
+        if (empty($pakan)) {
+            return '<div class="alert alert-warning">Data perencanaan pada tanggal dan kandang tersebut tidak ditemukan.</div>';
+        }
 
         $umur = DB::selectOne("SELECT TIMESTAMPDIFF(WEEK, a.chick_in, '$tgl') as mgg FROM kandang as a 
         WHERE a.id_kandang = '$id_kandang'");
@@ -1590,6 +1619,7 @@ class DashboardKandangController extends Controller
             'obat_pakan' => $obat_pakan,
             'obat_air' => $obat_air,
             'obat_ayam' => $obat_ayam,
+            'hideEdit' => $r->boolean('history_page'),
         ];
         return view("dashboard_kandang.history.hasilPerencanaan", $data);
     }
