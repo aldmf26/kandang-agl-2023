@@ -49,7 +49,20 @@ class PenjualanController extends Controller
         $tgl2 =  $this->tgl2;
 
         $data =  [
-            'title' => 'Penjualan Agrilaras',
+            'title' => 'Penjualan',
+            'tgl1' => $tgl1,
+            'tgl2' => $tgl2,
+        ];
+        return view('penjualan_agl.index_new', $data);
+    }
+
+    public function penjualan_telur(Request $r)
+    {
+        $tgl1 =  $this->tgl1;
+        $tgl2 =  $this->tgl2;
+
+        $data =  [
+            'title' => 'Penjualan Telur',
             'tgl1' => $tgl1,
             'tgl2' => $tgl2,
             'invoice' => DB::select("SELECT a.no_nota, a.tgl, a.tipe, a.admin, b.nm_customer, sum(a.total_rp) as ttl_rp, a.status, c.debit_bayar , c.kredit_bayar, a.urutan_customer, a.driver, a.lokasi, d.pcs as rak_tf, a.import
@@ -67,7 +80,7 @@ class PenjualanController extends Controller
             ")
 
         ];
-        return view('penjualan_agl.index', $data);
+        return view('penjualan_agl.penjualan_telur', $data);
     }
     public function plus_customer(Request $r)
     {

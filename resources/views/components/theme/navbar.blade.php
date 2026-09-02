@@ -9,7 +9,13 @@
                         <span>Dashboard</span>
                     </a>
                 </li>
-                @php
+                <li class="menu-item">
+                    <a href="{{ route('penjualan.index') }}"
+                        class='menu-link {{ request()->route()->getName() == 'penjualan.index' ? 'active_navbar_new' : '' }}'>
+                        <span>Penjualan</span>
+                    </a>
+                </li>
+                {{-- @php
                     $navbar = DB::table('navbar_kandang')->orderBy('urutan', 'ASC')->get();
 
                 @endphp
@@ -26,7 +32,7 @@
                             <span>{{ ucwords($d->nama) }}</span>
                         </a>
                     </li>
-                @endforeach
+                @endforeach --}}
             </ul>
         </div>
     </nav>

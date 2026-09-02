@@ -250,11 +250,35 @@ class DashboardKandangController extends Controller
 
     public function tambah_populasi(Request $r)
     {
+        // Validasi input
+        $r->validate([
+            'id_kandang' => 'required|array',
+            'id_kandang.*' => 'required|integer',
+            'tgl' => 'required|array',
+            'tgl.*' => 'required|date',
+            'mati' => 'required|array',
+            'mati.*' => 'required|numeric|min:0',
+            'jual' => 'required|array',
+            'jual.*' => 'required|numeric|min:0',
+            'afkir' => 'required|array',
+            'afkir.*' => 'required|numeric|min:0',
+        ]);
+
         $jual = 0;
         $cost_ayam = 0;
         for ($x = 0; $x < count($r->id_kandang); $x++) {
             DB::table('populasi')->where([['id_kandang', $r->id_kandang[$x]], ['tgl', $r->tgl[$x]]])->delete();
             $kandang = DB::table('kandang')->where('id_kandang', $r->id_kandang[$x])->first();
+
+            // Cek jika kandang tidak ditemukan
+            if (!$kandang) {
+                return redirect()->route('dashboard_kandang.index')->with('error', 'Kandang tidak ditemukan');
+            }
+
+            // Cek division by zero - jika stok_awal = 0 atau NULL
+            if (empty($kandang->stok_awal) || $kandang->stok_awal == 0) {
+                return redirect()->route('dashboard_kandang.index')->with('error', 'Stok awal kandang ' . $kandang->nm_kandang . ' tidak boleh 0. Silakan update data kandang terlebih dahulu.');
+            }
 
             $cost = $kandang->rupiah / $kandang->stok_awal;
 
@@ -273,30 +297,100 @@ class DashboardKandangController extends Controller
             $cost_ayam += ($r->mati[$x] + $r->afkir[$x] + $r->jual[$x]) * $cost;
         }
 
-        DB::table('jurnal')->where('no_nota', 'PPL-' . date('Ymd'))->delete();
+        $nomorTransaksi = 'PPL-' . date('Ymd', strtotime($tgl));
+        $tipeTransaksi = 'Penyesuaian Ayam';
+        $akunDebit = DB::table('akun_perkiraan')
+            ->where('nama', 'Biaya Pokok Penjualan Telur (Ayam)')
+            ->where('aktif', 1)
+            ->first();
+        $akunKredit = DB::table('akun_perkiraan')
+            ->where('nama', 'Persediaan Ayam')
+            ->where('aktif', 1)
+            ->first();
 
-        $jurnal_debit = [
-            'tgl' => $tgl,
-            'id_akun' => 108,
-            'debit' => $cost_ayam,
-            'kredit' => 0,
-            'no_nota' => 'PPL-' . date('Ymd'),
-            'id_buku' => 4,
-            'ket' => 'Penyesuaian Ayam',
-            'admin' => auth()->user()->name
-        ];
-        DB::table('jurnal')->insert($jurnal_debit);
-        $jurnal_kredit = [
-            'tgl' => $tgl,
-            'id_akun' => 107,
-            'debit' => 0,
-            'kredit' => $cost_ayam,
-            'no_nota' => 'PPL-' . date('Ymd'),
-            'id_buku' => 4,
-            'ket' => 'Penyesuaian Ayam',
-            'admin' => auth()->user()->name
-        ];
-        DB::table('jurnal')->insert($jurnal_kredit);
+        if (!$akunDebit || !$akunKredit) {
+            return redirect()->route('dashboard_kandang.index')->with(
+                'error',
+                'Akun Persediaan Ayam atau Biaya Pokok Penjualan Telur (Ayam) belum tersedia di akun perkiraan.'
+            );
+        }
+
+        DB::transaction(function () use (
+            $nomorTransaksi,
+            $tipeTransaksi,
+            $tgl,
+            $cost_ayam,
+            $akunDebit,
+            $akunKredit
+        ) {
+            // Hapus jurnal pembukuan baru sebelumnya agar penyimpanan ulang tidak menggandakan jurnal.
+            $batchIds = DB::table('jurnal_perkiraan')
+                ->where('nomor_transaksi', $nomorTransaksi)
+                ->where('tipe_transaksi', $tipeTransaksi)
+                ->pluck('id_impor_jurnal_perkiraan')
+                ->unique();
+
+            DB::table('jurnal_perkiraan')
+                ->where('nomor_transaksi', $nomorTransaksi)
+                ->where('tipe_transaksi', $tipeTransaksi)
+                ->delete();
+
+            foreach ($batchIds as $batchId) {
+                if (!DB::table('jurnal_perkiraan')->where('id_impor_jurnal_perkiraan', $batchId)->exists()) {
+                    DB::table('impor_jurnal_perkiraan')
+                        ->where('id_impor_jurnal_perkiraan', $batchId)
+                        ->delete();
+                }
+            }
+
+            // Bersihkan jurnal lama untuk transaksi ini karena pencatatan sudah pindah ke jurnal perkiraan.
+            DB::table('jurnal')->where('no_nota', $nomorTransaksi)->delete();
+
+            $sekarang = now();
+            $batchId = DB::table('impor_jurnal_perkiraan')->insertGetId([
+                'nama_file' => $tipeTransaksi . ' ' . $nomorTransaksi,
+                'hash_file' => hash('sha256', strtolower($tipeTransaksi) . '|' . $nomorTransaksi),
+                'periode_awal' => $tgl,
+                'periode_akhir' => $tgl,
+                'jumlah_transaksi' => 1,
+                'jumlah_detail' => 2,
+                'total_debit' => round($cost_ayam, 2),
+                'total_kredit' => round($cost_ayam, 2),
+                'status' => 'aktif',
+                'diimpor_oleh' => auth()->id(),
+                'created_at' => $sekarang,
+                'updated_at' => $sekarang,
+            ]);
+
+            DB::table('jurnal_perkiraan')->insert([
+                [
+                    'id_impor_jurnal_perkiraan' => $batchId,
+                    'id_akun_perkiraan' => $akunDebit->id_akun_perkiraan,
+                    'tanggal' => $tgl,
+                    'nomor_transaksi' => $nomorTransaksi,
+                    'tipe_transaksi' => $tipeTransaksi,
+                    'urutan_detail' => 1,
+                    'deskripsi' => 'Biaya pokok penjualan telur dari pengurangan populasi ayam',
+                    'debit' => round($cost_ayam, 2),
+                    'kredit' => 0,
+                    'created_at' => $sekarang,
+                    'updated_at' => $sekarang,
+                ],
+                [
+                    'id_impor_jurnal_perkiraan' => $batchId,
+                    'id_akun_perkiraan' => $akunKredit->id_akun_perkiraan,
+                    'tanggal' => $tgl,
+                    'nomor_transaksi' => $nomorTransaksi,
+                    'tipe_transaksi' => $tipeTransaksi,
+                    'urutan_detail' => 2,
+                    'deskripsi' => 'Pengurangan persediaan ayam',
+                    'debit' => 0,
+                    'kredit' => round($cost_ayam, 2),
+                    'created_at' => $sekarang,
+                    'updated_at' => $sekarang,
+                ],
+            ]);
+        });
 
         DB::table('stok_ayam')->where([['id_gudang', 1], ['tgl', $tgl], ['transfer',  'T']])->delete();
         DB::table('stok_ayam')->insert([

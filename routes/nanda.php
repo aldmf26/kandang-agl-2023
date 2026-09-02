@@ -266,6 +266,8 @@ Route::controller(NeracaController::class)->group(function () {
 });
 
 Route::controller(PenjualanController::class)->group(function () {
+    Route::get('/penjualan', 'index')->name('penjualan.index');
+    Route::get('/penjualan_telur', 'penjualan_telur')->name('penjualan.telur');
     Route::get('/penjualan_agrilaras', 'index')->name('penjualan_agrilaras');
     Route::get('/tbh_invoice_telur', 'tbh_invoice_telur')->name('tbh_invoice_telur');
     Route::get('/loadkginvoice', 'loadkginvoice')->name('loadkginvoice');

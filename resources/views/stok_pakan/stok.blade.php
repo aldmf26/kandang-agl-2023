@@ -24,8 +24,8 @@
                     <div class="dropdown-menu bg-primary" style="">
                         <h6 class="dropdown-header text-white">Data Aksi</h6>
 
-                        <a data-bs-toggle="modal" data-bs-target="#tbh_pakan"
-                            class="text-white tbh_pakan dropdown-item hoverbtn" href="#"> Tambah Pakan</a>
+                        {{-- <a data-bs-toggle="modal" data-bs-target="#tbh_pakan"
+                            class="text-white tbh_pakan dropdown-item hoverbtn" href="#"> Tambah Pakan</a> --}}
 
                         <a onclick="event.preventDefault();" class="text-white opnme_pakan dropdown-item hoverbtn"
                             href="#">Opname</a>
@@ -93,8 +93,8 @@
                     <div class="dropdown-menu bg-primary" style="">
                         <h6 class="dropdown-header text-white">Data Aksi</h6>
 
-                        <a data-bs-toggle="modal" data-bs-target="#tbh_pakan"
-                            class="text-white tbh_vitamin dropdown-item hoverbtn" href="#"> Tambah Pakan</a>
+                        {{-- <a data-bs-toggle="modal" data-bs-target="#tbh_pakan"
+                            class="text-white tbh_vitamin dropdown-item hoverbtn" href="#"> Tambah Pakan</a> --}}
                         <a onclick="event.preventDefault();" class="text-white opnme_vitamin dropdown-item hoverbtn"
                             href="#">Opname</a>
                         <a onclick="event.preventDefault();" data-bs-toggle="modal" data-bs-target="#history_pakvit"
