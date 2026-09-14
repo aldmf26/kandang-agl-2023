@@ -37,7 +37,14 @@ class ObatPakanController extends Controller
 
             'total_populasi' => $pop,
 
-            'vaksin' => DB::table('tb_vaksin_perencanaan as a')->join('kandang as b', 'a.id_kandang', 'b.id_kandang')->get(),
+            'vaksin' => DB::table('tb_produk_perencanaan as b')
+                ->leftJoin('stok_produk_perencanaan as a', 'a.id_pakan', '=', 'b.id_produk')
+                ->leftJoin('tb_satuan as c', 'c.id_satuan', '=', 'b.dosis_satuan')
+                ->where('b.kategori', 'vaksin')
+                ->groupBy('b.id_produk', 'b.nm_produk', 'c.nm_satuan')
+                ->orderBy('b.nm_produk')
+                ->selectRaw('b.id_produk as id_pakan, b.nm_produk, COALESCE(SUM(a.pcs), 0) as pcs_debit, COALESCE(SUM(a.pcs_kredit), 0) as pcs_kredit, c.nm_satuan')
+                ->get(),
 
         ];
         return view('stok_pakan.stok', $data);
@@ -58,10 +65,11 @@ class ObatPakanController extends Controller
         $tgl1 = $r->tgl1 ?? date('Y-m-01');
         $tgl2 = $r->tgl2 ?? date('Y-m-t');
 
-        $history = DB::select("SELECT a.h_opname,a.admin,a.tgl,a.id_pakan, b.nm_produk, sum(a.pcs) as pcs, sum(a.pcs_kredit) as pcs_kredit, c.nm_satuan
+        $history = DB::select("SELECT a.h_opname,a.admin,a.tgl,a.id_pakan, b.nm_produk, k.nm_kandang, sum(a.pcs) as pcs, sum(a.pcs_kredit) as pcs_kredit, c.nm_satuan
         FROM stok_produk_perencanaan as a 
         left join tb_produk_perencanaan as b on b.id_produk = a.id_pakan
         left join tb_satuan as c on c.id_satuan = b.dosis_satuan
+        left join kandang as k on k.id_kandang = a.id_kandang
         where a.tgl BETWEEN '$tgl1' AND '$tgl2' and a.id_pakan = '$r->id_pakan'
         group by a.id_stok_telur;");
 
@@ -296,17 +304,133 @@ class ObatPakanController extends Controller
 
     public function save_vaksin(Request $r)
     {
-        DB::table('tb_vaksin_perencanaan')->insertGetId([
-            'tgl' => $r->tgl,
-            'id_kandang' => $r->id_kandang,
-            'nm_vaksin' => $r->nm_vaksin,
-            'qty' => $r->stok,
-            'ttl_rp' => $r->ttl_rp,
-            'biaya_dll' => $r->biaya_dll,
-            'admin' => auth()->user()->name
+        $data = $r->validate([
+            'tgl' => ['required', 'date'],
+            'id_kandang' => ['required', 'integer', 'exists:kandang,id_kandang'],
+            'id_pakan' => ['required', 'integer', 'exists:tb_produk_perencanaan,id_produk'],
+            'stok' => ['required', 'numeric', 'min:0.01'],
         ]);
 
-        return redirect()->route('dashboard_kandang.index')->with('sukses', 'Data berhasil di simpan');
+        $produkVaksin = DB::table('tb_produk_perencanaan')
+            ->where('id_produk', $data['id_pakan'])
+            ->where('kategori', 'vaksin')
+            ->first();
+
+        if (!$produkVaksin) {
+            return redirect()->route('dashboard_kandang.index')
+                ->with('error', 'Produk yang dipilih bukan kategori vaksin.');
+        }
+
+        $akunVaksin = DB::table('akun_perkiraan')
+            ->where('aktif', 1)
+            ->where('nama', 'Vaksin Ayam Belum Terbiayakan')
+            ->first();
+        $akunBiayaVaksin = DB::table('akun_perkiraan')
+            ->where('aktif', 1)
+            ->where('nama', 'Biaya Pokok Penjualan Telur (Vaksin) Tanpa Stok')
+            ->first();
+
+        if (!$akunVaksin || !$akunBiayaVaksin) {
+            return redirect()->route('dashboard_kandang.index')->with(
+                'error',
+                'Akun Vaksin Ayam Belum Terbiayakan atau Biaya Pokok Penjualan Telur (Vaksin) Tanpa Stok belum tersedia/aktif.'
+            );
+        }
+
+        DB::transaction(function () use ($data, $produkVaksin, $akunVaksin, $akunBiayaVaksin) {
+            $namaKandang = DB::table('kandang')
+                ->where('id_kandang', $data['id_kandang'])
+                ->value('nm_kandang');
+            $keterangan = 'Pemakaian vaksin ' . $produkVaksin->nm_produk . ' - Kandang ' . $namaKandang;
+
+            $barisStok = DB::table('stok_produk_perencanaan')
+                ->where('id_pakan', $data['id_pakan'])
+                ->lockForUpdate()
+                ->get(['pcs', 'pcs_kredit', 'total_rp', 'biaya_dll']);
+
+            $stokTersedia = (float) $barisStok->sum(fn ($stok) => $stok->pcs - $stok->pcs_kredit);
+            if ($stokTersedia < $data['stok']) {
+                throw \Illuminate\Validation\ValidationException::withMessages([
+                    'stok' => 'Stok vaksin tidak mencukupi. Stok tersedia: ' . $stokTersedia,
+                ]);
+            }
+
+            $totalQtyMasuk = (float) $barisStok->sum('pcs');
+            $totalNilaiMasuk = (float) $barisStok->sum(
+                fn ($stok) => $stok->pcs > 0 ? $stok->total_rp + $stok->biaya_dll : 0
+            );
+            $hargaSatuan = $totalQtyMasuk > 0 ? $totalNilaiMasuk / $totalQtyMasuk : 0;
+            $nilaiPemakaian = round($hargaSatuan * $data['stok'], 2);
+
+            $notaTerakhir = DB::table('stok_produk_perencanaan')
+                ->where('no_nota', 'like', 'VAKKLR-%')
+                ->orderByDesc('id_stok_telur')
+                ->lockForUpdate()
+                ->value('no_nota');
+            $urutan = $notaTerakhir
+                ? ((int) str_replace('VAKKLR-', '', $notaTerakhir)) + 1
+                : 1000;
+            $noNota = 'VAKKLR-' . $urutan;
+
+            DB::table('stok_produk_perencanaan')->insert([
+                'id_kandang' => $data['id_kandang'],
+                'id_pakan' => $data['id_pakan'],
+                'pcs' => 0,
+                'pcs_kredit' => $data['stok'],
+                'total_rp' => $nilaiPemakaian,
+                'biaya_dll' => 0,
+                'tgl' => $data['tgl'],
+                'no_nota' => $noNota,
+                'admin' => auth()->user()->name,
+            ]);
+
+            $sekarang = now();
+            $batchId = DB::table('impor_jurnal_perkiraan')->insertGetId([
+                'nama_file' => 'Pemakaian Vaksin ' . $noNota,
+                'hash_file' => hash('sha256', strtolower('Pemakaian Vaksin') . '|' . $noNota),
+                'periode_awal' => $data['tgl'],
+                'periode_akhir' => $data['tgl'],
+                'jumlah_transaksi' => 1,
+                'jumlah_detail' => 2,
+                'total_debit' => $nilaiPemakaian,
+                'total_kredit' => $nilaiPemakaian,
+                'status' => 'aktif',
+                'diimpor_oleh' => auth()->id(),
+                'created_at' => $sekarang,
+                'updated_at' => $sekarang,
+            ]);
+
+            DB::table('jurnal_perkiraan')->insert([
+                [
+                    'id_impor_jurnal_perkiraan' => $batchId,
+                    'id_akun_perkiraan' => $akunBiayaVaksin->id_akun_perkiraan,
+                    'tanggal' => $data['tgl'],
+                    'nomor_transaksi' => $noNota,
+                    'tipe_transaksi' => 'Pemakaian Vaksin',
+                    'urutan_detail' => 1,
+                    'deskripsi' => $keterangan,
+                    'debit' => $nilaiPemakaian,
+                    'kredit' => 0,
+                    'created_at' => $sekarang,
+                    'updated_at' => $sekarang,
+                ],
+                [
+                    'id_impor_jurnal_perkiraan' => $batchId,
+                    'id_akun_perkiraan' => $akunVaksin->id_akun_perkiraan,
+                    'tanggal' => $data['tgl'],
+                    'nomor_transaksi' => $noNota,
+                    'tipe_transaksi' => 'Pemakaian Vaksin',
+                    'urutan_detail' => 2,
+                    'deskripsi' => $keterangan,
+                    'debit' => 0,
+                    'kredit' => $nilaiPemakaian,
+                    'created_at' => $sekarang,
+                    'updated_at' => $sekarang,
+                ],
+            ]);
+        });
+
+        return redirect()->route('dashboard_kandang.index')->with('sukses', 'Pemakaian vaksin dan jurnal berhasil disimpan');
     }
 
     public function history_pakvit(Request $r)

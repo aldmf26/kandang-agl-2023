@@ -20,6 +20,7 @@
         <tr>
             <td class="dhead">Tanggal</td>
             <td class="dhead">Nama Produk</td>
+            <td class="dhead">Kandang</td>
             <td class="dhead" style="text-align: right">Stok Masuk</td>
             <td class="dhead" style="text-align: right">Stok Keluar</td>
             <td class="dhead" style="text-align: right">Saldo</td>
@@ -38,6 +39,7 @@
             <tr>
                 <td>{{ tanggal($s->tgl) }}</td>
                 <td>{{ $s->nm_produk }}</td>
+                <td>{{ $s->nm_kandang ?? '-' }}</td>
                 <td align="right">{{ number_format($s->pcs, 0) }}</td>
                 <td align="right">{{ number_format($s->pcs_kredit, 0) }}</td>
                 <td align="right">{{ number_format($saldo, 0) }}</td>

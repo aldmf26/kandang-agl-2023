@@ -115,6 +115,10 @@ class DashboardKandangController extends Controller
             ORDER BY a.nm_kandang ASC;"),
             'telur' => DB::table('telur_produk')->get(),
             'produkPakan' => DB::table('tb_produk_perencanaan')->where('kategori', 'pakan')->get(),
+            'produkVaksin' => DB::table('tb_produk_perencanaan')
+                ->where('kategori', 'vaksin')
+                ->orderBy('nm_produk')
+                ->get(),
             'produk' => $this->produk,
             'stok_ayam' => DB::selectOne("SELECT sum(a.debit - a.kredit) as saldo_kandang FROM stok_ayam as a where a.id_gudang = '1' and a.jenis = 'ayam'"),
             'stok_rak' => DB::selectOne("SELECT sum(a.debit - a.kredit) as saldo FROM tb_rak_telur as a where a.id_gudang = '1'"),

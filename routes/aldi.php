@@ -406,6 +406,7 @@ Route::middleware('auth')->group(function () {
             Route::get('/penjualan_telur', 'penjualan_telur')->name('penjualan_telur');
             Route::get('/penjualan_telur_export/{tgl1}/{tgl2}', 'penjualan_telur_export')->name('penjualan_telur_export');
             Route::get('/tambah_baris_jual_mtd', 'tambah_baris_jual_mtd')->name('tambah_baris_jual_mtd');
+            Route::get('/tbh_pembayaran_perkiraan', 'tbh_pembayaran_perkiraan')->name('tbh_pembayaran_perkiraan');
             Route::get('/add_penjualan_telur', 'add_penjualan_telur')->name('add_penjualan_telur');
             Route::get('/edit_telur', 'edit_telur')->name('edit_telur');
             Route::get('/detail_penjualan_mtd', 'detail_penjualan_mtd')->name('detail_penjualan_mtd');

@@ -22,7 +22,7 @@
 </form>
 <form action="{{ route('dashboard_kandang.save_vaksin') }}" method="post">
     @csrf
-    <x-theme.modal title="Tambah vaksin" size="modal-lg" idModal="tbh_vaksin">
+    <x-theme.modal title="Pemakaian Vaksin" size="modal-lg" idModal="tbh_vaksin">
         <div class="row">
             <div class="col-lg-3">
                 <div class="form-group">
@@ -34,17 +34,15 @@
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th class="dhead" width="15%">Kandang</th>
+                    <th class="dhead" width="20%">Kandang</th>
                     <th class="dhead" width="15%">Nama Vaksin</th>
-                    <th class="dhead" width="10%">Stok</th>
-                    <th class="dhead" width="18%">Total Rp</th>
-                    <th class="dhead" width="18%">Biaya lain-lain & ongkir</th>
+                    <th class="dhead" width="10%">Qty</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
                     <td>
-                        <select name="id_kandang" class="form-control" id="">
+                        <select required name="id_kandang" class="form-control select2-vaksin">
                             <option value="">- Pilih Kandang -</option>
                             @foreach ($kandang as $d)
                                 <option value="{{ $d->id_kandang }}">{{ $d->nm_kandang }}</option>
@@ -52,19 +50,18 @@
                         </select>
                     </td>
                     <td>
-                        <input type="text" name="nm_vaksin" class="form-control">
-
+                        <select required name="id_pakan" class="form-control select2-vaksin">
+                            <option value="">- Pilih Vaksin -</option>
+                            @forelse ($produkVaksin as $d)
+                                <option value="{{ $d->id_produk }}">{{ $d->nm_produk }}</option>
+                            @empty
+                                <option value="" disabled>Belum ada produk kategori vaksin</option>
+                            @endforelse
+                        </select>
                     </td>
                     <td>
-                        <input type="text" name="stok" class="form-control">
+                        <input required type="number" min="0.01" step="0.01" name="stok" class="form-control">
 
-                    </td>
-                    <td>
-                        <input type="text" name="ttl_rp" class="form-control">
-
-                    </td>
-                    <td>
-                        <input type="text" name="biaya_dll" class="form-control">
                     </td>
                 </tr>
             </tbody>

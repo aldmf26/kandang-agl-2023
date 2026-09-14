@@ -11,7 +11,7 @@
 
 
     <x-slot name="cardBody">
-        <form action="{{ route('save_penjualan_telur') }}" method="post" class="save_jurnal">
+        <form action="{{ route('dashboard_kandang.save_penjualan_telur') }}" method="post" class="save_jurnal">
             @csrf
             <section class="row">
 
@@ -32,6 +32,7 @@
                             <option value="{{ $s->id_customer }}">{{ $s->nm_customer }}</option>
                         @endforeach
                     </select>
+                    <input type="hidden" name="id_customer2" value="">
                 </div>
 
                 <div class="col-lg-12">
@@ -49,7 +50,7 @@
                     <hr style="border: 1px solid blue">
 
 
-                    <div class="row">
+                    <div class="row align-items-center">
                         <div class="col-lg-6">
                             <h6>Total</h6>
                         </div>
@@ -57,7 +58,11 @@
                             <h6 class="total float-end">Rp 0 </h6>
                             <input type="hidden" class="total_semua_biasa text-end" name="total_penjualan">
                         </div>
-
+                        <div class="col-lg-12 mt-2">
+                            <div class="alert alert-info py-2 mb-0">
+                                Jurnal otomatis: Debit Piutang Usaha IDR dan Kredit Penjualan Telur.
+                            </div>
+                        </div>
                     </div>
 
 
@@ -65,7 +70,7 @@
             </section>
     </x-slot>
     <x-slot name="cardFooter">
-        <button type="submit" class="float-end btn btn-primary button-save ">Simpan</button>
+        <button type="submit" class="float-end btn btn-primary button-save " hidden>Simpan</button>
         <button class="float-end btn btn-primary btn_save_loading" type="button" disabled hidden>
             <span class="spinner-border spinner-border-sm " role="status" aria-hidden="true"></span>
             Loading...
@@ -79,6 +84,10 @@
     @section('scripts')
         <script>
             $(document).ready(function() {
+
+                $("#select2").on("change", function() {
+                    $("input[name='id_customer2']").val($(this).val());
+                });
 
                 function loadkg() {
                     $.ajax({
@@ -166,7 +175,8 @@
                         currency: "IDR",
                     });
 
-                    $(".total").text(totalRupiahall);
+                    $(".total").text(totalRupiahall)
+                    hitung_pembayaran();
 
 
                 });
@@ -231,6 +241,7 @@
 
 
                     $(".total").text(totalRupiahall)
+                    hitung_pembayaran();
 
 
 
@@ -291,6 +302,7 @@
 
 
                     $(".total").text(totalRupiahall)
+                    hitung_pembayaran();
 
                 });
 
@@ -310,7 +322,6 @@
                 $(document).on("click", ".remove_baris_kg", function() {
                     var delete_row = $(this).attr("count");
                     $(".baris" + delete_row).remove();
-                    $('.ttl_rpbiasa' + count).val(total);
                     var total_all = 0;
                     $(".ttl_rpbiasa").each(function() {
                         total_all += parseFloat($(this).val());
@@ -331,6 +342,7 @@
                         currency: "IDR",
                     });
                     $(".total").text(totalRupiahall)
+                    hitung_pembayaran();
                     $(".total_kredit").text(totalkreditall)
 
                     // selisih
@@ -388,6 +400,7 @@
                         currency: "IDR",
                     });
                     $(".total").text(totalRupiahall)
+                    hitung_pembayaran();
 
 
                 });
@@ -427,6 +440,7 @@
                         currency: "IDR",
                     });
                     $(".total").text(totalRupiahall)
+                    hitung_pembayaran();
 
 
                 });
@@ -441,6 +455,32 @@
 
 
 
+
+            });
+        </script>
+        <script>
+            $(document).ready(function() {
+
+                window.hitung_pembayaran = function() {
+                    var total_all = 0;
+                    $(".ttl_rpbiasa").each(function() {
+                        total_all += parseFloat($(this).val()) || 0;
+                    });
+                    var totalRupiahall = total_all.toLocaleString("id-ID", {
+                        style: "currency",
+                        currency: "IDR",
+                    });
+                    $(".total").text(totalRupiahall);
+                    $(".total_semua_biasa").val(Math.round(total_all));
+
+                    if (total_all > 0) {
+                        $(".button-save").removeAttr("hidden");
+                    } else {
+                        $(".button-save").attr("hidden", true);
+                    }
+                };
+
+                hitung_pembayaran();
 
             });
         </script>

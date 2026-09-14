@@ -96,6 +96,10 @@
                 $('.select2-pakan').select2({
                     dropdownParent: $('#opname_pakan .modal-content')
                 });
+                $('.select2-vaksin').select2({
+                    width: '100%',
+                    dropdownParent: $('#tbh_vaksin .modal-content')
+                });
             }
             edit('tambah_telur', 'id_kandang', 'dashboard_kandang/load_telur', 'load_telur')
             edit('tambah_populasi', 'id_kandang', 'dashboard_kandang/load_populasi', 'load_populasi')

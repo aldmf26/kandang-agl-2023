@@ -100,10 +100,27 @@ class Penjualan_telurmartadahController extends Controller
             'produk' => DB::table('telur_produk')->get(),
             'customer' => DB::select('SELECT * FROM `customer` where active = "Y"'),
             'nota' => $nota_t,
-            'akun' => DB::table('akun')->whereIn('id_klasifikasi', ['1', '7'])->get()
+            'akun_perkiraan' => DB::table('akun_perkiraan')
+                ->where('aktif', 1)
+                ->whereIn('tipe_akun', ['BANK', 'AREC'])
+                ->orderBy('kode_perkiraan')
+                ->get()
         ];
 
         return view('dashboard_kandang.penjualan_telur.add_penjualan_telur', $data);
+    }
+
+    public function tbh_pembayaran_perkiraan(Request $r)
+    {
+        $data = [
+            'count' => $r->count,
+            'akun_perkiraan' => DB::table('akun_perkiraan')
+                ->where('aktif', 1)
+                ->whereIn('tipe_akun', ['BANK', 'AREC'])
+                ->orderBy('kode_perkiraan')
+                ->get()
+        ];
+        return view('dashboard_kandang.penjualan_telur.tbh_pembayaran', $data);
     }
 
     public function tambah_baris_jual_mtd(Request $r)
@@ -139,6 +156,35 @@ class Penjualan_telurmartadahController extends Controller
 
     public function save_penjualan_telur(Request $r)
     {
+        $input = $r->validate([
+            'tgl' => ['required', 'date'],
+            'customer' => ['required', 'integer', 'exists:customer,id_customer'],
+            'id_produk' => ['required', 'array', 'min:1'],
+            'id_produk.*' => ['required', 'integer', 'exists:telur_produk,id_produk_telur'],
+            'pcs' => ['required', 'array'],
+            'pcs.*' => ['required', 'numeric', 'min:0'],
+            'kg' => ['required', 'array'],
+            'kg.*' => ['required', 'numeric', 'min:0'],
+            'ikat' => ['required', 'array'],
+            'ikat.*' => ['required', 'numeric', 'min:0'],
+            'kg_jual' => ['required', 'array'],
+            'kg_jual.*' => ['required', 'numeric', 'min:0'],
+            'rp_satuan' => ['required', 'array'],
+            'rp_satuan.*' => ['required', 'numeric', 'min:0'],
+            'total_rp' => ['required', 'array'],
+            'total_rp.*' => ['required', 'numeric', 'min:0'],
+            'tipe' => ['required', 'array'],
+            'tipe.*' => ['required', 'in:kg,pcs'],
+            'pcs_rak' => ['nullable', 'numeric', 'min:0'],
+        ]);
+
+        $jumlahBaris = count($input['id_produk']);
+        foreach (['pcs', 'kg', 'ikat', 'kg_jual', 'rp_satuan', 'total_rp', 'tipe'] as $namaField) {
+            if (count($input[$namaField]) !== $jumlahBaris) {
+                return redirect()->back()->withInput()->with('error', 'Data detail penjualan telur tidak lengkap.');
+            }
+        }
+
         $max = DB::table('invoice_telur')->latest('urutan')->where('lokasi', 'mtd')->first();
 
         if (empty($max)) {
@@ -147,7 +193,7 @@ class Penjualan_telurmartadahController extends Controller
             $nota_t = $max->urutan + 1;
         }
 
-        $max_customer = DB::table('invoice_telur')->latest('urutan_customer')->where('id_customer', $r->customer)->first();
+        $max_customer = DB::table('invoice_telur')->latest('urutan_customer')->where('id_customer', $input['customer'])->first();
 
         if (empty($max_customer)) {
             $urutan_cus = '1';
@@ -155,97 +201,103 @@ class Penjualan_telurmartadahController extends Controller
             $urutan_cus = $max_customer->urutan_customer + 1;
         }
 
-        DB::table('invoice_mtd')->where('no_nota', $r->no_nota)->delete();
-        DB::table('invoice_telur')->where('no_nota', $r->no_nota)->delete();
-        DB::table('stok_telur')->where('nota_transfer', $r->no_nota)->delete();
+        $akunPenjualan = DB::table('akun_perkiraan')
+            ->where('aktif', 1)
+            ->where('tipe_akun', 'REVE')
+            ->where('nama', 'Penjualan Telur')
+            ->first();
 
-        $pcs_pcs = $r->pcs_pcs;
-        $kg_pcs = $r->kg_pcs;
-        $rp_pcs = $r->rp_pcs;
+        $akunPiutang = DB::table('akun_perkiraan')
+            ->where('aktif', 1)
+            ->where('tipe_akun', 'AREC')
+            ->where('nama', 'Piutang Usaha IDR')
+            ->first();
 
-        $ikat = $r->ikat;
-        $kg_ikat = $r->kg_ikat;
-        $rp_ikat = $r->rp_ikat;
+        if (empty($akunPenjualan) || empty($akunPiutang)) {
+            return redirect()->back()->withInput()->with(
+                'error',
+                'Akun perkiraan Piutang Usaha IDR atau Penjualan Telur belum tersedia/aktif.'
+            );
+        }
 
-        $pcs_kg = $r->pcs_kg;
-        $kg_kg = $r->kg_kg;
-        $rak_kg = $r->rak_kg;
-        $rp_kg = $r->rp_kg;
-        $kg_kg_kotor = $r->kg_kg_kotor;
+        $customerId = $input['customer'];
+        $idCustomer2 = $r->id_customer2 ?: $customerId;
+        $namaAdmin = auth()->user()->name;
 
-
-        for ($x = 0; $x < count($r->id_produk); $x++) {
-            $pcs_ikat = $ikat[$x] * 180;
-            $total_pcs = $pcs_ikat + $pcs_pcs[$x] + $pcs_kg[$x];
-
-            $kg_bersih_ikat = $kg_ikat[$x] - $ikat[$x];
-            $rk = $pcs_kg[$x] / 30;
-            $rak_kali = round($rk  * 0.12, 1);
-            $kg_bersih_kg = $kg_kg[$x] + $rak_kali;
-            $total_kg_kotor = $kg_pcs[$x] + $kg_ikat[$x] + $kg_kg_kotor[$x];
-
-            $total_kg_bersih = $kg_bersih_ikat + $kg_kg[$x];
-            $total_rp_satuan = $rp_pcs[$x] + $rp_ikat[$x] + $rp_kg[$x];
-
-            $ttl_rp_pcs = $pcs_pcs[$x] * $rp_pcs[$x];
-            $ttl_rp_ikat = $kg_bersih_ikat * $rp_ikat[$x];
-            $ttl_rp_kg = $kg_kg[$x] * $r->rp_kg[$x];
-
-            $total_rp = $ttl_rp_pcs + $ttl_rp_ikat + $ttl_rp_kg;
-
+        $totalPenjualan = 0;
+        for ($x = 0; $x < $jumlahBaris; $x++) {
+            $pcs = (float) $input['pcs'][$x];
+            $kg = (float) $input['kg'][$x];
+            $ikat = (float) $input['ikat'][$x];
+            $kgJual = (float) $input['kg_jual'][$x];
+            $rpSatuan = (float) $input['rp_satuan'][$x];
+            $totalRp = (float) $input['total_rp'][$x];
+            $tipe = $input['tipe'][$x];
+            $totalPenjualan += $totalRp;
 
             $data = [
-                'tgl' => $r->tgl,
-                'customer' => $r->customer,
-                'id_customer2' => $r->id_customer2,
+                'tgl' => $input['tgl'],
+                'id_customer' => $customerId,
+                'customer' => $customerId,
+                'id_customer2' => $idCustomer2,
                 'no_nota' => 'TM' . $nota_t,
-                'id_produk' => $r->id_produk[$x],
-                'pcs' => $total_pcs,
-                'kg' => $total_kg_kotor,
-                'kg_jual' => $total_kg_bersih,
-                'ikat' => $ikat[$x],
-                'rp_satuan' => $total_rp_satuan,
-                'total_rp' => $total_rp,
-                'admin' => auth()->user()->name,
+                'id_produk' => $input['id_produk'][$x],
+                'pcs' => $pcs,
+                'kg' => $kg,
+                'kg_jual' => $kgJual,
+                'ikat' => $ikat,
+                'rp_satuan' => $rpSatuan,
+                'total_rp' => $totalRp,
+                'tipe' => $tipe,
+                'status' => 'unpaid',
+                'cek' => 'Y',
+                'admin' => $namaAdmin,
                 'urutan' => $nota_t,
                 'urutan_customer' => $urutan_cus,
                 'driver' => '',
                 'lokasi' => 'mtd'
             ];
             DB::table('invoice_telur')->insert($data);
-            $data = [
-                'tgl' => $r->tgl,
-                'customer' => $r->customer,
-                'no_hp' => $r->no_hp,
+
+            // Petakan format simpel (pcs/kg) ke rincian invoice_mtd agar halaman cek tetap tampil.
+            // Hanya satu segmen yang diisi sesuai tipe supaya total di cek.blade tidak dobel.
+            $isPcs = $tipe === 'pcs';
+            $dataMtd = [
+                'tgl' => $input['tgl'],
+                'customer' => (string) $customerId,
+                'no_hp' => $r->no_hp ?? '',
                 'no_nota' => 'TM' . $nota_t,
-                'id_produk' => $r->id_produk[$x],
+                'id_produk' => $input['id_produk'][$x],
 
-                'pcs_pcs' => $pcs_pcs[$x],
-                'kg_pcs' => $kg_pcs[$x],
-                'rp_pcs' => $rp_pcs[$x],
+                'pcs_pcs' => $isPcs ? $pcs : 0,
+                'kg_pcs' => $isPcs ? $kg : 0,
+                'rp_pcs' => $isPcs ? $rpSatuan : 0,
 
-                'ikat' => $ikat[$x],
-                'kg_ikat' => $kg_ikat[$x],
-                'rp_ikat' => $rp_ikat[$x],
+                'ikat' => 0,
+                'kg_ikat' => 0,
+                'rp_ikat' => 0,
 
-                'pcs_kg' => $pcs_kg[$x],
-                'kg_kg_kotor' => $kg_kg_kotor[$x],
-                'kg_kg' => $kg_kg[$x],
-                'rak_kg' =>  $rk,
-                'rp_kg' => $rp_kg[$x],
+                'pcs_kg' => $isPcs ? 0 : $pcs,
+                'kg_kg_kotor' => $isPcs ? 0 : $kg,
+                'kg_kg' => $isPcs ? 0 : $kgJual,
+                'rak_kg' => $isPcs ? 0 : ($pcs != 0 ? $pcs / 30 : 0),
+                'rp_kg' => $isPcs ? 0 : $rpSatuan,
+                'jenis' => 'penjualan',
+                'admin' => $namaAdmin,
+                'void' => 'T',
             ];
-            DB::table('invoice_mtd')->insert($data);
+            DB::table('invoice_mtd')->insert($dataMtd);
 
 
             DB::table('stok_telur')->insert([
                 'id_kandang' => 0,
-                'id_telur' => $r->id_produk[$x],
-                'tgl' => $r->tgl,
-                'pcs_kredit' => $total_pcs,
-                'kg_kredit' => $total_kg_kotor,
+                'id_telur' => $input['id_produk'][$x],
+                'tgl' => $input['tgl'],
+                'pcs_kredit' => $pcs,
+                'kg_kredit' => $kg,
                 'pcs' => 0,
                 'kg' => 0,
-                'admin' => auth()->user()->name,
+                'admin' => $namaAdmin,
                 'id_gudang' => 1,
                 'nota_transfer' => 'TM' . $nota_t,
                 'ket' => '',
@@ -253,7 +305,59 @@ class Penjualan_telurmartadahController extends Controller
                 'check' => 'Y'
             ]);
         }
+        DB::table('rak_telur_penjualan')->insert([
+            'no_nota' => 'TM' . $nota_t,
+            'pcs' => (float) ($input['pcs_rak'] ?? 0),
+        ]);
         $no_nota = 'TM' . $nota_t;
+
+        $sekarang = now();
+        $batchId = DB::table('impor_jurnal_perkiraan')->insertGetId([
+            'nama_file' => 'Penjualan Telur ' . $no_nota,
+            'hash_file' => hash('sha256', strtolower('Penjualan Telur') . '|' . $no_nota),
+            'periode_awal' => $r->tgl,
+            'periode_akhir' => $r->tgl,
+            'jumlah_transaksi' => 1,
+            'jumlah_detail' => 2,
+            'total_debit' => round($totalPenjualan, 2),
+            'total_kredit' => round($totalPenjualan, 2),
+            'status' => 'aktif',
+            'diimpor_oleh' => auth()->id(),
+            'created_at' => $sekarang,
+            'updated_at' => $sekarang,
+        ]);
+
+        $jurnal = [
+            [
+                'id_impor_jurnal_perkiraan' => $batchId,
+                'id_akun_perkiraan' => $akunPiutang->id_akun_perkiraan,
+                'tanggal' => $r->tgl,
+                'nomor_transaksi' => $no_nota,
+                'tipe_transaksi' => 'Penjualan Telur',
+                'urutan_detail' => 1,
+                'deskripsi' => 'Piutang penjualan telur ' . $no_nota,
+                'debit' => round($totalPenjualan, 2),
+                'kredit' => 0,
+                'created_at' => $sekarang,
+                'updated_at' => $sekarang,
+            ],
+            [
+                'id_impor_jurnal_perkiraan' => $batchId,
+                'id_akun_perkiraan' => $akunPenjualan->id_akun_perkiraan,
+                'tanggal' => $r->tgl,
+                'nomor_transaksi' => $no_nota,
+                'tipe_transaksi' => 'Penjualan Telur',
+                'urutan_detail' => 2,
+                'deskripsi' => 'Pendapatan penjualan telur ' . $no_nota,
+                'debit' => 0,
+                'kredit' => round($totalPenjualan, 2),
+                'created_at' => $sekarang,
+                'updated_at' => $sekarang,
+            ],
+        ];
+
+        DB::table('jurnal_perkiraan')->insert($jurnal);
+
         return redirect()->route('dashboard_kandang.cek_penjualan_telur', ['no_nota' => $no_nota])->with('sukses', 'Data berhasil ditambahkan');
     }
 

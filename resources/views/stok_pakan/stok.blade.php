@@ -150,21 +150,20 @@
         <table class="table table-bordered table-hover" id="tableVaksin">
             <thead>
                 <tr>
-                    <th class="dhead">Tgl</th>
-                    <th class="dhead">Kdg</th>
+                    <th class="dhead">#</th>
                     <th class="dhead">Nama Vaksin</th>
                     <th class="dhead" style="text-align: right">Stok</th>
-                    <th class="dhead" style="text-align: center">Total Rp</th>
+                    <th class="dhead" style="text-align: center">Satuan</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach ($vaksin as $d)
+                @foreach ($vaksin as $no => $d)
                     <tr>
-                        <td>{{ tanggal($d->tgl) }}</td>
-                        <td>{{ $d->nm_kandang }}</td>
-                        <td>{{ $d->nm_vaksin }}</td>
-                        <td>{{ $d->qty }}</td>
-                        <td>{{ number_format($d->ttl_rp, 0) }}</td>
+                        <td>{{ $no + 1 }}</td>
+                        <td><a href="#" onclick="event.preventDefault();" class="history_stok"
+                                id_pakan="{{ $d->id_pakan }}">{{ $d->nm_produk }}</a></td>
+                        <td class="text-end">{{ number_format($d->pcs_debit - $d->pcs_kredit, 2, ',', '.') }}</td>
+                        <td class="text-center">{{ $d->nm_satuan ?? '-' }}</td>
                     </tr>
                 @endforeach
             </tbody>
