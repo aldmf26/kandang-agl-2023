@@ -37,6 +37,7 @@
                     <th class="dhead" width="20%">Kandang</th>
                     <th class="dhead" width="15%">Nama Vaksin</th>
                     <th class="dhead" width="10%">Qty</th>
+                    <th class="dhead" width="30%">Keterangan</th>
                 </tr>
             </thead>
             <tbody>
@@ -62,6 +63,10 @@
                     <td>
                         <input required type="number" min="0.01" step="0.01" name="stok" class="form-control">
 
+                    </td>
+                    <td>
+                        <input type="text" name="keterangan" class="form-control"
+                            placeholder="Keterangan (opsional)">
                     </td>
                 </tr>
             </tbody>

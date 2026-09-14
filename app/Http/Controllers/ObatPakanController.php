@@ -309,6 +309,7 @@ class ObatPakanController extends Controller
             'id_kandang' => ['required', 'integer', 'exists:kandang,id_kandang'],
             'id_pakan' => ['required', 'integer', 'exists:tb_produk_perencanaan,id_produk'],
             'stok' => ['required', 'numeric', 'min:0.01'],
+            'keterangan' => ['nullable', 'string', 'max:500'],
         ]);
 
         $produkVaksin = DB::table('tb_produk_perencanaan')
@@ -342,6 +343,10 @@ class ObatPakanController extends Controller
                 ->where('id_kandang', $data['id_kandang'])
                 ->value('nm_kandang');
             $keterangan = 'Pemakaian vaksin ' . $produkVaksin->nm_produk . ' - Kandang ' . $namaKandang;
+            $keteranganTambahan = trim((string) ($data['keterangan'] ?? ''));
+            if ($keteranganTambahan !== '') {
+                $keterangan .= ' - ' . $keteranganTambahan;
+            }
 
             $barisStok = DB::table('stok_produk_perencanaan')
                 ->where('id_pakan', $data['id_pakan'])
