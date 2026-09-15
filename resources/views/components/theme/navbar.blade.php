@@ -15,6 +15,12 @@
                         <span>Penjualan</span>
                     </a>
                 </li>
+                <li class="menu-item">
+                    <a href="{{ route('dashboard_kandang.input_harian') }}"
+                        class='menu-link {{ in_array(request()->route()->getName(), ['dashboard_kandang.input_harian', 'dashboard_kandang.perencanaan']) ? 'active_navbar_new' : '' }}'>
+                        <span>Harian</span>
+                    </a>
+                </li>
                 {{-- @php
                     $navbar = DB::table('navbar_kandang')->orderBy('urutan', 'ASC')->get();
 

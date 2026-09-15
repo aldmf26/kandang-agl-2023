@@ -1367,6 +1367,7 @@ class DashboardKandangController extends Controller
 
             // Commit semua perubahan jika tidak ada kesalahan
             DB::commit();
+            $this->syncJurnalPerencanaan($tgl, $id_kandang);
 
             return redirect()->route('dashboard_kandang.index')->with('sukses', 'Data Perencanaan Berhasil diedit');
         } catch (\Exception $e) {
@@ -1609,6 +1610,7 @@ class DashboardKandangController extends Controller
 
             // Commit semua perubahan jika tidak ada kesalahan
             DB::commit();
+            $this->syncJurnalPerencanaan($tgl, $id_kandang);
 
             return redirect()->route('dashboard_kandang.index')->with('sukses', 'Data Perencanaan Berhasil ditambahkan');
         } catch (\Exception $e) {
@@ -1640,6 +1642,231 @@ class DashboardKandangController extends Controller
         ];
 
         return view('dashboard_kandang.history.perencanaan', $data);
+    }
+
+    public function inputHarian(Request $r)
+    {
+        $tgl1 = $r->tgl1 ?? date('Y-m-01');
+        $tgl2 = $r->tgl2 ?? date('Y-m-d');
+        $id_kandang = $r->id_kandang ?? '';
+
+        $query = DB::table('tb_pakan_perencanaan as a')
+            ->join('kandang as k', 'k.id_kandang', '=', 'a.id_kandang')
+            ->whereBetween('a.tgl', [$tgl1, $tgl2]);
+        if (!empty($id_kandang)) {
+            $query->where('a.id_kandang', $id_kandang);
+        }
+        $rows = $query
+            ->groupBy('a.tgl', 'a.id_kandang', 'k.nm_kandang')
+            ->orderBy('a.tgl', 'DESC')
+            ->orderBy('k.nm_kandang', 'ASC')
+            ->selectRaw('a.tgl, a.id_kandang, k.nm_kandang, MAX(a.no_nota) as no_nota, SUM(a.gr) as total_gr, MAX(a.admin) as admin')
+            ->get();
+
+        foreach ($rows as $row) {
+            $rp = DB::selectOne(
+                "SELECT
+                    SUM(CASE WHEN b.kategori = 'pakan' THEN s.total_rp ELSE 0 END) as rp_pakan,
+                    SUM(CASE WHEN b.kategori IN ('obat_pakan','obat_air','obat_ayam') THEN s.total_rp ELSE 0 END) as rp_vit
+                FROM stok_produk_perencanaan as s
+                JOIN tb_produk_perencanaan as b ON b.id_produk = s.id_pakan
+                WHERE s.tgl = ? AND s.id_kandang = ?",
+                [$row->tgl, $row->id_kandang]
+            );
+            $row->rp_pakan = (float) ($rp->rp_pakan ?? 0);
+            $row->rp_vit = (float) ($rp->rp_vit ?? 0);
+            $row->sudah_cek = DB::table('stok_produk_perencanaan')
+                ->where('tgl', $row->tgl)
+                ->where('id_kandang', $row->id_kandang)
+                ->where('check', 'Y')
+                ->exists();
+            $row->ada_jurnal = DB::table('jurnal_perkiraan')
+                ->where('nomor_transaksi', $this->nomorJurnalPerencanaan($row->tgl, $row->id_kandang))
+                ->where('tipe_transaksi', 'Pemakaian Pakan Harian')
+                ->exists();
+        }
+
+        $data = [
+            'title' => 'Input Harian Perencanaan',
+            'rows' => $rows,
+            'tgl1' => $tgl1,
+            'tgl2' => $tgl2,
+            'id_kandang' => $id_kandang,
+            'kandang' => DB::table('kandang')->orderBy('nm_kandang', 'ASC')->get(),
+        ];
+
+        return view('dashboard_kandang.perencanaan.list', $data);
+    }
+
+    public function hapusPerencanaan(Request $r)
+    {
+        $r->validate([
+            'tgl' => ['required', 'date'],
+            'id_kandang' => ['required', 'integer', 'exists:kandang,id_kandang'],
+        ]);
+        $tgl = $r->tgl;
+        $id_kandang = $r->id_kandang;
+
+        $sudahCek = DB::table('stok_produk_perencanaan')
+            ->where('tgl', $tgl)
+            ->where('id_kandang', $id_kandang)
+            ->where('check', 'Y')
+            ->exists();
+        if ($sudahCek) {
+            return redirect()->route('dashboard_kandang.input_harian')->with('error', 'Data sudah dibukukan admin, tidak bisa dihapus.');
+        }
+
+        $noNotas = DB::table('tb_pakan_perencanaan')
+            ->where('tgl', $tgl)
+            ->where('id_kandang', $id_kandang)
+            ->distinct()
+            ->pluck('no_nota')
+            ->toArray();
+
+        DB::transaction(function () use ($tgl, $id_kandang, $noNotas) {
+            DB::table('tb_pakan_perencanaan')->where('tgl', $tgl)->where('id_kandang', $id_kandang)->delete();
+            DB::table('tb_obat_perencanaan')->where('tgl', $tgl)->where('id_kandang', $id_kandang)->delete();
+            DB::table('tb_karung_perencanaan')->where('tgl', $tgl)->where('id_kandang', $id_kandang)->delete();
+            if (!empty($noNotas)) {
+                DB::table('stok_produk_perencanaan')
+                    ->where('tgl', $tgl)
+                    ->where('id_kandang', $id_kandang)
+                    ->whereIn('no_nota', $noNotas)
+                    ->delete();
+            }
+            $this->hapusJurnalPerencanaan($tgl, $id_kandang);
+        });
+
+        return redirect()->route('dashboard_kandang.input_harian', ['tgl1' => $tgl, 'tgl2' => $tgl])
+            ->with('sukses', 'Data perencanaan berhasil dihapus beserta jurnalnya.');
+    }
+
+    public function nomorJurnalPerencanaan($tgl, $id_kandang)
+    {
+        return 'PPH-' . date('Ymd', strtotime($tgl)) . '-' . $id_kandang;
+    }
+
+    public function hapusJurnalPerencanaan($tgl, $id_kandang)
+    {
+        $nomor = $this->nomorJurnalPerencanaan($tgl, $id_kandang);
+        $tipe = 'Pemakaian Pakan Harian';
+        $batchIds = DB::table('jurnal_perkiraan')
+            ->where('nomor_transaksi', $nomor)
+            ->where('tipe_transaksi', $tipe)
+            ->pluck('id_impor_jurnal_perkiraan')
+            ->unique();
+        DB::table('jurnal_perkiraan')
+            ->where('nomor_transaksi', $nomor)
+            ->where('tipe_transaksi', $tipe)
+            ->delete();
+        foreach ($batchIds as $batchId) {
+            if (!DB::table('jurnal_perkiraan')->where('id_impor_jurnal_perkiraan', $batchId)->exists()) {
+                DB::table('impor_jurnal_perkiraan')->where('id_impor_jurnal_perkiraan', $batchId)->delete();
+            }
+        }
+    }
+
+    public function syncJurnalPerencanaan($tgl, $id_kandang)
+    {
+        $nomor = $this->nomorJurnalPerencanaan($tgl, $id_kandang);
+        $tipe = 'Pemakaian Pakan Harian';
+
+        $akunPersediaanPakan = DB::table('akun_perkiraan')->where('nama', 'Persediaan Pakan')->where('aktif', 1)->first();
+        $akunBiayaPakan = DB::table('akun_perkiraan')->where('nama', 'Biaya Pokok Penjualan Telur (Pakan)')->where('aktif', 1)->first();
+        $akunPersediaanVit = DB::table('akun_perkiraan')->where('nama', 'Persediaan Vitamin/Obat')->where('aktif', 1)->first();
+        $akunBiayaVit = DB::table('akun_perkiraan')->where('nama', 'Biaya Pokok Penjualan Telur (Vitamin/Obat)')->where('aktif', 1)->first();
+
+        $rp = DB::selectOne(
+            "SELECT
+                SUM(CASE WHEN b.kategori = 'pakan' THEN s.total_rp ELSE 0 END) as rp_pakan,
+                SUM(CASE WHEN b.kategori IN ('obat_pakan','obat_air','obat_ayam') THEN s.total_rp ELSE 0 END) as rp_vit
+            FROM stok_produk_perencanaan as s
+            JOIN tb_produk_perencanaan as b ON b.id_produk = s.id_pakan
+            WHERE s.tgl = ? AND s.id_kandang = ?",
+            [$tgl, $id_kandang]
+        );
+        $rpPakan = round((float) ($rp->rp_pakan ?? 0), 2);
+        $rpVit = round((float) ($rp->rp_vit ?? 0), 2);
+
+        DB::transaction(function () use ($tgl, $id_kandang, $nomor, $tipe, $rpPakan, $rpVit, $akunPersediaanPakan, $akunBiayaPakan, $akunPersediaanVit, $akunBiayaVit) {
+            $this->hapusJurnalPerencanaan($tgl, $id_kandang);
+
+            $details = [];
+            $urutan = 1;
+            $nmKandang = DB::table('kandang')->where('id_kandang', $id_kandang)->value('nm_kandang') ?? $id_kandang;
+            if ($rpPakan > 0 && $akunBiayaPakan && $akunPersediaanPakan) {
+                $ket = 'Pemakaian pakan - Kandang ' . $nmKandang . ' - ' . $tgl;
+                $details[] = [
+                    'id_akun_perkiraan' => $akunBiayaPakan->id_akun_perkiraan,
+                    'tanggal' => $tgl,
+                    'nomor_transaksi' => $nomor,
+                    'tipe_transaksi' => $tipe,
+                    'urutan_detail' => $urutan++,
+                    'deskripsi' => $ket,
+                    'debit' => $rpPakan,
+                    'kredit' => 0,
+                ];
+                $details[] = [
+                    'id_akun_perkiraan' => $akunPersediaanPakan->id_akun_perkiraan,
+                    'tanggal' => $tgl,
+                    'nomor_transaksi' => $nomor,
+                    'tipe_transaksi' => $tipe,
+                    'urutan_detail' => $urutan++,
+                    'deskripsi' => $ket,
+                    'debit' => 0,
+                    'kredit' => $rpPakan,
+                ];
+            }
+            if ($rpVit > 0 && $akunBiayaVit && $akunPersediaanVit) {
+                $ket = 'Pemakaian vitamin/obat - Kandang ' . $nmKandang . ' - ' . $tgl;
+                $details[] = [
+                    'id_akun_perkiraan' => $akunBiayaVit->id_akun_perkiraan,
+                    'tanggal' => $tgl,
+                    'nomor_transaksi' => $nomor,
+                    'tipe_transaksi' => $tipe,
+                    'urutan_detail' => $urutan++,
+                    'deskripsi' => $ket,
+                    'debit' => $rpVit,
+                    'kredit' => 0,
+                ];
+                $details[] = [
+                    'id_akun_perkiraan' => $akunPersediaanVit->id_akun_perkiraan,
+                    'tanggal' => $tgl,
+                    'nomor_transaksi' => $nomor,
+                    'tipe_transaksi' => $tipe,
+                    'urutan_detail' => $urutan++,
+                    'deskripsi' => $ket,
+                    'debit' => 0,
+                    'kredit' => $rpVit,
+                ];
+            }
+            if (empty($details)) {
+                return;
+            }
+
+            $total = $rpPakan + $rpVit;
+            $sekarang = now();
+            $batchId = DB::table('impor_jurnal_perkiraan')->insertGetId([
+                'nama_file' => $tipe . ' ' . $nomor,
+                'hash_file' => hash('sha256', strtolower($tipe) . '|' . $nomor),
+                'periode_awal' => $tgl,
+                'periode_akhir' => $tgl,
+                'jumlah_transaksi' => 1,
+                'jumlah_detail' => count($details),
+                'total_debit' => $total,
+                'total_kredit' => $total,
+                'status' => 'aktif',
+                'diimpor_oleh' => auth()->id(),
+                'created_at' => $sekarang,
+                'updated_at' => $sekarang,
+            ]);
+            foreach ($details as &$d) {
+                $d['id_impor_jurnal_perkiraan'] = $batchId;
+                $d['created_at'] = $sekarang;
+                $d['updated_at'] = $sekarang;
+            }
+            DB::table('jurnal_perkiraan')->insert($details);
+        });
     }
 
     public function getQueryObatPerencanaan($tgl, $id_kandang, $kategori)
@@ -1724,6 +1951,11 @@ class DashboardKandangController extends Controller
 
     public function viewHistoryEditPerencanaan(Request $r)
     {
+        $r->validate([
+            'tgl' => ['required', 'date'],
+            'id_kandang' => ['required', 'integer', 'exists:kandang,id_kandang'],
+        ]);
+
         $tgl = $r->tgl;
         $tgl1 = date('Y-m-d', strtotime('-1 days', strtotime($tgl)));
         $id_kandang = $r->id_kandang;
@@ -1755,7 +1987,7 @@ class DashboardKandangController extends Controller
         $check_obat = DB::selectOne("SELECT a.check
         FROM stok_produk_perencanaan as a 
         left join tb_produk_perencanaan as b on b.id_produk = a.id_pakan 
-        where a.tgl = '$tgl' and b.kategori in('obat_pakan','obat_air') 
+        where a.tgl = '$tgl' and a.id_kandang = '$id_kandang' and b.kategori in('obat_pakan','obat_air')
         group by b.kategori
         ");
 

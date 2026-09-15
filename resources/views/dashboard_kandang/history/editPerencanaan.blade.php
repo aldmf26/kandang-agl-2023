@@ -17,16 +17,16 @@
     <div class="col-lg-3">
         <label for="">Kg pakan/box</label>
         <input type="text" id="krngEdit" name="kg_pakan_box" class="form-control pakan_input"
-            value="{{ $karung->karung }}">
-        <input type="hidden" class="form-control pakan_input" name="id_krng" value="<?= $karung->id_karung ?>">
-        <input type="hidden" name="id_no_nota" value="{{ $karung->no_nota }}">
+            value="{{ $karung->karung ?? '' }}">
+        <input type="hidden" class="form-control pakan_input" name="id_krng" value="<?= $karung->id_karung ?? '' ?>">
+        <input type="hidden" name="id_no_nota" value="{{ $karung->no_nota ?? '' }}">
     </div>
 </div>
-<input type="hidden" name="no_nota" value="{{ $gr_pakan->no_nota }}">
+<input type="hidden" name="no_nota" value="{{ $gr_pakan->no_nota ?? '' }}">
 <hr style="border: 1px solid #6777EF;">
 <h5 style="text-decoration: underline">Pakan</h5>
 {{-- pakan --}}
-@if ($check_pakan->check == 'Y')
+@if (!empty($check_pakan->check) && $check_pakan->check == 'Y')
     <h5 class="text-danger">Data tidak bisa di edit karena sudah di bukukan oleh admin</h5>
     <br>
 @else
@@ -40,22 +40,22 @@
         </div>
         <div class="col-lg-3">
             <div class="form-group">
-                <label for="">Gr Pakan / Ekor {{ $gr_pakan->ttl }}</label>
-                <input value="{{ number_format($gr_pakan->ttl / $populasi, 0) }}" type="text" id="grEdit"
+                <label for="">Gr Pakan / Ekor {{ $gr_pakan->ttl ?? 0 }}</label>
+                <input value="{{ empty($populasi) ? 0 : number_format(($gr_pakan->ttl ?? 0) / $populasi, 0) }}" type="text" id="grEdit"
                     name="gr_pakan_ekor" class="form-control pakan_input">
             </div>
         </div>
         <div class="col-lg-2">
             <div class="form-group">
                 <label for="">Kg/karung</label>
-                <input value="{{ $karung->gr }}" type="text" id="krng_fEdit" readonly name="kg_karung"
+                <input value="{{ $karung->gr ?? '' }}" type="text" id="krng_fEdit" readonly name="kg_karung"
                     class="form-control">
             </div>
         </div>
         <div class="col-lg-3">
             <div class="form-group">
                 <label for="">Kg/karung sisa</label>
-                <input value="{{ $karung->gr2 }}" type="text" readonly id="krng_sEdit" name="kg_karung_sisa"
+                <input value="{{ $karung->gr2 ?? '' }}" type="text" readonly id="krng_sEdit" name="kg_karung_sisa"
                     class="form-control">
             </div>
         </div>
@@ -104,7 +104,7 @@
         </div>
         <div class="col-lg-3">
             <hr style="border: 1px solid #6777EF;">
-            <input value="{{ $gr_pakan->ttl }}" type="text" readonly name="pakanGrTotal" id="totalEdit"
+            <input value="{{ $gr_pakan->ttl ?? 0 }}" type="text" readonly name="pakanGrTotal" id="totalEdit"
                 class="form-control">
         </div>
     </div>
@@ -114,7 +114,7 @@
 
 <h5 style="text-decoration: underline">Obat/vit dengan campuran pakan</h5>
 
-@if ($check_obat->check == 'Y')
+@if (!empty($check_obat->check) && $check_obat->check == 'Y')
     <h5 class="text-danger">Data tidak bisa di edit karena sudah di bukukan oleh admin</h5>
     <br>
 @else
@@ -171,7 +171,7 @@
 @endif
 
 <h5 style="text-decoration: underline">Obat/vit dengan campuran air</h5>
-@if ($check_obat->check == 'Y')
+@if (!empty($check_obat->check) && $check_obat->check == 'Y')
     <h5 class="text-danger">Data tidak bisa di edit karena sudah di bukukan oleh admin</h5>
     <br>
 @else

@@ -101,6 +101,22 @@
                     dropdownParent: $('#tbh_vaksin .modal-content')
                 });
             }
+            var indexBarisVaksin = 1;
+            $(document).on('click', '#tambah-baris-vaksin', function() {
+                var html = $('#template-baris-vaksin').html().replaceAll('__INDEX__', indexBarisVaksin++);
+                var baris = $(html);
+                $('#baris-pemakaian-vaksin').append(baris);
+                baris.find('.select2-vaksin').select2({
+                    width: '100%',
+                    dropdownParent: $('#tbh_vaksin .modal-content')
+                });
+            });
+            $(document).on('click', '.hapus-baris-vaksin', function() {
+                if ($('#baris-pemakaian-vaksin .baris-vaksin').length > 1) {
+                    $(this).closest('tr').find('.select2-vaksin').select2('destroy');
+                    $(this).closest('tr').remove();
+                }
+            });
             edit('tambah_telur', 'id_kandang', 'dashboard_kandang/load_telur', 'load_telur')
             edit('tambah_populasi', 'id_kandang', 'dashboard_kandang/load_populasi', 'load_populasi')
             edit('detail_nota', 'urutan', 'dashboard_kandang/load_detail_nota', 'load_detail_nota')
@@ -737,6 +753,7 @@
 
         <script>
             $(document).on('click', '.history_pakan', function() {
+
                 var val = $(this).attr('jenis')
                 $('#history_pakan').modal('show')
                 $.ajax({
@@ -756,6 +773,7 @@
             })
 
             function load_stok_pakan() {
+
                 $.ajax({
                     type: "GET",
                     url: "{{ route('dashboard_kandang.load_stok_pakan') }}",
@@ -831,10 +849,21 @@
                     success: function(r) {
                         $("#history_stk").html(r);
                         $("#history_stok").modal("show");
-
                     },
                 });
             });
+            $(document).on("click", ".btn-history-vaksin", function() {
+                var id_pakan = $(this).attr("id_pakan");
+                $.ajax({
+                    type: "get",
+                    url: "dashboard_kandang/history_stok?id_pakan=" + id_pakan,
+                    success: function(r) {
+                        $("#history_stk").html(r);
+                        $("#history_stok").modal("show");
+                    },
+                });
+            });
+
             $(document).on("click", ".tbh_pakan", function() {
                 $.ajax({
                     type: "get",

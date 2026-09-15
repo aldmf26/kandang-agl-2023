@@ -158,6 +158,7 @@
                     <th class="dhead">Nama Vaksin</th>
                     <th class="dhead" style="text-align: right">Stok</th>
                     <th class="dhead" style="text-align: center">Satuan</th>
+                    <th class="dhead" style="text-align: center">Aksi</th>
                 </tr>
             </thead>
             <tbody>
@@ -168,6 +169,12 @@
                                 id_pakan="{{ $d->id_pakan }}">{{ $d->nm_produk }}</a></td>
                         <td class="text-end">{{ number_format($d->pcs_debit - $d->pcs_kredit, 2, ',', '.') }}</td>
                         <td class="text-center">{{ $d->nm_satuan ?? '-' }}</td>
+                        <td class="text-center">
+                            <button type="button" class="btn btn-sm btn-info btn-history-vaksin"
+                                id_pakan="{{ $d->id_pakan }}" nm_produk="{{ $d->nm_produk }}">
+                                <i class="fas fa-history"></i>
+                            </button>
+                        </td>
                     </tr>
                 @endforeach
             </tbody>

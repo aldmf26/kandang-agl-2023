@@ -306,21 +306,12 @@ class ObatPakanController extends Controller
     {
         $data = $r->validate([
             'tgl' => ['required', 'date'],
-            'id_kandang' => ['required', 'integer', 'exists:kandang,id_kandang'],
-            'id_pakan' => ['required', 'integer', 'exists:tb_produk_perencanaan,id_produk'],
-            'stok' => ['required', 'numeric', 'min:0.01'],
-            'keterangan' => ['nullable', 'string', 'max:500'],
+            'baris' => ['required', 'array', 'min:1'],
+            'baris.*.id_kandang' => ['required', 'integer', 'exists:kandang,id_kandang'],
+            'baris.*.id_pakan' => ['required', 'integer', \Illuminate\Validation\Rule::exists('tb_produk_perencanaan', 'id_produk')->where('kategori', 'vaksin')],
+            'baris.*.stok' => ['required', 'numeric', 'min:0.01'],
+            'baris.*.keterangan' => ['nullable', 'string', 'max:500'],
         ]);
-
-        $produkVaksin = DB::table('tb_produk_perencanaan')
-            ->where('id_produk', $data['id_pakan'])
-            ->where('kategori', 'vaksin')
-            ->first();
-
-        if (!$produkVaksin) {
-            return redirect()->route('dashboard_kandang.index')
-                ->with('error', 'Produk yang dipilih bukan kategori vaksin.');
-        }
 
         $akunVaksin = DB::table('akun_perkiraan')
             ->where('aktif', 1)
@@ -338,7 +329,12 @@ class ObatPakanController extends Controller
             );
         }
 
-        DB::transaction(function () use ($data, $produkVaksin, $akunVaksin, $akunBiayaVaksin) {
+        DB::transaction(function () use ($data, $akunVaksin, $akunBiayaVaksin) {
+            $tanggal = $data['tgl'];
+            foreach ($data['baris'] as $index => $dataBaris) {
+            $data = array_merge($dataBaris, ['tgl' => $tanggal]);
+            $produkVaksin = DB::table('tb_produk_perencanaan')
+                ->where('id_produk', $data['id_pakan'])->first();
             $namaKandang = DB::table('kandang')
                 ->where('id_kandang', $data['id_kandang'])
                 ->value('nm_kandang');
@@ -356,7 +352,7 @@ class ObatPakanController extends Controller
             $stokTersedia = (float) $barisStok->sum(fn ($stok) => $stok->pcs - $stok->pcs_kredit);
             if ($stokTersedia < $data['stok']) {
                 throw \Illuminate\Validation\ValidationException::withMessages([
-                    'stok' => 'Stok vaksin tidak mencukupi. Stok tersedia: ' . $stokTersedia,
+                    'baris.' . $index . '.stok' => 'Stok ' . $produkVaksin->nm_produk . ' tidak mencukupi. Stok tersedia: ' . $stokTersedia,
                 ]);
             }
 
@@ -387,6 +383,7 @@ class ObatPakanController extends Controller
                 'tgl' => $data['tgl'],
                 'no_nota' => $noNota,
                 'admin' => auth()->user()->name,
+                'check' => 'Y',
             ]);
 
             $sekarang = now();
@@ -433,6 +430,7 @@ class ObatPakanController extends Controller
                     'updated_at' => $sekarang,
                 ],
             ]);
+            }
         });
 
         return redirect()->route('dashboard_kandang.index')->with('sukses', 'Pemakaian vaksin dan jurnal berhasil disimpan');

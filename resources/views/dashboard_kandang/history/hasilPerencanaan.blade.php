@@ -18,8 +18,8 @@
                     ({{ tanggal($tgl_per) }})</h5>
                 <h4 class="float-start" class="" style="color: #787878; font-weight: bold;">Populasi :
                     {{ $populasi }} | Pakan/Gr :
-                    {{ number_format($pakan->total / $populasi, 0) }}
-                    | {{ $umur->mgg + 1 }} Minggu</h4>
+                    {{ empty($populasi) ? 0 : number_format($pakan->total / $populasi, 0) }}
+                    | {{ ($umur->mgg ?? 0) + 1 }} Minggu</h4>
                 @if (empty($hideEdit))
                     <a href="#" id_kandang="{{ $id_kandang }}" tgl="{{ $tgl_per }}"
                         class="btn btn-primary float-end" id="edit_per"><i class="fas fa-edit"></i>
@@ -34,10 +34,10 @@
             <div class="card-header">
                 <h4 style="color: #787878;">
 
-                    <?php if (empty($pakan1->gr)) : ?>
+                    <?php if (empty($pakan1?->gr)) : ?>
                     <?php else : ?>
-                    <?= $pakan1->gr ?> Karung
-                    <?= $pakan1->karung ?> Kg
+                    <?= $pakan1?->gr ?> Karung
+                    <?= $pakan1?->karung ?> Kg
                     <?php endif ?>
                 </h4>
             </div>
@@ -56,7 +56,7 @@
                             <tr>
                                 <td style="">{{ $p->nm_pakan }} <br></td>
                                 <td style="">
-                                    {{ number_format(($p->persen / 100) * $pakan1->karung, 1) }} </td>
+                                    {{ number_format(($p->persen / 100) * ($pakan1?->karung ?? 0), 1) }} </td>
                                 <td style="">Kg</td>
                             </tr>
                             @endforeach
@@ -73,7 +73,7 @@
                             <tr>
                                 <td style="">{{ $o->nm_produk }} <br></td>
                                 <td style="">
-                                    {{ number_format(($o->dosis * $pakan1->karung) / $o->campuran, 1) }}
+                                    {{ number_format(($o->dosis * ($pakan1?->karung ?? 0)) / max((float) $o->campuran, 1), 1) }}
                                 </td>
                                 <td style="">{{$o->satuan}}</td>
                             </tr>
@@ -87,9 +87,9 @@
     <div class="col-lg-4 end">
         <div class="card">
             <div class="card-header">
-                @if (!empty($pakan1->gr2))
+                @if (!empty($pakan1?->gr2))
                 <h4 style="color: #787878;">1 Karung
-                    {{number_format($pakan1->gr2,1)}} Kg
+                    {{number_format($pakan1?->gr2 ?? 0,1)}} Kg
                 </h4>
                 @endif
 
@@ -118,7 +118,7 @@
                                 <?= $p->nm_pakan ?>
                             </td>
                             <td style="">
-                                <?= number_format(($p->persen / 100) * $pakan1->gr2,1) ?>
+                                <?= number_format(($p->persen / 100) * ($pakan1?->gr2 ?? 0),1) ?>
                             </td>
                             <td style="">Kg</td>
                         </tr>
@@ -139,7 +139,7 @@
                                 <?= $o->nm_produk ?>
                             </td>
                             <td style="">
-                                <?= number_format($pakan1->gr2 * $o->dosis, 1) ?>
+                                <?= number_format(($pakan1?->gr2 ?? 0) * $o->dosis, 1) ?>
                             </td>
                             <td style="">
                                 <?= $o->satuan ?>
@@ -154,7 +154,7 @@
     <div class="col-lg-4 end">
         <div class="card">
             <div class="card-header">
-                @if (empty($pakan1->gr2))
+                @if (empty($pakan1?->gr2))
                 @else
                 <h4 style="color: #787878;">Total Pakan</h4>
                 @endif
