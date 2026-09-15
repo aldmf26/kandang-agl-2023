@@ -119,9 +119,13 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach ($vitamin as $no => $p)
+                @php $noVit = 1; @endphp
+                @foreach ($vitamin as $p)
+                    @if (($p->pcs_debit - $p->pcs_kredit) <= 0)
+                        @php continue; @endphp
+                    @endif
                     <tr>
-                        <td>{{ $no + 1 }}</td>
+                        <td>{{ $noVit++ }}</td>
                         <td><a href="#" onclick="event.preventDefault();" class="history_stok"
                                 id_pakan="{{ $p->id_pakan }}">{{ $p->nm_produk }}</a></td>
                         <td style="text-align: right">{{ number_format($p->pcs_debit - $p->pcs_kredit, 0) }}</td>
