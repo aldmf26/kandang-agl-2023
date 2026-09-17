@@ -15,7 +15,7 @@ class OpnamemtdController extends Controller
         if (empty($max)) {
             $nota_t = '1000';
         } else {
-            $nota_t = str()->remove('Opname-',$max->nota_transfer) + 1;
+            $nota_t = (int) str()->remove('Opname-', $max->nota_transfer) + 1;
         }
 
 
@@ -38,7 +38,7 @@ class OpnamemtdController extends Controller
         if (empty($urutan_opname) || $urutan_opname->urutan == '0') {
             $urutan = 1001;
         } else {
-            $urutan = str()->remove('Opname-', $urutan_opname->urutan) + 1;
+            $urutan = (int) str()->remove('Opname-', $urutan_opname->urutan) + 1;
         }
 
         $max_customer = DB::table('invoice_telur')->latest('urutan_customer')->where('id_customer', '3')->first();
