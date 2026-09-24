@@ -7,7 +7,7 @@
             </tr>
             <tr>
                 <td>
-                    <input type="date" value="{{ date('Y-m-d') }}" name="tgl" class="form-control">
+                    <input type="date" value="{{ $tgl ?? date('Y-m-d') }}" name="tgl" class="form-control">
                 </td>
                 <td>
                     <input type="hidden" value="{{ $kandang->id_kandang }}" name="id_kandang"
@@ -31,7 +31,7 @@
             @foreach ($telur as $i => $d)
             @php
             $cek = DB::table('stok_telur')
-            ->where([['id_telur', $d->id_produk_telur], ['id_kandang', $kandang->id_kandang], ['tgl', date('Y-m-d')]])
+            ->where([['id_telur', $d->id_produk_telur], ['id_kandang', $kandang->id_kandang], ['tgl', $tgl ?? date('Y-m-d')]])
             ->first();
             @endphp
 

@@ -326,10 +326,19 @@ Route::middleware('auth')->group(function () {
             Route::post('/tambah_populasi', 'tambah_populasi')->name('tambah_populasi');
             Route::post('/tambah_karung', 'tambah_karung')->name('tambah_karung');
 
-            // perencanaan
-            Route::get('/perencanaan', 'perencanaan')->name('perencanaan');
+            // harian - landing menu kotak-kotak
+            Route::get('/harian', 'harian')->name('harian');
+            Route::get('/populasi', 'populasi')->name('populasi');
+            Route::get('/detail_populasi', 'detailPopulasi')->name('detail_populasi');
+            Route::get('/telur', 'telur')->name('telur');
+            Route::get('/detail_telur', 'detailTelur')->name('detail_telur');
+            Route::get('/laporan', 'laporan')->name('laporan');
+            Route::get('/laporan_export', 'laporanExport')->name('laporan_export');
+            Route::get('/laporan_kandang_harian', 'laporanKandangHarian')->name('laporan_kandang_harian');
             Route::get('/input_harian', 'inputHarian')->name('input_harian');
             Route::post('/hapus_perencanaan', 'hapusPerencanaan')->name('hapus_perencanaan');
+            // perencanaan
+            Route::get('/perencanaan', 'perencanaan')->name('perencanaan');
             Route::get('/load_perencanaan/{id_kandang}', 'load_perencanaan')->name('load_perencanaan');
             Route::post('/tambah_perencanaan', 'tambah_perencanaan')->name('tambah_perencanaan');
 

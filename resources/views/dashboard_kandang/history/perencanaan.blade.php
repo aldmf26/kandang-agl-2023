@@ -1,10 +1,16 @@
 <x-theme.app title="{{ $title }}" table="Y" sizeCard="12" cont="container-fluid">
     <x-slot name="cardHeader">
-        <h5 class="mb-0">{{ $title }}</h5>
+        <div class="d-flex align-items-center justify-content-between">
+            <h5 class="mb-0">{{ $title }}</h5>
+            <a href="{{ route('dashboard_kandang.harian') }}" class="btn btn-sm btn-outline-primary">
+                <i class="fas fa-arrow-left me-1"></i> Harian
+            </a>
+        </div>
     </x-slot>
 
     <x-slot name="cardBody">
-        <div class="card">
+        {{-- STEP 1: kerangka filter. Backend masih pakai route lama viewHistoryPerencanaan. --}}
+        <div class="card mb-3">
             <div class="card-body">
                 <form id="filterPerencanaan" class="row align-items-end g-3">
                     <div class="col-lg-3 col-md-5">
@@ -32,7 +38,11 @@
             </div>
         </div>
 
-        <div id="hasilPerencanaan" class="mt-3"></div>
+        <div id="hasilPerencanaan" class="mt-3">
+            <div class="alert alert-info mb-0">
+                Pilih tanggal dan kandang, lalu klik <b>Tampilkan</b> untuk melihat hasil perencanaan.
+            </div>
+        </div>
     </x-slot>
 
     @section('js')

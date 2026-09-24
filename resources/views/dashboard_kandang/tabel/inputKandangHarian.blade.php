@@ -3,11 +3,12 @@
         background: #263772;
     }
 </style>
-<div class="col-lg-9">
+<div class="col-lg-{{ !empty($modeLaporan) ? '12' : '9' }}">
     @php
         $font = DB::table('font_size')->first()->font;
 
     @endphp
+    @if (empty($modeLaporan))
     <form action="{{ route('dashboard_kandang.set_font') }}" method="post">
         @csrf
         <table>
@@ -19,11 +20,13 @@
             </tr>
         </table>
     </form>
+    @endif
     <h6>
         @php
             $tglHariIniNih = request()->get('tglKandang') ?? date('Y-m-d');
         @endphp
         Input Kandang Harian ~ {{ tanggal($tglHariIniNih) }}
+        @if (empty($modeLaporan))
         <div class="btn-group dropup me-1 mb-2 float-end">
             <button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-bs-toggle="dropdown"
                 aria-haspopup="true" aria-expanded="false">
@@ -48,6 +51,7 @@
             </div>
 
         </div>
+        @endif
 
         {{-- <div class="float-end">
             <form action="">
@@ -71,12 +75,14 @@
                     Afkir <br>
                     chick in2
                 </th>
-                <th style="background-color: {{ $bgZona }} !important" colspan="3" class="text-center  putih">
+                <th @if (empty($modeLaporan)) style="background-color: {{ $bgZona }} !important" @endif colspan="3" class="text-center {{ empty($modeLaporan) ? 'putih' : 'dhead' }}">
                     Populasi</th>
-                <th colspan="10" class="text-center abu"> Telur </th>
-                <th style="background-color: {{ $bgZona }} !important" colspan="4" class="text-center putih">
+                <th colspan="10" class="text-center {{ empty($modeLaporan) ? 'abu' : 'dhead' }}"> Telur </th>
+                <th @if (empty($modeLaporan)) style="background-color: {{ $bgZona }} !important" @endif colspan="4" class="text-center {{ empty($modeLaporan) ? 'putih' : 'dhead' }}">
                     pakan</th>
-                <th width="2%" class="text-center dhead" rowspan="2">Aksi</th>
+                @if (empty($modeLaporan))
+                    <th width="2%" class="text-center dhead" rowspan="2">Aksi</th>
+                @endif
             </tr>
 
             <tr>
@@ -196,7 +202,7 @@
                     @endphp
 
                     {{-- mati dan jual --}}
-                    <td style="background-color: {{ $bgZona }} !important" align="center" data-bs-toggle="modal"
+                    <td @if (empty($modeLaporan)) style="background-color: {{ $bgZona }} !important" @endif align="center" data-bs-toggle="modal"
                         id_kandang="{{ $d->id_kandang }}" nm_kandang="{{ $d->nm_kandang }}"
                         class="tambah_populasi {{ $kelas }}"
                         data-bs-target="#tambah_populasi{{ auth()->user()->id == 28 ? 'no' : '' }}">
@@ -210,7 +216,7 @@
                     </td>
                     {{-- end mati dan jual --}}
 
-                    <td style="background-color: {{ $bgZona }} !important"
+                    <td @if (empty($modeLaporan)) style="background-color: {{ $bgZona }} !important" @endif
                         class="tambah_populasi putih text-center"
                         data-bs-target="#tambah_populasi{{ auth()->user()->id == 28 ? 'no' : '' }}">
                         &nbsp; <br>{{ $d->stok_awal }} <br> {{ $d->stok_awal - $d->pop_kurang }} <br>
@@ -268,7 +274,7 @@
                         <p style="margin: 0; padding: 0;">&nbsp;</p>
                         <p style="margin: 0; padding: 0;" class="{{ $gr_butir < 58 ? 'text-danger fw-bold' : '' }}">
                             {{ $gr_butir }}</p>
-                        <p style="margin: 0; padding: 0;">{{ empty($k->t_peforma) ? 'NA' : $k->t_peforma }}
+                        <p style="margin: 0; padding: 0;">{{ empty($d->t_peforma) ? 'NA' : $d->t_peforma }}
                         </p>
                     </td>
                     <td data-bs-toggle="modal" id_kandang="{{ $d->id_kandang }}" nm_kandang="{{ $d->nm_kandang }}"
@@ -302,7 +308,7 @@
                             // dd($pcsKemarin - $pcs);
 
                         @endphp <td data-bs-toggle="modal" id_kandang="{{ $d->id_kandang }}"
-                            nm_kandang="{{ $d->nm_kandang }}" class="tambah_telur abu"
+                            nm_kandang="{{ $d->nm_kandang }}" class="tambah_telur abu {{ $loop->last ? 'group-divider-right' : '' }}"
                             data-bs-target="#tambah_telur {{ auth()->user()->id == 28 ? 'no' : '' }}">
                             <span>{{ $stok->pcs ?? 0 }}</span>
                         </td>
@@ -327,11 +333,11 @@
                         $gr_perekor = empty($pakan) || $pop == 0 ? 0 : $pakan->total / $pop;
                         $kelas = $gr_perekor < 100 ? 'merah' : 'putih';
                     @endphp
-                    <td style="background-color: {{ $bgZona }} !important" data-bs-toggle="modal"
-                        id_kandang="{{ $d->id_kandang }}" class="tambah_perencanaan merah"
+                    <td @if (empty($modeLaporan)) style="background-color: {{ $bgZona }} !important" @endif data-bs-toggle="modal"
+                        id_kandang="{{ $d->id_kandang }}" class="{{ $kelas }} tambah_perencanaan"
                         data-bs-target="#tambah_perencanaan">
                         {{ empty($gr_pakan) ? 0 : number_format($gr_pakan->ttl / 1000, 1) }}</td>
-                    <td style="background-color: {{ $bgZona }} !important" data-bs-toggle="modal"
+                    <td @if (empty($modeLaporan)) style="background-color: {{ $bgZona }} !important" @endif data-bs-toggle="modal"
                         id_kandang="{{ $d->id_kandang }}" class="{{ $kelas }} tambah_perencanaan"
                         data-bs-target="#tambah_perencanaan">
                         {{ number_format($gr_perekor, 0) }}</td>
@@ -382,17 +388,19 @@
                     </td>
 
                     {{-- end pakan --}}
-                    <td align="center">
-                        @if (auth()->user()->posisi_id == 1)
-                            <a onclick="return confirm('Yakin ingin di selesaikan ?')"
-                                href="{{ route('dashboard_kandang.kandang_selesai', $d->id_kandang) }}"
-                                class="badge bg-primary"><i class="fas fa-check"></i></a>
-                            <a href="#" class="badge bg-warning edit_kandang"
-                                id_kandang="{{ $d->id_kandang }}" data-bs-toggle="modal"
-                                data-bs-target="#edit_kandang"><i class="fas fa-edit"></i></a>
-                        @else
-                        @endif
-                    </td>
+                    @if (empty($modeLaporan))
+                        <td align="center">
+                            @if (auth()->user()->posisi_id == 1)
+                                <a onclick="return confirm('Yakin ingin di selesaikan ?')"
+                                    href="{{ route('dashboard_kandang.kandang_selesai', $d->id_kandang) }}"
+                                    class="badge bg-primary"><i class="fas fa-check"></i></a>
+                                <a href="#" class="badge bg-warning edit_kandang"
+                                    id_kandang="{{ $d->id_kandang }}" data-bs-toggle="modal"
+                                    data-bs-target="#edit_kandang"><i class="fas fa-edit"></i></a>
+                            @else
+                            @endif
+                        </td>
+                    @endif
 
                 </tr>
                 @php
@@ -425,12 +433,13 @@
                 }
 
             @endphp
-            <th style="background-color: {{ $bgZona }} !important" colspan="2">Total</th>
-            <th style="background-color: {{ $bgZona }} !important" class="text-center">
+            <tr>
+            <th @if (empty($modeLaporan)) style="background-color: {{ $bgZona }} !important" @endif colspan="2">Total</th>
+            <th @if (empty($modeLaporan)) style="background-color: {{ $bgZona }} !important" @endif class="text-center">
                 {{ number_format($total_mati, 0) }} <br> {{ number_format($total_jual, 0) }} <br>
                 {{ number_format($total_ayamAfkir, 0) }} <br>
                 {{ $dc_week }}</th>
-            <th style="background-color: {{ $bgZona }} !important" class="text-end">
+            <th @if (empty($modeLaporan)) style="background-color: {{ $bgZona }} !important" @endif class="text-end">
                 {{ number_format($ayam_awal, 0) }}
                 <br>{{ number_format($ayam_akhir, 0) }} <br>
                 {{ $ayam_awal == 0 ? 0 : number_format(($ayam_akhir / $ayam_awal) * 100, 0) }} %
@@ -456,10 +465,15 @@
                 <th class="text-end">{{ number_format($totalstok->total_pcs, 0) }}</th>
             @endforeach
 
-            <th style="background-color: {{ $bgZona }} !important" class="text-end">
+            <th @if (empty($modeLaporan)) style="background-color: {{ $bgZona }} !important" @endif class="text-end">
                 {{ number_format($total_kg_pakan, 1) }}</th>
-            <th style="background-color: {{ $bgZona }} !important"></th>
-            <th></th>
+            <th @if (empty($modeLaporan)) style="background-color: {{ $bgZona }} !important" @endif></th>
+            <th @if (empty($modeLaporan)) style="background-color: {{ $bgZona }} !important" @endif></th>
+            <th @if (empty($modeLaporan)) style="background-color: {{ $bgZona }} !important" @endif></th>
+            @if (empty($modeLaporan))
+                <th></th>
+            @endif
+            </tr>
         </tfoot>
     </table>
 </div>

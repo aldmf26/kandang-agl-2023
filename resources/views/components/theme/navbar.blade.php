@@ -16,9 +16,15 @@
                     </a>
                 </li>
                 <li class="menu-item">
-                    <a href="{{ route('dashboard_kandang.input_harian') }}"
-                        class='menu-link {{ in_array(request()->route()->getName(), ['dashboard_kandang.input_harian', 'dashboard_kandang.perencanaan']) ? 'active_navbar_new' : '' }}'>
+                    <a href="{{ route('dashboard_kandang.harian') }}"
+                        class='menu-link {{ in_array(request()->route()->getName(), ['dashboard_kandang.harian', 'dashboard_kandang.perencanaan', 'dashboard_kandang.populasi', 'dashboard_kandang.input_harian', 'dashboard_kandang.telur']) ? 'active_navbar_new' : '' }}'>
                         <span>Harian</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="{{ route('dashboard_kandang.laporan') }}"
+                        class='menu-link {{ in_array(request()->route()->getName(), ['dashboard_kandang.laporan', 'dashboard_kandang.laporan_export', 'dashboard_kandang.laporan_kandang_harian']) ? 'active_navbar_new' : '' }}'>
+                        <span>Laporan</span>
                     </a>
                 </li>
                 {{-- @php
