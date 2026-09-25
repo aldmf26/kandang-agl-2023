@@ -42,6 +42,8 @@
                     href="#"> Commercial Layer</a>
                 <a href="{{ route('dashboard_kandang.export_perencanaan') }}" class="text-white dropdown-item hoverbtn"
                     href="#"> Perencanaan</a>
+                <a target="_blank" href="{{ route('dashboard_kandang.print_timbang_pakan', ['tgl' => $tglHariIniNih]) }}" class="text-white dropdown-item hoverbtn">
+                    Perencanaan Timbang Pakan</a>
                 <a data-bs-toggle="modal" data-bs-target="#export_vitamin_accurate" href="#"
                     class="text-white dropdown-item hoverbtn" href="#"> export import accurate</a>
                 <a data-bs-toggle="modal" data-bs-target="#export_penjualan_accurate" href="#"
@@ -49,8 +51,11 @@
                 {{-- <a data-bs-toggle="modal" data-bs-target="#week_layer" class="text-white dropdown-item hoverbtn"
                     href="#"> Week Layer</a> --}}
             </div>
-
         </div>
+
+        <a target="_blank" href="{{ route('dashboard_kandang.print_timbang_pakan', ['tgl' => $tglHariIniNih]) }}" class="btn btn-primary btn-sm me-1 mb-2 float-end">
+            <i class="fas fa-print"></i> Perencanaan Timbang Pakan
+        </a>
         @endif
 
         {{-- <div class="float-end">

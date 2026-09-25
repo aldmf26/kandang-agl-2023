@@ -3243,6 +3243,74 @@ class DashboardKandangController extends Controller
         return view('dashboard_kandang.perencanaan.print_perencanaan', $data);
     }
 
+    public function print_timbang_pakan(Request $r)
+    {
+        $tgl_input = $r->tgl ?? date('Y-m-d');
+        $tgl = date('Y-m-d', strtotime('-1 days', strtotime($tgl_input)));
+
+        $kandang = DB::table('kandang')->where('selesai', 'T')->orderBy('nm_kandang', 'ASC')->get();
+
+        $datakandang = [];
+
+        foreach ($kandang as $kd) {
+            $id_kandang = $kd->id_kandang;
+
+            $pakanList = DB::select("SELECT a.no_nota, a.id_pakan_perencanaan, a.tgl, b.id_produk, b.nm_produk as nm_pakan, a.persen, a.gr as gr_pakan
+                FROM tb_pakan_perencanaan as a 
+                LEFT JOIN tb_produk_perencanaan as b ON a.id_produk_pakan = b.id_produk 
+                WHERE a.id_kandang = '$id_kandang' AND a.tgl = '$tgl'");
+
+            $karung = DB::table('tb_karung_perencanaan')
+                ->where('id_kandang', $id_kandang)
+                ->where('tgl', $tgl)
+                ->first();
+
+            $obatPakan = DB::table('tb_obat_perencanaan as a')
+                ->select(
+                    'a.tgl',
+                    'b.id_produk',
+                    'b.nm_produk',
+                    'a.waktu',
+                    'a.cara_pemakaian as cara',
+                    'a.id_kandang',
+                    'a.ket',
+                    'a.dosis',
+                    'a.campuran',
+                    'c.nm_satuan as satuan',
+                    'd.nm_satuan as satuan2'
+                )
+                ->leftJoin('tb_produk_perencanaan as b', 'a.id_produk', 'b.id_produk')
+                ->leftJoin('tb_satuan as c', 'b.dosis_satuan', 'c.id_satuan')
+                ->leftJoin('tb_satuan as d', 'b.campuran_satuan', 'd.id_satuan')
+                ->where('a.tgl', $tgl)
+                ->where('a.id_kandang', $id_kandang)
+                ->whereIn('a.kategori', ['obat_pakan', 'obat_air'])
+                ->get();
+
+            $totalGr = 0;
+            foreach ($pakanList as $p) {
+                $totalGr += (float) ($p->gr_pakan ?? 0);
+            }
+
+            if (count($pakanList) > 0 || count($obatPakan) > 0 || !empty($karung)) {
+                $datakandang[] = [
+                    'kandang'    => $kd,
+                    'karung'     => $karung,
+                    'pakan_list' => $pakanList,
+                    'obat_pakan' => $obatPakan,
+                    'total_gr'   => $totalGr,
+                ];
+            }
+        }
+
+        $data = [
+            'tgl'         => $tgl,
+            'datakandang' => $datakandang,
+        ];
+
+        return view('dashboard_kandang.perencanaan.print_timbang_pakan', $data);
+    }
+
     public function export_vitamin_accurate(Request $r)
     {
 

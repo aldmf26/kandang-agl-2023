@@ -314,6 +314,7 @@ Route::middleware('auth')->group(function () {
         ->group(function () {
             Route::get('/rumus', 'rumus')->name('rumus');
             Route::get('/print_perencanaan', 'print_perencanaan')->name('print_perencanaan');
+            Route::get('/print_timbang_pakan', 'print_timbang_pakan')->name('print_timbang_pakan');
             Route::get('/detail_pop', 'detail_pop')->name('detail_pop');
             Route::post('/set_font', 'set_font')->name('set_font');
             Route::get('/', 'index')->name('index');
