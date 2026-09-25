@@ -28,6 +28,7 @@ use App\Http\Controllers\ProfitController;
 use App\Http\Controllers\StokMasukController;
 use App\Http\Controllers\ProyekController;
 use App\Http\Controllers\Saldo;
+use App\Http\Controllers\TransaksiPenerimaanController;
 use App\Http\Controllers\SaldoController;
 use App\Http\Controllers\Stock_telurController;
 use App\Http\Controllers\Stok_telur_alpaController;
@@ -345,6 +346,32 @@ Route::controller(Penjualan_umum_cekController::class)->group(function () {
     Route::get('/penjualan_umum_cek', 'index')->name('penjualan_umum_cek');
     Route::get('/terima_invoice_umum_cek', 'terima_invoice_umum_cek')->name('terima_invoice_umum_cek');
     Route::post('/save_cek_umum_invoice', 'save_cek_umum_invoice')->name('save_cek_umum_invoice');
+});
+
+Route::middleware('auth')->group(function () {
+    Route::controller(TransaksiPenerimaanController::class)
+        ->prefix('gudang')
+        ->name('gudang.')
+        ->group(function () {
+            Route::get('/', 'gudang')->name('index');
+        });
+
+    Route::controller(TransaksiPenerimaanController::class)
+        ->prefix('transaksi/penerimaan')
+        ->name('transaksi.penerimaan.')
+        ->group(function () {
+            Route::get('/', 'penerimaanIndex')->name('index');
+            Route::get('/terima', 'terimaBatch')->name('terima');
+            Route::post('/terima', 'storeTerimaBatch')->name('terima.store');
+            Route::post('/{faktur_pembelian}/batalkan', 'batalkanPenerimaan')->name('batalkan');
+        });
+
+    Route::controller(TransaksiPenerimaanController::class)
+        ->prefix('transaksi/faktur-pembelian')
+        ->name('transaksi.faktur-pembelian.')
+        ->group(function () {
+            Route::get('/{faktur_pembelian}/detail', 'detail')->name('detail');
+        });
 });
 
 Route::controller(OpnamemtdController::class)->group(function () {
