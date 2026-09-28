@@ -60,8 +60,6 @@
         }
 
         .kandang-header {
-            background: #2c3e50;
-            color: #ffffff;
             font-weight: bold;
             font-size: 11px;
             padding: 3px 6px;

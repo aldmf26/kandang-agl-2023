@@ -3245,8 +3245,8 @@ class DashboardKandangController extends Controller
 
     public function print_timbang_pakan(Request $r)
     {
-        $tgl_input = $r->tgl ?? date('Y-m-d');
-        $tgl = date('Y-m-d', strtotime('-1 days', strtotime($tgl_input)));
+        $tgl = $r->tgl ?? date('Y-m-d');
+        // $tgl = date('Y-m-d', strtotime('-1 days', strtotime($tgl_input)));
 
         $kandang = DB::table('kandang')->where('selesai', 'T')->orderBy('nm_kandang', 'ASC')->get();
 
