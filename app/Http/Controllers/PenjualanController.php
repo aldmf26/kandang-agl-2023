@@ -99,21 +99,9 @@ class PenjualanController extends Controller
 
     public function tbh_invoice_telur(Request $r)
     {
-        $max = DB::table('invoice_telur')->latest('urutan')->first();
-
-        if (empty($max) || $max->urutan == '0') {
-            $nota_t = '1001';
-        } else {
-            $nota_t = $max->urutan + 1;
-        }
-        $data = [
-            'title' => 'Buat Invoice',
-            'produk' => DB::table('telur_produk')->get(),
-            'customer' => DB::table('customer')->where('active', 'Y')->get(),
-            'nota' => $nota_t,
-            'akun' => DB::table('akun')->whereIn('id_klasifikasi', ['1', '7'])->get()
-        ];
-        return view('penjualan_agl.invoice', $data);
+        // Form lama diganti form dashboard kandang agar tampilan dan alur sama
+        // (jurusan jurnal otomatis ikut).
+        return redirect()->route('dashboard_kandang.add_penjualan_telur');
     }
 
     public function loadkginvoice(Request $r)
@@ -192,6 +180,8 @@ class PenjualanController extends Controller
                 'kg_jual' => $r->kg_jual[$x],
                 'rp_satuan' => $r->rp_satuan[$x],
                 'total_rp' => $r->total_rp[$x],
+                'status' => 'unpaid',
+                'cek' => 'T',
                 'admin' => Auth::user()->name,
                 'urutan' => $nota_t,
                 'urutan_customer' => $urutan_cus,
