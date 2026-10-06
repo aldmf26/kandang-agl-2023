@@ -401,6 +401,30 @@ class Penjualan_telurmartadahController extends Controller
         $voucher = DB::table('tb_void')->where([['no_nota', $r->no_nota], ['voucher', $r->voucher], ['status', 'T']])->count();
         $voucherUpdate = $voucher > 0 || $r->tgl == date('Y-m-d') ? true : false;
         $no_nota = $r->no_nota;
+
+        // Jaga cicilan: nota yang sudah ada pelunasan tidak boleh diedit dari sini.
+        if (DB::table('pelunasan_piutang_penjualan')->where('no_nota', $no_nota)->exists()) {
+            return redirect()->route('dashboard_kandang.edit_telur', ['no_nota' => $no_nota])
+                ->with('error', 'Nota sudah ada pelunasan/cicilan. Edit dibatalkan agar data pembayaran tidak rusak.');
+        }
+
+        $jurnalLama = DB::table('jurnal_perkiraan as j')
+            ->join('akun_perkiraan as a', 'a.id_akun_perkiraan', '=', 'j.id_akun_perkiraan')
+            ->where('j.nomor_transaksi', $no_nota)
+            ->where('j.tipe_transaksi', 'Penjualan Telur')
+            ->orderBy('j.urutan_detail')
+            ->get(['j.id_jurnal_perkiraan', 'j.id_impor_jurnal_perkiraan', 'j.id_akun_perkiraan', 'j.tanggal', 'j.debit', 'j.kredit', 'a.tipe_akun']);
+
+        // Siapkan akun untuk pembuatan jurnal bila nota belum punya jurnal penjualan.
+        $akunPiutang = DB::table('akun_perkiraan')
+            ->where('aktif', 1)->where('tipe_akun', 'AREC')->where('nama', 'Piutang Usaha IDR')->first();
+        $akunPenjualan = DB::table('akun_perkiraan')
+            ->where('aktif', 1)->where('tipe_akun', 'REVE')->where('nama', 'Penjualan Telur')->first();
+        if ($jurnalLama->isEmpty() && (empty($akunPenjualan) || empty($akunPiutang))) {
+            return redirect()->route('dashboard_kandang.edit_telur', ['no_nota' => $no_nota])
+                ->with('error', 'Akun perkiraan Piutang Usaha IDR atau Penjualan Telur belum tersedia/aktif.');
+        }
+
         if ($voucherUpdate) {
             $cekAdmin = DB::table('invoice_telur')->where('no_nota', $no_nota)->first();
 
@@ -462,6 +486,7 @@ class Penjualan_telurmartadahController extends Controller
                     'ikat' => $ikat[$x],
                     'rp_satuan' => $total_rp_satuan,
                     'total_rp' => $total_rp,
+                    'status' => 'unpaid',
                     'admin' => auth()->user()->name,
                     'urutan' => $r->urutan,
                     'urutan_customer' => $urutan_cus,
@@ -514,7 +539,86 @@ class Penjualan_telurmartadahController extends Controller
         } else {
             return redirect()->route('dashboard_kandang.edit_telur', ['no_nota' => $no_nota])->with('error', 'Voucher Update Salah!');
         }
-        return redirect()->route('dashboard_kandang.cek_penjualan_telur', ['no_nota' => $no_nota])->with('sukses', 'Data berhasil ditambahkan');
+
+        // Sinkronkan jurnal penjualan mengikuti total invoice yang baru.
+        $totalBaru = round((float) DB::table('invoice_telur')->where('no_nota', $no_nota)->sum('total_rp'), 2);
+        $cekBaru = $this->sinkronJurnalPenjualan($no_nota, (string) $r->tgl, $totalBaru, $jurnalLama, $akunPiutang, $akunPenjualan);
+        DB::table('invoice_telur')->where('no_nota', $no_nota)->update(['cek' => $cekBaru, 'status' => 'unpaid']);
+
+        $pesan = $cekBaru === 'Y'
+            ? 'Data berhasil diubah, jurnal penjualan ikut disesuaikan.'
+            : 'Data berhasil diubah. Jurnal tidak otomatis tersinkron, silakan Setor ulang nota ini di pembukuan.';
+        return redirect()->route('dashboard_kandang.cek_penjualan_telur', ['no_nota' => $no_nota])->with('sukses', $pesan);
+    }
+
+    private function sinkronJurnalPenjualan(string $noNota, string $tgl, float $total, $jurnalLama, $akunPiutang, $akunPenjualan): string
+    {
+        $sekarang = now();
+
+        // Belum ada jurnal: buatkan jurnal piutang otomatis.
+        if ($jurnalLama->isEmpty()) {
+            $batchId = DB::table('impor_jurnal_perkiraan')->insertGetId([
+                'nama_file' => 'Penjualan Telur ' . $noNota,
+                'hash_file' => hash('sha256', strtolower('Penjualan Telur') . '|' . $noNota),
+                'periode_awal' => $tgl,
+                'periode_akhir' => $tgl,
+                'jumlah_transaksi' => 1,
+                'jumlah_detail' => 2,
+                'total_debit' => $total,
+                'total_kredit' => $total,
+                'status' => 'aktif',
+                'diimpor_oleh' => auth()->id(),
+                'created_at' => $sekarang,
+                'updated_at' => $sekarang,
+            ]);
+            DB::table('jurnal_perkiraan')->insert([
+                [
+                    'id_impor_jurnal_perkiraan' => $batchId,
+                    'id_akun_perkiraan' => $akunPiutang->id_akun_perkiraan,
+                    'tanggal' => $tgl,
+                    'nomor_transaksi' => $noNota,
+                    'tipe_transaksi' => 'Penjualan Telur',
+                    'urutan_detail' => 1,
+                    'deskripsi' => 'Piutang penjualan telur ' . $noNota,
+                    'debit' => $total,
+                    'kredit' => 0,
+                    'created_at' => $sekarang,
+                    'updated_at' => $sekarang,
+                ],
+                [
+                    'id_impor_jurnal_perkiraan' => $batchId,
+                    'id_akun_perkiraan' => $akunPenjualan->id_akun_perkiraan,
+                    'tanggal' => $tgl,
+                    'nomor_transaksi' => $noNota,
+                    'tipe_transaksi' => 'Penjualan Telur',
+                    'urutan_detail' => 2,
+                    'deskripsi' => 'Pendapatan penjualan telur ' . $noNota,
+                    'debit' => 0,
+                    'kredit' => $total,
+                    'created_at' => $sekarang,
+                    'updated_at' => $sekarang,
+                ],
+            ]);
+
+            return 'Y';
+        }
+
+        // Jurnal otomatis (2 baris: debit piutang + kredit pendapatan): sesuaikan nominal & tanggal.
+        $barisDebit = $jurnalLama->first(fn($row) => (float) $row->debit > 0);
+        $barisKredit = $jurnalLama->first(fn($row) => (float) $row->kredit > 0);
+        if ($jurnalLama->count() === 2 && $barisDebit && $barisKredit && ($barisDebit->tipe_akun ?? null) === 'AREC') {
+            DB::table('jurnal_perkiraan')->where('id_jurnal_perkiraan', $barisDebit->id_jurnal_perkiraan)
+                ->update(['tanggal' => $tgl, 'debit' => $total, 'updated_at' => $sekarang]);
+            DB::table('jurnal_perkiraan')->where('id_jurnal_perkiraan', $barisKredit->id_jurnal_perkiraan)
+                ->update(['tanggal' => $tgl, 'kredit' => $total, 'updated_at' => $sekarang]);
+            DB::table('impor_jurnal_perkiraan')->where('id_impor_jurnal_perkiraan', $barisDebit->id_impor_jurnal_perkiraan)
+                ->update(['periode_awal' => $tgl, 'periode_akhir' => $tgl, 'total_debit' => $total, 'total_kredit' => $total, 'updated_at' => $sekarang]);
+
+            return 'Y';
+        }
+
+        // Bentuk lain (mis. sudah disetor tunai / jurnal manual): jangan diutak-atik, minta setor ulang.
+        return 'T';
     }
 
     public function delete_penjualan_mtd(Request $r)
