@@ -83,17 +83,21 @@
             <form method="get" action="{{ route('transaksi.penerimaan.index') }}" class="receive-filter">
                 <input type="hidden" name="status" value="{{ $statusPenerimaan }}">
                 <div class="row g-2 align-items-end">
-                    <div class="col-lg-3 col-6">
-                        <label class="form-label" for="tanggal_awal">Dari tanggal</label>
-                        <input type="date" id="tanggal_awal" name="tanggal_awal" class="form-control"
-                            value="{{ $tanggalAwal }}">
-                    </div>
-                    <div class="col-lg-3 col-6">
-                        <label class="form-label" for="tanggal_akhir">Sampai tanggal</label>
-                        <input type="date" id="tanggal_akhir" name="tanggal_akhir" class="form-control"
-                            value="{{ $tanggalAkhir }}">
-                    </div>
-                    <div class="col-lg-4">
+                    @if ($statusPenerimaan === 'selesai')
+                        <div class="col-lg-3 col-6">
+                            <label class="form-label" for="tanggal_awal">Dari tanggal</label>
+                            <input type="date" id="tanggal_awal" name="tanggal_awal" class="form-control"
+                                value="{{ $tanggalAwal }}">
+                        </div>
+                        <div class="col-lg-3 col-6">
+                            <label class="form-label" for="tanggal_akhir">Sampai tanggal</label>
+                            <input type="date" id="tanggal_akhir" name="tanggal_akhir" class="form-control"
+                                value="{{ $tanggalAkhir }}">
+                        </div>
+                        <div class="col-lg-4">
+                    @else
+                        <div class="col-lg-10">
+                    @endif
                         <label class="form-label" for="cari_faktur">Cari nota atau pemasok</label>
                         <input type="search" id="cari_faktur" name="cari" class="form-control"
                             value="{{ request('cari') }}" placeholder="Masukkan nomor nota atau nama pemasok">
@@ -109,7 +113,7 @@
             <ul class="nav nav-pills receive-nav">
                 <li class="nav-item">
                     <a class="nav-link {{ $statusPenerimaan === 'belum' ? 'active' : '' }}"
-                        href="{{ route('transaksi.penerimaan.index', request()->except('page', 'status') + ['status' => 'belum']) }}">
+                        href="{{ route('transaksi.penerimaan.index', collect(request()->except('page', 'status', 'tanggal_awal', 'tanggal_akhir'))->toArray() + ['status' => 'belum']) }}">
                         Nota belum habis ({{ $jumlahBelumHabis }})
                     </a>
                 </li>
@@ -196,10 +200,10 @@
                                     <td colspan="10" class="empty-receive">
                                         @if ($statusPenerimaan === 'belum')
                                             <strong class="d-block mb-1">Tidak ada nota yang perlu diterima</strong>
-                                            <span>Semua nota pada periode ini sudah selesai diterima stoknya.</span>
+                                            <span>Semua nota sudah selesai diterima stoknya.</span>
                                         @else
                                             <strong class="d-block mb-1">Belum ada nota yang sudah habis diambil</strong>
-                                            <span>Nota yang penerimaan stoknya sudah lengkap akan muncul di sini.</span>
+                                            <span>Nota yang penerimaan stoknya sudah lengkap pada periode ini akan muncul di sini.</span>
                                         @endif
                                     </td>
                                 </tr>

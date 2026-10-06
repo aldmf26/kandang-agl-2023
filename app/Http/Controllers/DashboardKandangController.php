@@ -1589,7 +1589,8 @@ class DashboardKandangController extends Controller
                             'total_rp' => $h_satuan * $r->gr_pakan[$i],
                             'no_nota' => $no_nota,
                             'pcs_kredit' =>  $r->gr_pakan[$i],
-                            'admin' => auth()->user()->name
+                            'admin' => auth()->user()->name,
+                            'check' => 'Y'
                         ];
                         DB::table('stok_produk_perencanaan')->insert($dataStok);
                         $total_kg_pakan += $r->gr_pakan[$i];
@@ -1658,7 +1659,8 @@ class DashboardKandangController extends Controller
                                 'no_nota' => $no_nota,
                                 'id_kandang' => $id_kandang,
                                 'pcs_kredit' => (($total_kg_pakan / 1000) / $r->campuran_obat_pakan[$i]) * $r->dosis_obat_pakan[$i],
-                                'admin' => auth()->user()->name
+                                'admin' => auth()->user()->name,
+                                'check' => 'Y'
                             ];
                             DB::table('stok_produk_perencanaan')->insert($dataStok);
                         }
@@ -1700,7 +1702,8 @@ class DashboardKandangController extends Controller
                                 'total_rp' => $h_satuan * $r->dosis_obat_air[$i],
                                 'no_nota' => $no_nota,
                                 'pcs_kredit' =>  $r->dosis_obat_air[$i],
-                                'admin' => auth()->user()->name
+                                'admin' => auth()->user()->name,
+                                'check' => 'Y'
                             ];
                             DB::table('stok_produk_perencanaan')->insert($dataStok);
                         }
@@ -1739,7 +1742,8 @@ class DashboardKandangController extends Controller
                             'total_rp' => $h_satuan * $r->dosis_obat_ayam[$i],
                             'no_nota' => $no_nota,
                             'pcs_kredit' =>  $r->dosis_obat_ayam * $populasi,
-                            'admin' => auth()->user()->name
+                            'admin' => auth()->user()->name,
+                            'check' => 'Y'
                         ];
                         DB::table('stok_produk_perencanaan')->insert($dataStok);
                     }

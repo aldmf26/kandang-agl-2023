@@ -20,29 +20,42 @@ class TransaksiPenerimaanController extends Controller
 
     public function penerimaanIndex(Request $request): View
     {
-        $tanggalAwal = $request->input('tanggal_awal', now()->startOfMonth()->toDateString());
-        $tanggalAkhir = $request->input('tanggal_akhir', now()->toDateString());
         $cari = $request->input('cari');
         $statusPenerimaan = $request->input('status', 'belum') === 'selesai' ? 'selesai' : 'belum';
+        $tanggalAwal = $request->input('tanggal_awal', now()->startOfMonth()->toDateString());
+        $tanggalAkhir = $request->input('tanggal_akhir', now()->toDateString());
 
-        $semuaFaktur = FakturModel::with('supplier')
-            ->whereBetween('tanggal_faktur', [$tanggalAwal, $tanggalAkhir])
-            ->when($cari, function ($query) use ($cari) {
-                $query->where(function ($q) use ($cari) {
-                    $q->where('no_faktur', 'like', "%{$cari}%")
+        $cariFilter = function ($query) use ($cari) {
+            $query->when($cari, function ($q) use ($cari) {
+                $q->where(function ($qq) use ($cari) {
+                    $qq->where('no_faktur', 'like', "%{$cari}%")
                         ->orWhereHas('supplier', function ($sq) use ($cari) {
                             $sq->where('nm_suplier', 'like', "%{$cari}%");
                         });
                 });
-            })
+            });
+        };
+
+        // Tab belum: tampilkan semua tanpa filter tanggal.
+        $semuaTanpaTanggal = FakturModel::with('supplier')
+            ->tap($cariFilter)
             ->orderByDesc('tanggal_faktur')
             ->get();
 
-        $penerimaanFaktur = $this->qtyDiterimaFaktur($semuaFaktur);
-        $belumHabis = $semuaFaktur->filter(function ($item) use ($penerimaanFaktur) {
+        // Tab selesai: tetap pakai filter tanggal.
+        $semuaDalamPeriode = FakturModel::with('supplier')
+            ->whereBetween('tanggal_faktur', [$tanggalAwal, $tanggalAkhir])
+            ->tap($cariFilter)
+            ->orderByDesc('tanggal_faktur')
+            ->get();
+
+        $gabungan = $semuaTanpaTanggal->concat($semuaDalamPeriode)->unique('no_faktur')->values();
+        $penerimaanFaktur = $this->qtyDiterimaFaktur($gabungan);
+
+        $belumHabis = $semuaTanpaTanggal->filter(function ($item) use ($penerimaanFaktur) {
             return (float) ($penerimaanFaktur[$item->no_faktur] ?? 0) < (float) $item->total_qty;
         })->values();
-        $sudahHabis = $semuaFaktur->filter(function ($item) use ($penerimaanFaktur) {
+        $sudahHabis = $semuaDalamPeriode->filter(function ($item) use ($penerimaanFaktur) {
             return (float) ($penerimaanFaktur[$item->no_faktur] ?? 0) >= (float) $item->total_qty;
         })->values();
 
